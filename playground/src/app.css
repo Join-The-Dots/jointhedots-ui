@@ -1,12 +1,6 @@
-* {
-   box-sizing: border-box;
-}
-
 body {
-   margin: 0;
-   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-   background: var(--app-background, #1e1e1e);
-   color: var(--app-foreground, #ccc);
+   background: var(--jtd-background);
+   color: var(--jtd-foreground);
 }
 
 #root {
@@ -35,8 +29,9 @@ header h1 {
    gap: 8px;
    padding: 8px 12px;
    border-radius: 8px;
-   background: var(--app-value-background, #333);
-   color: var(--app-value-forecolor, #ccc);
+   background: var(--jtd-surface);
+   color: var(--jtd-surface-foreground);
+   border: 1px solid var(--jtd-border);
    font-family: Consolas, monospace;
    font-size: 0.85rem;
 }
@@ -64,7 +59,8 @@ section .hint {
    width: 92px;
    height: 92px;
    border-radius: 10px;
-   background: var(--app-value-background, #333);
+   background: var(--jtd-surface);
+   border: 1px solid var(--jtd-border);
    cursor: pointer;
    transition: transform 0.12s ease;
 }
@@ -84,13 +80,21 @@ section .hint {
    font-size: 0.8rem;
 }
 
+.items-demo {
+   display: flex;
+   gap: 16px;
+   flex-wrap: wrap;
+   align-items: flex-start;
+}
+
 .items {
    list-style: none;
    margin: 0;
-   padding: 0;
+   padding: 6px;
    min-width: 320px;
    border-radius: 8px;
-   background: var(--app-value-background, #333);
+   background: var(--jtd-surface);
+   border: 1px solid var(--jtd-border);
 }
 
 .popup-hint {

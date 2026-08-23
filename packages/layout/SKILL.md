@@ -89,13 +89,16 @@ expose `promise.close()` pour refermer programmatiquement. Options du dock
 flottant : `position` (voir computeEdgeBox), `variant: "menu" | "popup" |
 "popover"`, `className`, `noAutoClose`.
 
-Le variant **popover** est la bulle classique : coins arrondis, ombre portée,
-et une **flèche** (losange CSS) collée au bord qui pointe vers le centre de la
-cible. Le côté porteur de la flèche se déduit du placement effectif (après
-retournement par computeEdgeBox) : bulle sous la cible → flèche en haut
-(pointe vers le haut), etc. Le décalage le long du bord suit le centre de la
-cible, borné aux marges de la bulle — tout est recalculé à chaque repositionnement
-(25 ms), donc la flèche suit une cible mobile.
+Le variant **popover** est la bulle classique : coins arrondis, filet hairline,
+ombre portée, et une **flèche** (losange CSS bordé) collée au bord qui pointe
+vers le centre de la cible. La moitié interne du losange est masquée par le
+corps opaque de la bulle : le contour de la flèche prolonge ainsi le filet de
+la bulle, sur les quatre côtés porteurs. Le côté porteur de la flèche se
+déduit du placement effectif (après retournement par computeEdgeBox) : bulle
+sous la cible → flèche en haut (pointe vers le haut), etc. Le décalage le long
+du bord suit le centre de la cible, borné aux marges de la bulle — tout est
+recalculé à chaque repositionnement (25 ms), donc la flèche suit une cible
+mobile.
 
 `PopupCancel` (sous-classe d'`Error`) est le signal d'annulation du modèle.
 
@@ -147,8 +150,15 @@ LabelProps = {
    data?: T,                      // charge utile libre
    onActivate?: (label, dock) => void    // activation : reçoit un FloatingDock collé à l'élément
 }
-ItemProps = LabelProps & { tags?, selected?, onSelect? }
+ItemProps = LabelProps & { tags?, selected?, onSelect?, variant? }
 ```
+
+Les lignes combinent une **taille** (`short` compacte / large riche) et un
+**habillage** via le prop `variant` : `minimal` (défaut — chrome discret :
+survol en teinte douce, sélection lue comme une fine barre d'accent sur une
+rangée teintée) ou `outlined` (chrome encadré : survol en filet hairline,
+sélection bordée sur trois côtés par la couleur d'item). Les deux variantes
+partagent la même géométrie et teignent leurs accents via `--jtd-item-color`.
 
 Composants de rendu :
 
@@ -156,6 +166,9 @@ Composants de rendu :
 | --- | --- |
 | `ItemRowShort` | ligne compacte icône + nom ; clic → `onActivate(item, floatingDock)` ; sélection éditable (Switch) via `LabelSelected.EnabledEditable` / `DisabledEditable` |
 | `ItemRowRich` | ligne large avec summary, tooling, survol de `content` dans un dock flottant |
+
+`ItemRowShort` et `ItemRowRich` acceptent `variant: "minimal" | "outlined"`
+(défaut `minimal`) — voir le modèle d'items ci-dessus.
 | `LabelButton` | pastille `ButtonIcon` activable ; sans `onActivate`, ouvre `content` en menu contextuel |
 | `ItemIcon` | icône seule activable |
 | `DrawToolingWidgets(tooling)` | rend une liste de `LabelButton` + bouton débordement (three-dots) pour les entrées `optional` |
@@ -181,8 +194,11 @@ réutilisable pour tout popover maison.
 
 La cascade compilée (gabarits `jtd-panel-*`, `jtd-menu-*`, `jtd-item-*`) est
 injectée au chargement (balise `<style id="jtd-layout-styles">`, idempotent,
-sans effet en SSR). Les variables notables : `--jtd-floating-zindex` (dock
-flottant), `--jtd-panel-min-height` / `--jtd-panel-max-height` (modal).
+sans effet en SSR). Les couleurs et états dérivent des tokens `--jtd-*` de
+@jointhedots/theme ; chaque item peut teinter sa ligne via la variable
+`--jtd-item-color` (posée en inline style). Les variables notables :
+`--jtd-floating-zindex` (dock flottant), `--jtd-panel-min-height` /
+`--jtd-panel-max-height` (modal).
 
 ## Aide-mémoire
 

@@ -1,11 +1,7 @@
-import React, { useState } from 'react'
+import React from 'react'
 import classNames from 'classnames'
-import { Tooltip } from '@salesforce/design-system-react'
 import { getHtmlProps } from './getProps'
 import { Icon, IconSize } from "@jointhedots/icon"
-import '@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css'
-
-const IconButtonClassname = "jtd-button-icon "
 
 interface ButtonProps {
    assistiveText?: string
@@ -58,41 +54,25 @@ export function Button(inProps: ButtonProps) {
       const isIcon = props.variant === 'icon'
 
       let { iconVariant } = props
-      const iconMore = iconVariant === 'more'
       const iconBorder = iconVariant === 'border'
-      const iconGlobalHeader = iconVariant === 'global-header'
-
-      const showButtonVariant =
-         (props.variant !== 'base' &&
-            !iconVariant &&
-            !props.inverse &&
-            props.variant !== 'link') ||
-         iconVariant === 'bare'
-      const plainInverseBtn = props.inverse && !isIcon
-      const plainInverseIcon =
-         props.inverse && isIcon && !iconMore && !iconBorder
-      const moreInverseIcon = props.inverse && iconMore
-      const borderInverseIcon = props.inverse && iconBorder
-
-      // After hijacking `iconVariant` to let `Button` know it's in the header, we reset to container style for the actual button CSS.
+      // The global-header presentation is a container button
       if (iconVariant === 'global-header') {
          iconVariant = 'container'
       }
 
       return classNames(
+         'jtd-button',
          {
-            'slds-button': props.variant !== 'link',
-            [`slds-button_${props.variant}`]: showButtonVariant,
-            'slds-button_inverse': plainInverseBtn,
-            'slds-button_icon-inverse': plainInverseIcon || moreInverseIcon,
-            'slds-button_icon-border-inverse': borderInverseIcon,
-            [`slds-button_icon-${iconVariant}`]: iconVariant && !borderInverseIcon,
-            'slds-global-header__button_icon': iconGlobalHeader,
-            // If icon has a container, then we apply the icon size to the container not the svg. Icon size is medium by default, so we don't need to explicitly render it here.
-            [`slds-button_icon-${props.iconSize}`]:
-               iconVariant && props.iconSize !== 'md',
-            'slds-button_reset': props.variant === 'link',
-            'slds-text-link': props.variant === 'link',
+            'jtd-button--link': props.variant === 'link',
+            [`jtd-button--${props.variant}`]:
+               !isIcon && props.variant !== 'base' && props.variant !== 'link' && !props.inverse && !iconVariant,
+            'jtd-button--inverse': props.inverse && !isIcon,
+            'jtd-button--icon': isIcon,
+            [`jtd-button--icon-${iconVariant}`]: isIcon && iconVariant && iconVariant !== 'bare',
+            'jtd-button--icon-inverse': props.inverse && isIcon && !iconBorder,
+            'jtd-button--icon-border-inverse': props.inverse && isIcon && iconBorder,
+            [`jtd-button--icon-${props.iconSize}`]:
+               isIcon && iconVariant && props.iconSize !== 'md',
          },
          props.className
       )
@@ -105,34 +85,25 @@ export function Button(inProps: ButtonProps) {
    }
 
    const renderIcon = (name: string): React.ReactNode => {
-      const iconSize =
-         !props.iconSize || props.iconVariant
-            ? null
-            : props.iconSize
-      return (
-         <Icon
-            className='slds-button__icon'
-            name={props.icon}
-            inverse={props.inverse}
-            size={iconSize}
-            style={{ marginRight: 5, marginLeft: 5 }}
-         />
-      )
+      const iconSize = !props.iconSize || props.iconVariant ? null : props.iconSize
+      return <Icon name={name} inverse={props.inverse} size={iconSize} />
    }
 
    const renderLabel = (): React.ReactNode => {
-      const iconOnly = props.icon
-      const assistiveTextIcon = props.assistiveText
-      return iconOnly && assistiveTextIcon ? (
-         <span className="slds-assistive-text">{assistiveTextIcon}</span>
-      ) : (
-         props.label
-      )
+      if (props.icon && props.assistiveText) {
+         return null
+      }
+      return props.label
    }
+
+   const ariaLabel =
+      props.assistiveText ||
+      (props.variant === 'icon' && typeof props.label === 'string' ? props.label : undefined)
 
    const renderButton = (): React.ReactElement => {
       return (
          <button
+            aria-label={ariaLabel}
             className={getClassName()}
             disabled={props.disabled}
             id={props.id}
@@ -170,7 +141,12 @@ export function Button(inProps: ButtonProps) {
    }
 
    if (props.tooltip) {
-      return <Tooltip content={props.tooltip}>{renderButton}</Tooltip>
+      return (
+         <span className="jtd-tooltip">
+            {renderButton()}
+            <span className="jtd-tooltip__content" role="tooltip">{props.tooltip}</span>
+         </span>
+      )
    }
    return renderButton()
 }
@@ -189,16 +165,16 @@ export type ButtonIconProps = {
 
 export function ButtonIcon(props: ButtonIconProps) {
    const { icon, hoveredIcon, size, inversed, variant, className, style, ...others } = props
-   const baseClass = variant ? IconButtonClassname + variant : IconButtonClassname
-   const buttonClass = className ? baseClass + className : baseClass
+   const baseClass = variant ? `jtd-button-icon ${variant}` : "jtd-button-icon"
+   const buttonClass = className ? baseClass + " " + className : baseClass
    const buttonStyle = size ? { ...style, fontSize: size && (IconSize[size] || size) } : style
    if (hoveredIcon) {
-      const [hovered, setHovered] = useState(false)
+      const [hovered, setHovered] = React.useState(false)
       return <div {...others} className={buttonClass} style={buttonStyle} onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
-         <Icon name={hovered ? hoveredIcon : icon} inverse={inversed} />
-      </div>
+          <Icon name={hovered ? hoveredIcon : icon} inverse={inversed} />
+       </div>
    }
    return <div {...others} className={buttonClass} style={buttonStyle}>
-      <Icon name={icon} inverse={inversed} />
-   </div>
+       <Icon name={icon} inverse={inversed} />
+    </div>
 }

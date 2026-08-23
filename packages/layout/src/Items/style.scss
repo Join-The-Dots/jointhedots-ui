@@ -1,138 +1,131 @@
 body {
-   --item-shape-color: rgb(50, 100, 200);
+    --jtd-item-color: rgb(50, 100, 200);
 }
 
-.jtd-item-short {
-   display: flex;
-   flex-direction: row;
-   align-items: center;
-   cursor: pointer;
-   font-size: 14px;
+// Item rows combine a size flavor (short/large — geometry) with a variant
+// flavor (minimal/outlined — chrome). The variant owns hover and selection,
+// never the metrics.
 
-   &.selectable:hover {
-      background-color: rgba(50, 100, 200, 0.2);
-   }
+.jtd-item-short,
+.jtd-item-large {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    padding: 0 6px 0 10px;
+    border-radius: 5px;
 
-   &>.item-icon {
-      display: flex;
-      flex-direction: row;
-      flex: 0;
-      min-width: 32px;
-      align-items: center;
-      justify-content: center;
-      //overflow: hidden;
-      padding: 3px;
-      font-size: 150%;
+    &>.item-selector {
+        min-width: 32px;
+    }
 
-      &>.colored {
-         padding: 3px;
-         border-radius: 50%;
-         background-color: var(--item-shape-color);
+    &>.item-icon {
+        display: flex;
+        flex: 0;
+        min-width: 32px;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        padding: 3px;
+        font-size: 150%;
 
-         &>.colored-inner {
+        &>.colored {
+            padding: 3px;
             border-radius: 50%;
-            overflow: hidden;
-         }
-      }
-   }
+            background-color: var(--jtd-item-color);
 
-   &>.item-infos {
-      flex: 1;
-      padding: 3px;
+            &>.colored-inner {
+                border-radius: 50%;
+                overflow: hidden;
+            }
+        }
+    }
 
-      text-transform: capitalize;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      font-size: 12px;
-   }
-
+    &>.item-infos {
+        flex: 1;
+        min-width: 0;
+        padding: 3px 8px 3px 3px;
+        overflow: hidden;
+        text-transform: capitalize;
+        text-overflow: ellipsis;
+        font-size: 12px;
+    }
 }
 
 .jtd-item-large {
-   display: flex;
-   flex-direction: row;
-   align-items: center;
-   cursor: pointer;
-   position: relative;
-   min-height: 32px;
+    min-height: 32px;
 
-   &:hover {
-      outline: solid thin color-mix(var(--item-shape-color), 0.3);
-   }
+    &>.item-icon {
+        min-width: 40px;
+        padding: 5px;
+        font-size: 200%;
+    }
 
-   &.selected {
-      padding-left: 10px;
-      border-top: solid thin rgb(from var(--item-shape-color) r g b / 0.3);
-      border-right: solid thin rgb(from var(--item-shape-color) r g b / 0.5);
-      border-bottom: solid thin var(--item-shape-color);
+    &>.item-infos {
+        padding: 5px 8px;
+        font-size: 14px;
 
-      &::before {
-         content: "";
-         position: absolute;
-         flex: 0;
-         left: 0;
-         top: 0;
-         bottom: 0;
-         min-width: 5px;
-         background-color: var(--item-shape-color);
-      }
-   }
+        &>:first-child {
+            text-overflow: ellipsis;
+            font-weight: bold;
+            font-size: 12px;
+        }
 
-   &.unselected {
-      padding-left: 10px;
+        &>:nth-child(2) {
+            color: var(--jtd-muted);
+            font-size: 11px;
+            padding-top: 5px;
+        }
+    }
+}
 
-      &:hover {
-         background-color: rgba(50, 100, 200, 0.3);
-      }
+// minimal: no box chrome — quiet hover shade, selection reads as a slim
+// accent bar on a tinted row.
+.jtd-item-short.minimal,
+.jtd-item-large.minimal {
+    &:hover {
+        background-color: var(--jtd-hover);
+    }
 
-      &::before {
-         content: "";
-         position: absolute;
-         flex: 0;
-         left: 0;
-         top: 0;
-         bottom: 0;
-         min-width: 5px;
-         border-color: rgb(168, 168, 168);
-      }
-   }
+    &.selected {
+        background-color: color-mix(in srgb, var(--jtd-item-color), transparent 90%);
 
-   &>.item-selector {
-      min-width: 32px;
-   }
+        &::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            border-radius: 5px 0 0 5px;
+            background-color: var(--jtd-item-color);
+        }
+    }
+}
 
-   &>.item-icon {
-      display: flex;
-      flex-direction: row;
-      flex: 0;
-      min-width: 40px;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      padding: 5px;
-      font-size: 200%;
-   }
+// outlined: boxed chrome — hairline hover outline, selection framed on three
+// sides by the item color.
+.jtd-item-short.outlined,
+.jtd-item-large.outlined {
+    &:hover {
+        outline: solid thin color-mix(in srgb, var(--jtd-item-color), transparent 70%);
+    }
 
-   &>.item-infos {
-      flex: 1;
-      padding: 0 20px 0 3px;
-      padding: 5px;
-      font-size: 14px;
-      overflow: hidden;
+    &.selected {
+        border-top: solid thin color-mix(in srgb, var(--jtd-item-color), transparent 70%);
+        border-right: solid thin color-mix(in srgb, var(--jtd-item-color), transparent 50%);
+        border-bottom: solid thin var(--jtd-item-color);
 
-      &>:first-child {
-         text-transform: capitalize;
-         text-overflow: ellipsis;
-         font-weight: bold;
-         font-size: 12px;
-      }
-
-      &>:nth-child(2) {
-          color: light-dark(#666, #9a9a9a);
-          font-size: 11px;
-          padding-top: 5px;
-       }
-   }
-
-   &>.item-tooling {}
+        &::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+            border-radius: 5px 0 0 5px;
+            background-color: var(--jtd-item-color);
+        }
+    }
 }

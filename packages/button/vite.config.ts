@@ -17,9 +17,7 @@ export default defineConfig({
       rollupOptions: {
          external: (id) =>
             /^react(-dom)?($|\/)/.test(id)
-            || id.startsWith("@jointhedots/")
-            || id.startsWith("@salesforce/")
-            || /\.css$/.test(id),
+            || id.startsWith("@jointhedots/"),
          output: {
             entryFileNames: "[name].js",
             chunkFileNames: "chunks/[name]-[hash].js",

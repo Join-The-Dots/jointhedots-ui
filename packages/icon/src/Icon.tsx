@@ -217,7 +217,7 @@ function getIconParsed(name: string): IconComposed {
       if (typeof name !== "string") {
          if (name === undefined) name = "blank"
          else if (name === null) name = "blank"
-         else if (typeof name === "number") name = `badge:${name}`
+         else if (typeof name === "number") name = `label:${name}`
          else name = `error:typeof ${typeof name}`
       }
       parsed = parseIconStack(name)

@@ -1,6 +1,6 @@
 # @jointhedots/button
 
-Boutons Join.The.Dots, stylés SLDS : `Button` (label, icône, variante,
+Boutons Join.The.Dots : `Button` (label, icône, variante,
 tooltip) et `ButtonIcon` (icône seule, survol alternatif, pastilles colorées).
 
 ## Installation
@@ -9,9 +9,9 @@ tooltip) et `ButtonIcon` (icône seule, survol alternatif, pastilles colorées).
 pnpm add @jointhedots/button
 ```
 
-Peer dependency : `react` ≥ 18.2.0. Le package tire ses assets SLDS
-(`@salesforce-ux/design-system`, `@salesforce/design-system-react`) et dépend
-de `@jointhedots/icon` pour les glyphes.
+Peer dependency : `react` ≥ 18.2.0. Le package dépend de
+`@jointhedots/icon` pour les glyphes et consomme les tokens `--jtd-*` de
+`@jointhedots/theme`.
 
 ## Usage
 
@@ -24,5 +24,5 @@ import "@jointhedots/icon/bootstrap"
 <ButtonIcon icon="bi:star" hoveredIcon="bi:star-fill" size="lg" />
 ```
 
-Les styles du package (gabarit `jtd-button-icon`) sont injectés
+Les styles du package (gabarits `jtd-button*`, `jtd-tooltip`) sont injectés
 automatiquement au chargement du module — aucun stylesheet à gérer.

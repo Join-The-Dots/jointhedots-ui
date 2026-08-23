@@ -3,12 +3,12 @@
 Monorepo des packages UI Join.The.Dots, construits avec Vite library mode et
 publiés sur npm :
 
-- **@jointhedots/theme** — thème global clair/sombre, contexte React, styles
-  de base.
+- **@jointhedots/theme** — thème global clair/sombre, contexte React, tokens
+  de design `--jtd-*` et styles de base.
 - **@jointhedots/icon** — système d'icônes composable : composant `Icon`,
   langage de nommage, registre de collections et exports dédiés
   (bootstrap, font-awesome, flag-icons, salesforce).
-- **@jointhedots/button** — boutons SLDS : `Button` (variants, icônes,
+- **@jointhedots/button** — boutons : `Button` (variants, icônes,
   tooltip) et `ButtonIcon` (pastille d'action, survol alternatif).
 - **@jointhedots/input** — champs pilotés : `InputData` (schéma JSON) et
   `TextInput`.

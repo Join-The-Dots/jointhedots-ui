@@ -1,10 +1,10 @@
 import { IconCollection, IconElement, registerIconCollection } from "../Icon"
 
-export class IconBadgeCollection implements IconCollection {
+export class IconLabelCollection implements IconCollection {
    setup(element: IconElement) {
       const { name } = element
       element.className = `jtd-icons-avatar ${element.className}`
-      element.style["--avatar-bgcolor"] = "#888"
+      element.style["--jtd-avatar-bg"] = "#888"
       element.value = "" + name
    }
    draw(element: IconElement) {
@@ -15,4 +15,4 @@ export class IconBadgeCollection implements IconCollection {
    }
 }
 
-registerIconCollection("badge", new IconBadgeCollection())
+registerIconCollection("label", new IconLabelCollection())

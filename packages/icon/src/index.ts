@@ -1,5 +1,5 @@
 export * from "./Icon"
-export * from "./collections/badge"
+export * from "./collections/label"
 export * from "./collections/avatar"
 export * from "./collections/font"
 export * from "./collections/svg"

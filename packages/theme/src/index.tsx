@@ -1,5 +1,4 @@
 import React from "react";
-import '@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.css'
 import { injectStyles } from "./inject-styles"
 import styles from "./generated/styles"
 

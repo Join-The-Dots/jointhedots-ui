@@ -1,7 +1,8 @@
 # @jointhedots/theme
 
 Thème global des applications Join.The.Dots : éclairage clair/sombre, thème
-contrasté, contexte React et styles de base (tokens CSS + SLDS).
+contrasté, contexte React et styles de base (reset minimal + tokens de design
+`--jtd-*`).
 
 ## Installation
 

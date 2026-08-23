@@ -42,10 +42,13 @@ export type ToolingProps = LabelProps & {
    optional?: boolean
 }
 
+export type ItemVariant = "minimal" | "outlined"
+
 export type ItemProps<T = any> = LabelProps<T> & {
    tags?: TagProps[]
    selected?: LabelSelected
    onSelect?: (item: ItemProps) => void
+   variant?: ItemVariant
 }
 
 export type DisplayProps = React.ReactNode | ((props: LabelProps) => React.ReactElement)
@@ -67,7 +70,7 @@ function DrawLabelIcon(label: LabelProps): React.ReactNode {
    if (decorations) {
       for (const deco of decorations) {
          if (deco.type === "shape") {
-            content = <div className="colored" style={{ "--item-shape-color": deco.color } as any}>
+            content = <div className="colored" style={{ "--jtd-item-color": deco.color } as any}>
                <div className="colored-inner">
                   {content}
                </div>
@@ -189,11 +192,15 @@ export function ItemIcon(item: LabelProps) {
    </div >
 }
 
+function ItemVariantClass(item: ItemProps): string {
+   return item.variant || "minimal"
+}
+
 export function ItemRowShort(item: ItemProps) {
    let { name, summary, selected, onSelect, onActivate } = item
    if (!onActivate) onActivate = onSelect
    return <li
-      className={onSelect ? "jtd-item-short selectable" : "jtd-item-short"}
+      className={["jtd-item-short", ItemVariantClass(item)].join(" ")}
       title={GetNodeText(summary)}
       onClick={onActivate && ((e) => {
          e.stopPropagation()
@@ -240,12 +247,12 @@ export function ItemRowRich(item: ItemProps) {
    }
    const select = onSelect && ((e) => { e.stopPropagation(); onSelect(item) })
    const activate = onActivate ? ((e) => { e.stopPropagation(); onActivate(item, createFloatingDock(e)) }) : select
+   const className = ["jtd-item-large", ItemVariantClass(item)]
+   if (selected & LabelSelected.Enabled) {
+      className.push("selected")
+   }
    return <li
-      className={(selected & LabelSelected.Enabled)
-         ? "jtd-item-large selected"
-         : ((onSelect || (selected & LabelSelected.Disabled))
-            ? "jtd-item-large unselected" : "jtd-item-large")
-      }
+      className={className.join(" ")}
       title={GetNodeText(summary)}
       onClick={onClick || activate}
       onMouseEnter={onMouseEnter}

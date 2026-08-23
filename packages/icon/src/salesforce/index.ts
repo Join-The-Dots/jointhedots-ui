@@ -1,5 +1,7 @@
 import { IconSVGInnerCollection } from "../collections/svg-inner"
 import { registerIconCollection } from "../Icon"
+// The only Salesforce stylesheet kept: it colors the sprite glyphs (.slds-icon-standard-* etc.)
+import "@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.css"
 import utility_symbols_svg from "@salesforce-ux/design-system/assets/icons/utility-sprite/svg/symbols.svg"
 import standard_symbols_svg from "@salesforce-ux/design-system/assets/icons/standard-sprite/svg/symbols.svg"
 import custom_symbols_svg from "@salesforce-ux/design-system/assets/icons/custom-sprite/svg/symbols.svg"

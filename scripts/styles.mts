@@ -8,8 +8,7 @@ const root = Path.resolve(fileURLToPath(new URL("..", import.meta.url)))
 const packages = [
    {
       dir: "packages/theme",
-      // Same cascade order as the former index side-effect imports
-      styles: ["src/theme-dark.scss", "src/theme-light.scss", "src/theme.scss"],
+      styles: ["src/theme.scss"],
    },
    {
       dir: "packages/icon",

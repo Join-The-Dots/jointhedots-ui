@@ -1,37 +1,40 @@
 # SKILL — Usage avancé des boutons @jointhedots/button
 
-Ce document détaille le contrat des deux composants : variants SLDS, icônes,
-tooltip, focus programmatique et accessibilité.
+Ce document détaille le contrat des deux composants : variants, icônes,
+tooltip, focus programmatique et accessibilité. Les styles sont propres au
+package (gabarits `jtd-*`, tokens `--jtd-*` de @jointhedots/theme) — aucune
+feuille tierce n'est requise.
 
 ## 1. Button — variants et classes
 
-`Button` est un bouton SLDS complet. La classe est calculée à partir de deux
-axes : `variant` (nature du bouton) et `iconVariant` (présentation d'un
-bouton-icône).
+`Button` rend un `<button>` habillé par la classe de base `jtd-button` plus un
+modificateur calculé à partir de deux axes : `variant` (nature du bouton) et
+`iconVariant` (présentation d'un bouton-icône).
 
-| `variant` | Rendu |
-| --- | --- |
-| `base` | nu, sans classe de variante |
-| `neutral` (défaut) | `slds-button_neutral` |
-| `brand` | bouton principal bleu |
-| `outline-brand` | contour bleu |
-| `destructive` / `text-destructive` | action dangereuse pleine / texte |
-| `success` | action positive |
-| `link` | `slds-button_reset` + `slds-text-link` (lien) |
-| `icon` | bouton-icône (voir `iconVariant`) |
+| `variant` | Modificateur | Rendu |
+| --- | --- | --- |
+| `base` | aucun | nu, sans modificateur |
+| `neutral` (défaut) | `jtd-button--neutral` | surface + filet |
+| `brand` | `jtd-button--brand` | accent plein |
+| `outline-brand` | `jtd-button--outline-brand` | contour accent |
+| `destructive` / `text-destructive` | `jtd-button--destructive` / `--text-destructive` | action dangereuse pleine / texte |
+| `success` | `jtd-button--success` | action positive |
+| `link` | `jtd-button--link` | lien texte |
+| `icon` | `jtd-button--icon` | bouton-icône (voir `iconVariant`) |
 
-| `iconVariant` | Rendu |
-| --- | --- |
-| `bare` (défaut des icon) | icône nue |
-| `container` | pastille de fond |
-| `border` / `border-filled` | contour / contour rempli |
-| `brand` / `more` | teinte marque / chevron de débordement |
-| `global-header` | bouton d'entête globale (rendu container) |
+| `iconVariant` | Modificateur | Rendu |
+| --- | --- | --- |
+| `bare` (défaut des icon) | aucun | icône nue, halo au survol |
+| `container` | `jtd-button--icon-container` | pastille de fond |
+| `border` / `border-filled` | `--icon-border` / `--icon-border-filled` | contour / contour rempli |
+| `brand` | `jtd-button--icon-brand` | pastille accent |
+| `more` | `jtd-button--icon-more` | chevron de débordement (rendu bare) |
+| `global-header` | rendu `container` | bouton d'entête globale |
 
-`inverse` inverse le contraste (fond sombre) : `slds-button_inverse` pour un
-bouton plein, `slds-button_icon-inverse` / `icon-border-inverse` pour un
-bouton-icône. L'icône interne reçoit aussi `inverse` et rend avec le thème
-contrasté (voir @jointhedots/theme).
+`inverse` inverse le contraste (fond sombre) : `jtd-button--inverse` pour un
+bouton plein, `--icon-inverse` / `--icon-border-inverse` pour un bouton-icône.
+L'icône interne reçoit aussi `inverse` et rend avec le thème contrasté (voir
+@jointhedots/theme).
 
 ## 2. Button — icônes
 
@@ -39,7 +42,8 @@ contrasté (voir @jointhedots/theme).
   `"utility:settings"`…). Toute la syntaxe de nommage s'applique.
 - `iconPosition` : `"left"` (défaut) ou `"right"`.
 - `iconSize` : `xs`/`sm`/`md`/`lg` — mappé sur IconSize ; ignoré quand un
-  `iconVariant` à conteneur est actif (le conteneur porte la taille).
+  `iconVariant` à conteneur est actif (le conteneur porte la taille :
+  `--icon-xs/-sm/-lg`, `md` par défaut).
 
 ```tsx
 <Button label="Delete" icon="bi:trash" iconPosition="right" variant="destructive" />
@@ -47,25 +51,32 @@ contrasté (voir @jointhedots/theme).
 
 ## 3. Button — tooltip
 
-Quand `tooltip` est fourni (React node), le bouton est enveloppé dans le
-`Tooltip` SLDS (`@salesforce/design-system-react`). Le hover affiche le
-contenu ; `tabIndex` et le focus clavier suivent.
+Quand `tooltip` est fourni (React node), le bouton est enveloppé dans un
+`span.jtd-tooltip` et la bulle `jtd-tooltip__content` s'affiche au survol ou
+au focus clavier (délai ~350 ms, contenu riche autorisé). La bulle suit la
+même grammaire visuelle que les popovers du layout : surface, filet hairline,
+flèche dont le contour prolonge celui de la bulle.
 
 ```tsx
 <Button icon="bi:gear" variant="icon" tooltip={<span>Settings</span>} />
 ```
 
+Pour une simple infobulle native, préférer `title`.
+
 ## 4. Button — focus et références
 
 - `buttonRef: (node | null) => void` reçoit l'élément `<button>` monté.
 - `requestFocus` + `onRequestFocus(node)` demandent le focus programmatique
-  au montage (pattern SLDS).
+  au montage.
 - Événements : `onClick(event, data)` (le second argument est réservé),
   `onBlur`, `onFocus`, `onKeyDown/Press/Up`, `onMouse*`.
+- `:focus-visible` rend un anneau `--jtd-accent` (outline + offset).
 
 ## 5. Button — accessibilité et passthrough
 
-- `assistiveText` : texte lecteur d'écran quand le bouton est icône seule.
+- `assistiveText` : libellé lecteur d'écran — rendu en `aria-label` ; pour un
+  bouton-icône sans `assistiveText`, un `label` chaîne est promu en
+  `aria-label`.
 - `getHtmlProps` transmet automatiquement tout prop `aria-*`, `data-*` et les
   props de formulaire (`form`, `formAction`, `formMethod`…) à l'élément natif.
 - `type` : `button` (défaut), `submit`, `reset`.
@@ -82,7 +93,7 @@ idéal pour actions internes d'interface (tooling d'items, barres d'outils).
 | --- | --- |
 | `icon` / `hoveredIcon` | icône affichée ; `hoveredIcon` bascule au survol (état vs repos : favori, coche…) |
 | `size` | alias IconSize (`xs`…`lg`) ou valeur brute (`"2em"`) — appliquée en `font-size` |
-| `variant` | `primary`, `secondary`, `watermark` — classe `jtd-button-icon-<variant>` |
+| `variant` | `primary`, `secondary`, `watermark` — classe additionnelle du même nom |
 | `inversed` | rend l'icône avec le thème contrasté |
 | `title`, `className`, `style`, `onClick` | transmis au conteneur |
 
@@ -92,10 +103,7 @@ idéal pour actions internes d'interface (tooling d'items, barres d'outils).
 
 Le gabarit `jtd-button-icon` (styles injectés au chargement, id
 `jtd-button-styles`) rend la pastille circulaire, son état de survol et ses
-variantes. Tous les états sont bi-thème via `light-dark()` : le rendu suit
-le `color-scheme` posé par @jointhedots/theme sans configuration. Le CSS
-SLDS est importé littéralement par le package : le bundler de l'application
-l'émet avec ses assets.
+variantes — entièrement piloté par les tokens `--jtd-*`.
 
 ## Aide-mémoire
 
@@ -103,9 +111,9 @@ l'émet avec ses assets.
 variant: brand | neutral | destructive | outline-brand | success | link | icon | base | text-destructive
 iconVariant: bare | container | border | border-filled | brand | more | global-header
 inverse: true            // fond opposé (bouton + icône)
-tooltip: <node>          // Tooltip SLDS au hover
+tooltip: <node>          // bulle CSS au hover/focus (~350 ms)
 buttonRef / requestFocus // contrôle du focus
-assistiveText            // a11y icône seule
+assistiveText            // a11y icône seule (aria-label)
 aria-* / data-* / form*  // passthrough automatique
 ButtonIcon: hoveredIcon  // bascule visuelle au survol
 ```

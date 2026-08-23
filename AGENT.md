@@ -64,12 +64,13 @@ Les packages ne contiennent **aucun `import "./x.scss"`** :
 Bénéfices : le consumer n'a aucun stylesheet à importer ; l'ordre de la
 cascade est garanti par le build ; le package reste un module JS pur.
 
-Les styles des **libs tierces** (SLDS, bootstrap-icons, sprites SVG)
-suivent la règle opposée : ils restent des imports littéraux dans le code
-(`import "@salesforce-ux/…/…css"`), marqués **externals** au build. C'est le
-bundler de l'application qui les résout depuis son node_modules et émet les
-assets — pas le package. Règle : *styles du package = injectés ; styles
-d'une dépendance = import littéral externe*.
+Les styles des **libs tierces** suivent la règle opposée : ils restent des
+imports littéraux dans le code (ex. la feuille SLDS, importée par le seul
+export `salesforce` d'icon car elle porte les couleurs des sprites ; polices
+bootstrap-icons / font-awesome / flag-icons), marqués **externals** au build.
+C'est le bundler de l'application qui les résout depuis son node_modules et
+émet les assets — pas le package. Règle : *styles du package = injectés ;
+styles d'une dépendance = import littéral externe*.
 
 ## 5. Convention vite.config (library mode)
 

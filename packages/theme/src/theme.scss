@@ -1,35 +1,43 @@
+// Base layer of every jtd component: minimal reset + the full set of design tokens.
+// Dark is the default palette; `body.theme-light` overrides it.
+
+*,
+*::before,
+*::after {
+   box-sizing: border-box;
+}
 
 body {
-  color-scheme: light;
-  --app-separator: #555;
-  
-  --app-background: var(--vscode-panel-background);
-  --app-foreground: var(--vscode-panel-foreground);
+   margin: 0;
+   color-scheme: dark;
+   font-family: var(--jtd-font-family);
 
-  --app-shadow-background: #0005;
-  --app-shadow-foreground: var(--app-foreground);
+   --jtd-font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+   --jtd-background: #1e1e1e;
+   --jtd-foreground: #d4d4d4;
+   --jtd-surface: #252526;
+   --jtd-surface-foreground: #d4d4d4;
+   --jtd-border: #454545;
+   --jtd-muted: #9a9a9a;
+   --jtd-hover: #333333;
+   --jtd-accent: #0e639c;
+   --jtd-on-accent: #ffffff;
+   --jtd-danger: #f14c4c;
+   --jtd-success: #3fb950;
+}
 
-  --app-button-prim-border: var(--vscode-button-hoverBackground);
-  --app-button-prim-background: var(--vscode-button-background);
-  --app-button-prim-foreground: var(--vscode-button-foreground);
-  --app-button-prim-hoverBackground: var(--vscode-button-hoverBackground);
+body.theme-light {
+   color-scheme: light;
 
-  --app-button-sec-border: var(--vscode-checkbox-border);
-  --app-button-sec-background: var(--vscode-checkbox-background);
-  --app-button-sec-foreground: var(--vscode-checkbox-foreground);
-  --app-button-sec-hoverBackground: var(--vscode-checkbox-border);
-  
-  --app-value-font-size: var(--vscode-editor-font-size);
-  --app-value-font-style: var(--vscode-editor-font-weight);
-  --app-value-font-family: var(--vscode-editor-font-family);
-  --app-value-background: var(--vscode-editor-background); 
-  --app-value-forecolor: var(--vscode-editor-foreground);
-
-  --app-highlight-background: var(--vscode-editor-selectionHighlightBackground);
-  --app-highlight-foreground: var(--vscode-editor-foreground);
-
-  --app-indicator-active: #ad7c00;
-
-  --app-heading-background: var(--vscode-sideBar-background);
-  --app-heading-foreground: var(--vscode-editor-foreground);
+   --jtd-background: #ffffff;
+   --jtd-foreground: #1b1b1b;
+   --jtd-surface: #ffffff;
+   --jtd-surface-foreground: #1b1b1b;
+   --jtd-border: #c9c9c9;
+   --jtd-muted: #666666;
+   --jtd-hover: #e9e9e9;
+   --jtd-accent: #007acc;
+   --jtd-on-accent: #ffffff;
+   --jtd-danger: #d13438;
+   --jtd-success: #1a7f37;
 }

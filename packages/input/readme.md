@@ -28,5 +28,5 @@ import { InputData, TextInput } from "@jointhedots/input"
 <TextInput label="Name" value={name} onChange={setName} />
 ```
 
-Les styles du package (gabarits `jtd-input_*`) sont injectés automatiquement
-au chargement du module — aucun stylesheet à gérer.
+Les styles du package (gabarits `jtd-field*`, `jtd-input`) sont injectés
+automatiquement au chargement du module — aucun stylesheet à gérer.

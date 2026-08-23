@@ -21,7 +21,7 @@ où chaque `élément` vaut :
 | --- | --- | --- |
 | `namespace` | collection à interroger ; si absent, le nom nu désigne lui-même une collection intégrée (`blank`, `avatar:jean` ↔ `jean` via `getIconName`) | `bi`, `standard`, `avatar` |
 | `nom` | glyph dans la collection | `house-door-fill`, `account` |
-| `\|` | empile plusieurs éléments en calques absolus superposés (même boîte 1em) | `bi:bell\|badge:3` |
+| `\|` | empile plusieurs éléments en calques absolus superposés (même boîte 1em) | `bi:bell\|label:3` |
 | `[options]` | drapeaux et variables CSS, sur un élément ou sur toute la base | `[primary]`, `[badge,error]` |
 
 ### 1.1 Drapeaux
@@ -31,7 +31,7 @@ Disponibles dans toute option `[…]` :
 | Drapeau | Effet |
 | --- | --- |
 | `error` / `warn` / `info` / `primary` / `secondary` / `success` | force `color` et `--color` (rouge, or, gris, #36f, #666, #6d0) |
-| `badge` | réduit l'élément (0.6em) et le colle au coin haut-droit — usage typique : pastille de compteur ou d'état sur un glyph principal |
+| `badge` | réduit l'élément (0.6em) et le colle au coin haut-droit — usage typique : pastille de compteur ou d'état sur un glyph principal (souvent combiné à l'élément `label:`) |
 | `RT` / `RB` / `LT` / `LB` | comme `badge` mais haut-droit / bas-droit / haut-gauche / bas-gauche |
 
 Un drapeau inconnu est signalé en console (`invalid flag`) et ignoré.
@@ -59,9 +59,9 @@ variables y sont pertinents.
 | `?` | glyph d'erreur hachuré rouge — namespace inconnu ou nom invalide |
 | `data` | image par URL relative (`data:images/foo.png` → `url(images/foo.png)`) |
 | `avatar` | pastille circulaire colorée déterministe (hash du nom → teinte HSL), initiales (2 premières lettres significatives) |
-| `badge` | pastille grise affichant la valeur brute (`badge:3`, `badge:new`) |
+| `label` | pastille grise affichant la valeur brute (`label:3`, `label:new`) |
 
-Un `name` numérique est automatiquement converti en `badge:<valeur>` ; une
+Un `name` numérique est automatiquement converti en `label:<valeur>` ; une
 valeur non-chaîne invalide devient `error:typeof <t>`.
 
 ### 2.2 Exports de collections dédiées
@@ -77,8 +77,10 @@ Chaque export enregistre son/ses namespaces et charge ses assets :
 
 L'export salesforce applique les classes SLDS attendues
 (`slds-icon slds-icon-standard-…`, etc.) et convertit `_` en `-` dans les noms
-(`salesforce_page` → `slds-icon-utility-salesforce-page`). Pour un rendu
-coloré correct, charger le CSS SLDS (fourni par `@jointhedots/theme`).
+(`salesforce_page` → `slds-icon-utility-salesforce-page`). L'export importe
+lui-même la feuille SLDS — c'est le seul point du repository où elle est
+chargée — car elle porte les couleurs des sprites ; l'application n'a rien à
+configurer.
 
 Import pour effet de bord, une seule fois au démarrage de l'application :
 
@@ -151,11 +153,11 @@ Points de contrat :
 ```
 bi:house-door-fill                          glyph simple
 bi:bell[badge]                              pastille coin haut-droit
-bi:bell|badge:3                             compteur superposé
+bi:bell|label:3                             compteur superposé
 [error]bi:exclamation-triangle-fill         couleur forcée sur la base
 bi:zap[primary]|utility:einstein[badge,info] empilement multi-collections
 avatar:Jean Dupont                          pastille initiales déterministe
 flag:fr                                     drapeau (export flag-icons)
-badge:new                                   pastille texte
+label:new                                   pastille texte
 standard:account                            icône SLDS standard
 ```

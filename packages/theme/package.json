@@ -3,7 +3,7 @@
    "version": "0.1.1",
    "type": "module",
    "license": "MIT",
-   "description": "Join.The.Dots theme — global light/dark theme, React context and base styles",
+   "description": "Join.The.Dots theme — global light/dark theme, React context, design tokens and base styles",
    "sideEffects": true,
    "exports": {
       ".": {
@@ -14,9 +14,6 @@
    "files": [
       "dist"
    ],
-   "dependencies": {
-      "@salesforce-ux/design-system": "^2.29.0"
-   },
    "peerDependencies": {
       "react": ">=18.2.0"
    },

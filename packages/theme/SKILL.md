@@ -1,7 +1,7 @@
 # SKILL — Usage avancé du thème @jointhedots/theme
 
 Ce document détaille le contrat du package : modèle d'éclairage, thème global,
-contexte React, persistance et injection de styles.
+contexte React, persistance, tokens de design et injection de styles.
 
 ## 1. Le modèle d'éclairage
 
@@ -29,8 +29,8 @@ du module, `loadDefaultTheme()` le détermine dans cet ordre :
 
 La pose du thème global a des effets de bord DOM : classe `theme-dark` ou
 `theme-light` sur `<body>`, attributs `data-theme` / `data-color-mode` sur
-`<html>`. Toute la cascade de tokens CSS repose sur ces classes — les feuilles
-`.theme-dark { … }` / `.theme-light { … }` redéfinissent les variables.
+`<html>`. Toute la cascade de tokens CSS repose sur la classe posée sur
+`<body>`.
 
 Pour basculer le thème d'une application :
 
@@ -62,42 +62,36 @@ utile pour un panneau clair posé sur une application sombre :
 
 Le prop `theme` optionnel retombe sur le thème global quand il est absent.
 
-## 4. La cascade de styles
+## 4. Les tokens de design
 
 Le package injecte au chargement (balise `<style id="jtd-theme-styles">`,
-idempotent, sans effet hors navigateur) la cascade compilée :
+idempotent, sans effet hors navigateur) la cascade compilée de
+`src/theme.scss` : un reset minimal (`box-sizing`, `margin` de `body`) et
+l'ensemble des tokens. Le sombre est la palette par défaut sur `body` ;
+`body.theme-light` la surcharge.
 
-1. `theme-dark.scss` — tokens `.theme-dark` (palette VS Code sombre) ;
-2. `theme-light.scss` — tokens `.theme-light` (palette claire) ;
-3. `theme.scss` — mapping `body { --app-*: var(--vscode-*) }`.
+| Token | Rôle |
+| --- | --- |
+| `--jtd-background` / `--jtd-foreground` | fond et texte de la page |
+| `--jtd-surface` / `--jtd-surface-foreground` | surfaces élevées : popovers, menus, champs, panneaux |
+| `--jtd-border` | filet hairline : bordures, séparateurs |
+| `--jtd-muted` | texte secondaire / désactivé |
+| `--jtd-hover` | teinte de survol |
+| `--jtd-accent` / `--jtd-on-accent` | accent interactif (boutons primaires, focus, sélection) et texte posé dessus |
+| `--jtd-danger` / `--jtd-success` | accents sémantiques destructif / positif |
+| `--jtd-font-family` | police de l'interface |
 
-Le package pose aussi `color-scheme` (`light` par défaut, `dark` sur
-`body.theme-dark`) : les contrôles natifs suivent le thème, et la fonction
-CSS `light-dark(a, b)` devient disponible pour tous les gabarits des
-packages UI — c'est le canal standard pour du bi-thème sans JS. Enfin, SLDS
-étant light par nature, la cascade dark remappe les composants SLDS livrés
-(boutons neutres, champs, labels) sur les tokens `--app-*`.
+Règles d'usage pour les composants :
 
-Les composants consomment exclusivement les variables `--app-*`
-(`--app-background`, `--app-foreground`, `--app-button-prim-*`,
-`--app-value-*`, `--app-highlight-*`, `--app-separator`…). Redéfinir les
-`--app-*` sur un conteneur suffit à re-thémer un sous-arbre.
+- consommer exclusivement ces tokens — jamais de couleur littérale ni de
+  `light-dark()` dans un gabarit de package ;
+- dériver les états (hover d'un bouton accenté…) par `color-mix()` sur un
+  token plutôt qu'en ajoutant un token ;
+- `color-scheme` (`dark` par défaut, `light` sur `body.theme-light`) suit le
+  thème : les contrôles natifs (scrollbars, checkboxes) s'alignent seuls ;
+- re-thémer un sous-arbre : redéfinir les `--jtd-*` sur un conteneur.
 
-En complément, la feuille SLDS
-(`@salesforce-ux/design-system/…/salesforce-lightning-design-system.css`)
-est importée littéralement : le bundler de l'application la résout et
-l'émet avec les assets de police — le rendu SLDS (boutons, inputs, modals)
-est correct sans configuration.
-
-## 5. Palettes supplémentaires
-
-Deux variantes existent à l'état de sources : `theme-dark-solarized.scss` et
-`theme-light-quiet.scss` (classes `.theme-dark-solarized`, `.theme-light-quiet`).
-Elles ne sont pas dans la cascade par défaut. Pour les activer, les ajouter à
-la liste `styles` du package dans `scripts/styles.mts` — la cascade compilée
-les embarquera et il suffira de poser la classe correspondante sur `<body>`.
-
-## 6. Contrat de consommation pour un composant
+## 5. Contrat de consommation pour un composant
 
 Un composant sensible à l'éclairage lit `ThemeContext` et décide selon
 `theme.lighting` ; il reçoit au dessin le thème courant, ou son contraste si
@@ -115,5 +109,5 @@ theme.contrastTheme                          // fond opposé (prop inverse)
 React.useContext(ThemeContext)               // lecture dans un composant
 localStorage["application#theme"]            // persistance du choix
 body.theme-dark / body.theme-light           // cascade de tokens
---app-*                                      // variables de consommation
+--jtd-*                                      // variables de consommation
 ```

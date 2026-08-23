@@ -5,7 +5,7 @@ export class IconAvatarCollection implements IconCollection {
       const { name } = element
       const tag = getTag(name)
       element.className = `jtd-icons-avatar ${element.className}`
-      element.style["--avatar-bgcolor"] = stringToRGB(name)
+      element.style["--jtd-avatar-bg"] = stringToRGB(name)
       element.tag = tag
    }
    draw(element: IconElement) {

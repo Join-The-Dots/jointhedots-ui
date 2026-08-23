@@ -15,9 +15,7 @@ export default defineConfig({
          formats: ["es"],
       },
       rollupOptions: {
-         // Asset stylesheets of dependencies stay as literal imports,
-         // resolved and loaded by the consuming application bundler.
-         external: (id) => /^react(-dom)?($|\/)/.test(id) || /\.css$/.test(id),
+         external: (id) => /^react(-dom)?($|\/)/.test(id),
          output: {
             entryFileNames: "[name].js",
             chunkFileNames: "chunks/[name]-[hash].js",

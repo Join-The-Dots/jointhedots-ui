@@ -1,26 +1,107 @@
+// Field family shared by InputData and TextInput.
 
-.jtd-input_wrapper {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin-bottom: 10px;
+.jtd-field {
+   display: flex;
+   flex-direction: column;
+   gap: 4px;
+   min-width: 0;
 }
-.jtd-input_label {
-  display: flex;
-  flex: 1;
-  color: light-dark(#555, #aaa);
+
+.jtd-field-label {
+   color: var(--jtd-muted);
+   font-size: 12px;
 }
-.jtd-input_input {
-  display: flex;
-  flex: 2;
-  border: 1px solid light-dark(#999, #555);
-  background-color: light-dark(#fff, var(--app-value-background, #222));
-  color: light-dark(#181818, var(--app-value-forecolor, #eee));
-  padding-top: 7px;
-  padding-bottom: 7px;
-  padding-left: 10px;
-  padding-right: 10px;
-  font-size: 16px;
-  border-radius: 5px;
-  min-width: 0;
+
+// The bordered box is the composite (icon + widget + actions); the widgets
+// inside carry no chrome. Sole source of truth for the field height.
+.jtd-field-control {
+   display: flex;
+   align-items: center;
+   gap: 6px;
+   min-height: 32px;
+   padding: 3px 10px;
+   background-color: var(--jtd-surface);
+   border: 1px solid var(--jtd-border);
+   border-radius: 5px;
+   transition: border-color 120ms ease;
+
+   &:focus-within {
+      border-color: var(--jtd-accent);
+   }
+}
+
+.jtd-field-icon {
+   display: flex;
+   flex: none;
+   color: var(--jtd-muted);
+}
+
+.jtd-input {
+   flex: 1;
+   min-width: 0;
+   align-self: stretch;
+   padding: 0;
+   border: none;
+   background: none;
+   outline: none;
+   font: inherit;
+   color: var(--jtd-foreground);
+
+   &::placeholder {
+      color: var(--jtd-muted);
+   }
+
+   &:disabled {
+      opacity: 0.45;
+   }
+}
+
+textarea.jtd-input {
+   align-self: auto;
+   min-height: 60px;
+   padding: 5px 0;
+   resize: vertical;
+}
+
+.jtd-checkbox {
+   width: 16px;
+   height: 16px;
+   margin: 8px 0;
+   accent-color: var(--jtd-accent);
+   cursor: pointer;
+
+   &:focus-visible {
+      outline: 2px solid var(--jtd-accent);
+      outline-offset: 2px;
+   }
+}
+
+.jtd-field-tooling {
+   display: flex;
+   flex: none;
+}
+
+.jtd-field-action {
+   display: inline-flex;
+   align-items: center;
+   justify-content: center;
+   width: 24px;
+   height: 24px;
+   padding: 0;
+   border: none;
+   background: none;
+   color: var(--jtd-muted);
+   border-radius: 4px;
+   cursor: pointer;
+   transition: background-color 120ms ease, color 120ms ease;
+
+   &:hover {
+      color: var(--jtd-foreground);
+      background-color: var(--jtd-hover);
+   }
+
+   &:focus-visible {
+      outline: 2px solid var(--jtd-accent);
+      outline-offset: 1px;
+   }
 }

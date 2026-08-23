@@ -47,7 +47,7 @@ Invariants du langage :
 - un namespace inconnu ou un nom invalide produit le glyph d'erreur (collection
   `?`) — jamais d'exception ;
 - une valeur `undefined`/`null` rend l'icône vide (`blank`), une valeur numérique
-  est convertie en badge ;
+  est convertie en label ;
 - une même chaîne de nom est parsée une seule fois puis mémoïsée.
 
 ## Le registre de collections
@@ -62,7 +62,7 @@ Deux familles d'entrées :
   collections génériques (police CSS, sprites SVG, images par URL) et garantit
   l'enregistrement des collections intégrées : `blank`, `?` (erreur), `data`
   (URL relative), `avatar` (pastille déterministe : teinte issue d'un hash du
-  nom, initiales), `badge` (pastille à valeur brute) ;
+  nom, initiales), `label` (pastille à valeur brute) ;
 - les **exports de collections dédiées** — un export par famille d'assets
   (bootstrap, font-awesome, flag-icons, salesforce) — s'importent pour leur
   effet de bord : chargement des assets (police, sprite) et enregistrement du

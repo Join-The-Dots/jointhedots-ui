@@ -15,17 +15,19 @@ export function TextInput({
   type?: HTMLInputTypeAttribute
 }): React.JSX.Element {
   return (
-    <div className="jtd-input_wrapper">
-      <label className="jtd-input_label">{label}</label>
-      <input
-        type={type}
-        className="jtd-input_input"
-        placeholder={placeholder}
-        value={value}
-        onChange={(e) => {
-          onChange(e.target.value)
-        }}
-      />
+    <div className="jtd-field">
+      <span className="jtd-field-label">{label}</span>
+      <div className="jtd-field-control">
+        <input
+          type={type}
+          className="jtd-input"
+          placeholder={placeholder}
+          value={value}
+          onChange={(e) => {
+            onChange(e.target.value)
+          }}
+        />
+      </div>
     </div>
   )
 }

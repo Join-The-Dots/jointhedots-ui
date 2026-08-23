@@ -33,7 +33,7 @@ l'application au moment où elle importe l'export dédié.
 
 | Import | Effet |
 | --- | --- |
-| `@jointhedots/icon` | Composant `Icon`, types (`IconProps`, `IconSize`, `IconCollection`…), classes de collection génériques, collections intégrées (`avatar`, `badge`, `data`, `blank`, `?`) |
+| `@jointhedots/icon` | Composant `Icon`, types (`IconProps`, `IconSize`, `IconCollection`…), classes de collection génériques, collections intégrées (`avatar`, `label`, `data`, `blank`, `?`) |
 | `@jointhedots/icon/bootstrap` | Enregistre la collection `bi` (bootstrap-icons, CSS inclus) |
 | `@jointhedots/icon/font-awesome` | Enregistre la collection `fa` (Font Awesome 4, CSS inclus) |
 | `@jointhedots/icon/flag-icons` | Enregistre la collection `flag` (flag-icons, CSS inclus) |

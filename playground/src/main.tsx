@@ -11,6 +11,8 @@ import { Button, ButtonIcon } from "@jointhedots/button"
 import { InputData, TextInput } from "@jointhedots/input"
 import {
    ItemRowRich,
+   ItemRowShort,
+   LabelSelected,
    Menu,
    OverflowStack,
    Popup,
@@ -45,12 +47,12 @@ function App() {
       <Section title="Icons — one string, composed glyphs" hint='name="bi:zap[primary]|utility:einstein[badge,info]"'>
          {[
             "bi:house-door-fill[primary]",
-            "bi:bell|badge:3",
-            "bi:envelope|badge:new",
+            "bi:bell|label:3[badge]",
+            "bi:envelope|label:new[badge]",
             "bi:exclamation-triangle-fill[badge,error]",
             "flag:fr", "flag:jp", "avatar:Jean Dupont", "avatar:marie-c",
             "standard:account", "utility:salesforce_page", "fa:github",
-            "bi:zap[primary]|utility:einstein[badge,info]",
+            "bi:zap|utility:einstein[badge,info]",
          ].map(name => (
             <Popup key={name} className="tile-wrap" content={<span className="tile-hint">{name}</span>}>
                <div className="tile" title={name} onClick={() => setLastAction(`icon "${name}"`)}>
@@ -60,7 +62,7 @@ function App() {
          ))}
       </Section>
 
-      <Section title="Buttons — SLDS variants, tooltips, hover swap" hint="variant / tooltip / hoveredIcon / inverse icons">
+      <Section title="Buttons — variants, tooltips, hover swap" hint="variant / tooltip / hoveredIcon / inverse icons">
          <Stack gap={8}>
             <Button label="Deploy" icon="bi:rocket-takeoff" variant="brand" onClick={() => setLastAction("deployed!")} />
             <Button label="Delete" icon="bi:trash" iconPosition="right" variant="destructive" />
@@ -72,9 +74,14 @@ function App() {
          </Stack>
       </Section>
 
-      <Section title="Inputs — driven by a JSON schema" hint="the schema decides the widget, onChange coerces the type">
-         <DemoForms onAction={setLastAction} />
-      </Section>
+       <Section title="Inputs — driven by a JSON schema" hint="the schema decides the widget, onChange coerces the type">
+          <DemoForms onAction={setLastAction} />
+       </Section>
+
+       <Section title="Items — minimal | outlined variants" hint="variant prop — same rows, quiet chrome vs boxed chrome">
+          <DemoItems onAction={setLastAction} />
+       </Section>
+
 
       <Section title="Layout — panels, menus, dialogs from anywhere" hint="await openDialog(…) / openContextualMenu(…) / hover previews">
          <DemoLayout onAction={setLastAction} />
@@ -104,6 +111,43 @@ function DemoForms({ onAction }: { onAction: (msg: string) => void }) {
    </Stack>
 }
 
+function DemoItems({ onAction }: { onAction: (msg: string) => void }) {
+   const [picked, setPicked] = useState<string>(null)
+   const rows = [
+      {
+         name: "Production org",
+         icon: "standard:account",
+         summary: "EU45 — hover me for live metrics",
+         content: <div className="popup-hint"><Icon name="bi:activity" /> 1 284 093 API calls today</div>,
+      },
+      { name: "Sandbox", icon: "bi:box[secondary]", summary: "refreshed 2 days ago" },
+      { name: "Scratch org", icon: "bi:lightning-charge-fill[success]", summary: "expires in 21 days" },
+   ]
+   return <div className="items-demo">
+      {(["minimal", "outlined"] as const).map(variant => (
+         <ul className="items" key={variant}>
+            {rows.map(row => (
+               <ItemRowRich
+                  key={row.name}
+                  {...row}
+                  variant={variant}
+                  selected={picked === row.name ? LabelSelected.EnabledEditable : undefined}
+                  onSelect={() => { setPicked(row.name); onAction(`picked "${row.name}" (${variant})`) }}
+                  onActivate={() => onAction(`activated "${row.name}"`)}
+                  tooling={[{ name: "Settings", icon: "bi:sliders", onActivate: () => onAction(`${row.name} settings`) }]}
+               />
+            ))}
+            <ItemRowShort
+               name="compact row"
+               icon="bi:align-start"
+               variant={variant}
+               onSelect={() => onAction(`compact picked (${variant})`)}
+            />
+         </ul>
+      ))}
+   </div>
+}
+
 function DemoLayout({ onAction }: { onAction: (msg: string) => void }) {
    const askName = async () => {
       const name = await openDialog<string>(resolve => <AskName initial="Ada" onDone={resolve} />)
@@ -125,26 +169,10 @@ function DemoLayout({ onAction }: { onAction: (msg: string) => void }) {
    return <Stack gap={16}>
       <Button label="Ask a question…" icon="bi:chat-dots" variant="outline-brand" onClick={askName} />
       <Button label="Open a menu" icon="bi:list" variant="neutral" onClick={openMenu} />
-      <Popup position="up-right" content={<div className="popup-hint"><Icon name="bi:lightbulb" /> a popover bubble, anchored and arrowed</div>}>
-         <Button label="Hover me" icon="bi:info-circle" variant="neutral" />
-      </Popup>
-      <ul className="items">
-         <ItemRowRich
-            name="Production org"
-            icon="standard:account"
-            summary="EU45 — hover me for live metrics"
-            content={<div className="popup-hint"><Icon name="bi:activity" /> 1 284 093 API calls today</div>}
-            onActivate={() => onAction('activated "Production org"')}
-            tooling={[{ name: "Settings", icon: "bi:sliders", onActivate: () => onAction("org settings") }]}
-         />
-         <ItemRowRich
-            name="Sandbox"
-            icon="bi:box[secondary]"
-            summary="refreshed 2 days ago"
-            onActivate={label => onAction(`activated "${label.name}"`)}
-         />
-      </ul>
-      <OverflowStack>
+       <Popup position="up-right" content={<div className="popup-hint"><Icon name="bi:lightbulb" /> a popover bubble, anchored and arrowed</div>}>
+          <Button label="Hover me" icon="bi:info-circle" variant="neutral" />
+       </Popup>
+       <OverflowStack>
          {Array.from({ length: 10 }, (_, i) => (
             <ButtonIcon key={i} icon={`bi:${i}-circle`} title={`action ${i}`} onClick={() => onAction(`action ${i}`)} />
          ))}

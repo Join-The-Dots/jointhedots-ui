@@ -109,34 +109,40 @@ class FloatingDock implements PanelDock {
          this.close()
       }
    }
-   private updateArrow() {
-      if (!this.arrow || !this.node || !this.tracked) return
-      const nodeRect = this.node.getBoundingClientRect()
-      const trackedRect = this.tracked.getBoundingClientRect()
-      const { style } = this.arrow
-      const half = PopoverArrowSize / 2
-      const inset = 10
-      const clamp = (v: number, max: number) => Math.min(Math.max(v, inset), Math.max(inset, max))
-      const below = nodeRect.top >= trackedRect.bottom - 2
-      const above = nodeRect.bottom <= trackedRect.top + 2
-      if (below || above) {
-         const x = clamp(trackedRect.left + trackedRect.width / 2 - nodeRect.left - half, nodeRect.width - PopoverArrowSize)
-         style.left = `${x}px`
-         style.top = below ? `${-half}px` : "auto"
-         style.bottom = above ? `${-half}px` : "auto"
-         style.right = "auto"
-         this.arrow.className = `jtd-popover-arrow ${below ? "up" : "down"}`
-      }
-      else {
-         const right = nodeRect.left >= trackedRect.right - 2
-         const y = clamp(trackedRect.top + trackedRect.height / 2 - nodeRect.top - half, nodeRect.height - PopoverArrowSize)
-         style.top = `${y}px`
-         style.left = right ? "auto" : `${-half}px`
-         style.right = right ? `${-half}px` : "auto"
-         style.bottom = "auto"
-         this.arrow.className = `jtd-popover-arrow ${right ? "left" : "right"}`
-      }
-   }
+    private updateArrow() {
+       if (!this.arrow || !this.node || !this.tracked) return
+       const nodeRect = this.node.getBoundingClientRect()
+       const trackedRect = this.tracked.getBoundingClientRect()
+       const { style } = this.arrow
+       const half = PopoverArrowSize / 2
+       // the arrow center straddles the dock border line
+       const strut = half + PopoverBorderWidth
+       const inset = 10
+       const clamp = (v: number, max: number) => Math.min(Math.max(v, inset), Math.max(inset, max))
+       const below = nodeRect.top >= trackedRect.bottom - 2
+       const above = nodeRect.bottom <= trackedRect.top + 2
+       if (below || above) {
+          const x = clamp(
+             trackedRect.left + trackedRect.width / 2 - nodeRect.left - half,
+             nodeRect.width - PopoverArrowSize - 2 * PopoverBorderWidth,
+          )
+          style.left = `${x - PopoverBorderWidth}px`
+          style.top = below ? `${-strut}px` : "auto"
+          style.bottom = above ? `${-strut}px` : "auto"
+          style.right = "auto"
+       }
+       else {
+          const right = nodeRect.left >= trackedRect.right - 2
+          const y = clamp(
+             trackedRect.top + trackedRect.height / 2 - nodeRect.top - half,
+             nodeRect.height - PopoverArrowSize - 2 * PopoverBorderWidth,
+          )
+          style.top = `${y - PopoverBorderWidth}px`
+          style.left = right ? "auto" : `${-strut}px`
+          style.right = right ? `${-strut}px` : "auto"
+          style.bottom = "auto"
+       }
+    }
    private hide() {
       if (this.root) {
 
@@ -196,6 +202,7 @@ const variantClasses = {
 }
 
 const PopoverArrowSize = 12
+const PopoverBorderWidth = 1
 
 const stopableEvents = ["click", "dbclick", "contextmenu"]
 
