@@ -1,0 +1,7 @@
+{
+   "window.title": "JTD.UI",
+   "typescript.format.semicolons": "remove",
+   "editor.insertSpaces": true,
+   "editor.detectIndentation": false,
+   "editor.tabSize": 3,
+}

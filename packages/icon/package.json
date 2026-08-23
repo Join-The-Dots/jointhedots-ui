@@ -1,0 +1,54 @@
+{
+   "name": "@jointhedots/icon",
+   "version": "0.1.0",
+   "type": "module",
+   "license": "MIT",
+   "description": "Join.The.Dots icon system — composable Icon component, collection registry and dedicated collection exports",
+   "sideEffects": true,
+   "exports": {
+      ".": {
+         "types": "./dist/index.d.ts",
+         "import": "./dist/index.js"
+      },
+      "./bootstrap": {
+         "types": "./dist/bootstrap/index.d.ts",
+         "import": "./dist/bootstrap.js"
+      },
+      "./font-awesome": {
+         "types": "./dist/font-awesome/index.d.ts",
+         "import": "./dist/font-awesome.js"
+      },
+      "./flag-icons": {
+         "types": "./dist/flag-icons/index.d.ts",
+         "import": "./dist/flag-icons.js"
+      },
+      "./salesforce": {
+         "types": "./dist/salesforce/index.d.ts",
+         "import": "./dist/salesforce.js"
+      }
+   },
+   "files": [
+      "dist",
+      "SKILL.md"
+   ],
+   "dependencies": {
+      "@jointhedots/theme": "^0.1.0",
+      "@salesforce-ux/design-system": "^2.29.0",
+      "bootstrap-icons": "^1.11.3",
+      "flag-icons": "^7.5.0",
+      "font-awesome": "^4.7.0"
+   },
+   "peerDependencies": {
+      "react": ">=18.2.0"
+   },
+   "devDependencies": {
+      "@types/react": "catalog:",
+      "react": "catalog:",
+      "typescript": "catalog:",
+      "vite": "catalog:",
+      "vite-plugin-dts": "catalog:"
+   },
+   "scripts": {
+      "build": "vite build"
+   }
+}

@@ -1,0 +1,33 @@
+{
+   "name": "@jointhedots/theme",
+   "version": "0.1.0",
+   "type": "module",
+   "license": "MIT",
+   "description": "Join.The.Dots theme — global light/dark theme, React context and base styles",
+   "sideEffects": true,
+   "exports": {
+      ".": {
+         "types": "./dist/index.d.ts",
+         "import": "./dist/index.js"
+      }
+   },
+   "files": [
+      "dist"
+   ],
+   "dependencies": {
+      "@salesforce-ux/design-system": "^2.29.0"
+   },
+   "peerDependencies": {
+      "react": ">=18.2.0"
+   },
+   "devDependencies": {
+      "@types/react": "catalog:",
+      "react": "catalog:",
+      "typescript": "catalog:",
+      "vite": "catalog:",
+      "vite-plugin-dts": "catalog:"
+   },
+   "scripts": {
+      "build": "vite build"
+   }
+}

@@ -1,0 +1,25 @@
+{
+   "name": "jointhedots-ui",
+   "version": "0.0.0",
+   "private": true,
+   "type": "module",
+   "license": "MIT",
+   "description": "Join.The.Dots UI packages — icon system and theme",
+   "packageManager": "pnpm@10.30.3",
+   "engines": {
+      "node": ">=20"
+   },
+   "scripts": {
+      "build": "tsx scripts/build.mts",
+      "typecheck": "tsx scripts/typecheck.mts",
+      "publish": "tsx scripts/publish.mts",
+      "clean": "tsx scripts/clean.mts"
+   },
+   "devDependencies": {
+      "sass": "catalog:",
+      "tsx": "catalog:",
+      "typescript": "catalog:",
+      "vite": "catalog:",
+      "vite-plugin-dts": "catalog:"
+   }
+}

@@ -1,0 +1,8 @@
+export * from "./Icon"
+export * from "./collections/badge"
+export * from "./collections/avatar"
+export * from "./collections/font"
+export * from "./collections/svg"
+export * from "./collections/svg-inner"
+export * from "./collections/url"
+export { Icon as default } from "./Icon"
