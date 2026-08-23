@@ -120,14 +120,28 @@ Le composant lit le thème via le contexte de `@jointhedots/theme` :
 - `title`, `className`, `style`, `onClick` sont transmis au conteneur ;
   `className`/`style` fusionnent avec ceux calculés par le parseur.
 
-## 5. Performance
+## 5. FadeIcon — fondu au changement d'icône
+
+`FadeIcon` accepte les props de `Icon` plus `duration` (millisecondes,
+300 par défaut). Quand `name` change, l'ancienne icône reste en calque
+au-dessus et s'efface (opacité → 0) pendant que la nouvelle apparaît dessous ;
+le calque ancien est retiré à la fin du fondu. Premier montage sans transition.
+
+```tsx
+<FadeIcon name={playing ? "bi:pause-fill" : "bi:play-fill"} size="lg" />
+```
+
+`ButtonIcon` (@jointhedots/button) l'utilise pour basculer `hoveredIcon`
+au survol.
+
+## 6. Performance
 
 - Chaque chaîne `name` est parsée une seule fois puis mémoïsée (cache par nom).
 - `IconSVGInnerCollection` injecte chaque sprite une seule fois dans le
   `<body>` (préfixage des `id` pour éviter les collisions) et réutilise le
   `<use xlink:href>` par la suite.
 
-## 6. Collections personnalisées
+## 7. Collections personnalisées
 
 Implémenter l'interface `IconCollection` et l'enregistrer :
 
@@ -157,7 +171,7 @@ Points de contrat :
   pour une collection par police CSS, `IconFontCollection(classPrefix)` où
   `classPrefix + nom` doit donner la classe du glyph.
 
-## 7. Aide-mémoire
+## 8. Aide-mémoire
 
 ```
 bi:house-door-fill                          glyph simple
@@ -169,4 +183,5 @@ avatar:Jean Dupont                          pastille initiales déterministe
 flag:fr                                     drapeau (export flag-icons)
 label:new                                   pastille texte
 standard:account                            icône SLDS standard
+FadeIcon                                    fondu (300 ms) au changement de name
 ```

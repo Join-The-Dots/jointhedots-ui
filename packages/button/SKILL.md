@@ -100,7 +100,7 @@ idéal pour actions internes d'interface (tooling d'items, barres d'outils).
 
 | Prop | Rôle |
 | --- | --- |
-| `icon` / `hoveredIcon` | icône affichée ; `hoveredIcon` bascule au survol (état vs repos : favori, coche…) |
+| `icon` / `hoveredIcon` | icône affichée ; `hoveredIcon` bascule au survol (état vs repos : favori, coche…) — la bascule est toujours fondue |
 | `size` | alias IconSize (`xs`…`lg`) ou valeur brute (`"2em"`) — appliquée en `font-size` |
 | `variant` | `primary`, `neutral`, `watermark` — classe additionnelle du même nom |
 | `inversed` | rend l'icône avec le thème contrasté |
@@ -109,6 +109,11 @@ idéal pour actions internes d'interface (tooling d'items, barres d'outils).
 ```tsx
 <ButtonIcon icon="bi:star" hoveredIcon="bi:star-fill" size="lg" />
 ```
+
+Quand `hoveredIcon` est fourni, la bascule au survol est systématiquement
+fondue : l'icône courante est rendue via `FadeIcon` de @jointhedots/icon
+(300 ms) — pas de prop à activer. Sans `hoveredIcon`, l'icône unique est
+rendue sans structure ni transition supplémentaire.
 
 Le gabarit `jtd-button-icon` (styles injectés au chargement, id
 `jtd-button-styles`) rend la pastille circulaire, son état de survol et ses
@@ -124,5 +129,5 @@ tooltip: <node>          // bulle CSS au hover/focus (~350 ms)
 buttonRef / requestFocus // contrôle du focus
 assistiveText            // a11y icône seule (aria-label)
 aria-* / data-* / form*  // passthrough automatique
-ButtonIcon: hoveredIcon  // bascule visuelle au survol
+ButtonIcon: hoveredIcon  // bascule fondue au survol (imposée)
 ```

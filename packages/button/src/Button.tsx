@@ -1,7 +1,7 @@
 import React from 'react'
 import classNames from 'classnames'
 import { getHtmlProps } from './getProps'
-import { Icon, IconSize } from "@jointhedots/icon"
+import { Icon, IconSize, FadeIcon } from "@jointhedots/icon"
 
 interface ButtonProps {
    assistiveText?: string
@@ -156,7 +156,7 @@ export type ButtonIconProps = {
    size?: IconSize | string
    title?: string
    inversed?: boolean
-    variant?: "primary" | "neutral" | "watermark"
+   variant?: "primary" | "neutral" | "watermark"
    className?: string
    style?: React.CSSProperties
    onClick?: React.MouseEventHandler
@@ -170,10 +170,10 @@ export function ButtonIcon(props: ButtonIconProps) {
    if (hoveredIcon) {
       const [hovered, setHovered] = React.useState(false)
       return <div {...others} className={buttonClass} style={buttonStyle} onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
-          <Icon name={hovered ? hoveredIcon : icon} inverse={inversed} />
-       </div>
+         <FadeIcon name={hovered ? hoveredIcon : icon} inverse={inversed} />
+      </div>
    }
    return <div {...others} className={buttonClass} style={buttonStyle}>
-       <Icon name={icon} inverse={inversed} />
-    </div>
+      <Icon name={icon} inverse={inversed} />
+   </div>
 }

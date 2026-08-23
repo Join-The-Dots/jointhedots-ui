@@ -124,7 +124,7 @@ function App() {
          </div>
       </Section>
 
-      <Section title="Buttons — icon affordances" hint='variant="icon" × iconVariant · iconSize · tooltip · ButtonIcon variants & hover swap'>
+       <Section title="Buttons — icon affordances" hint='variant="icon" × iconVariant · iconSize · tooltip · ButtonIcon variants & faded hover swap'>
          <div className="demo-card">
             <div className="demo-row">
                <span className="row-caption">iconVariant</span>
@@ -147,13 +147,13 @@ function App() {
                <Button label="Hover for help" variant="neutral" icon="bi:info-circle"
                   tooltip={<span>Rich tooltip: <b>bold</b>, <i>italic</i>, any node</span>} />
             </div>
-            <div className="demo-row">
-               <span className="row-caption">ButtonIcon</span>
-               <ButtonIcon icon="bi:star" hoveredIcon="bi:star-fill" size="lg" title="hover me" onClick={() => setLastAction("star toggled")} />
-               <ButtonIcon icon="bi:check2-circle" hoveredIcon="bi:check2-all" variant="primary" size="lg" title="primary pill" onClick={() => setLastAction("primary pill")} />
-               <ButtonIcon icon="bi:bookmark" hoveredIcon="bi:bookmark-fill" variant="neutral" size="lg" title="neutral pill" onClick={() => setLastAction("neutral pill")} />
-               <ButtonIcon icon="bi:gear" hoveredIcon="bi:gear-fill" variant="watermark" size="lg" title="watermark" onClick={() => setLastAction("watermark")} />
-            </div>
+             <div className="demo-row">
+                <span className="row-caption">ButtonIcon</span>
+                <ButtonIcon icon="bi:star" hoveredIcon="bi:star-fill" size="lg" title="hover me — swap is crossfaded" onClick={() => setLastAction("star toggled")} />
+                <ButtonIcon icon="bi:check2-circle" hoveredIcon="bi:check2-all" variant="primary" size="lg" title="primary pill" onClick={() => setLastAction("primary pill")} />
+                <ButtonIcon icon="bi:bookmark" hoveredIcon="bi:bookmark-fill" variant="neutral" size="lg" title="neutral pill" onClick={() => setLastAction("neutral pill")} />
+                <ButtonIcon icon="bi:gear" hoveredIcon="bi:gear-fill" variant="watermark" size="lg" title="watermark" onClick={() => setLastAction("watermark")} />
+             </div>
          </div>
       </Section>
 

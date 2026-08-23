@@ -1,4 +1,5 @@
 export * from "./Icon"
+export * from "./FadeIcon"
 export * from "./collections/label"
 export * from "./collections/avatar"
 export * from "./collections/font"

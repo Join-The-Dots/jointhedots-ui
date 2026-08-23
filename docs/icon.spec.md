@@ -56,6 +56,16 @@ Invariants du langage :
   est convertie en label ;
 - une même chaîne de nom est parsée une seule fois puis mémoïsée.
 
+## Fondu au changement d'icône
+
+`FadeIcon` est la variante du composant `Icon` dont les changements de nom
+sont fondus : quand le nom change, l'icône courante reste un instant en calque
+au-dessus de la nouvelle et s'efface vers une opacité nulle (300 ms par
+défaut, durée configurable), révélant la nouvelle icône déjà rendue dessous.
+Au repos — au montage comme après le fondu — une seule icône occupe le
+gabarit unitaire. `ButtonIcon` utilise ce composant pour basculer son icône de
+survol.
+
 ## Le registre de collections
 
 Les collections sont enregistrées dans un registre global du package icon,

@@ -72,11 +72,12 @@ class FloatingDock implements PanelDock {
           this.root = ReactDOMClient.createRoot(render_host)
           document.body.appendChild(this.node)
 
-          const updatePosition = () => {
-             if (this.node) {
-                if (this.tracked.isConnected) {
-                   computeEdgeBoxDOM(position, this.node, this.tracked)
-                   this.updateArrow()
+           const updatePosition = () => {
+              if (this.node) {
+                 if (this.tracked.isConnected) {
+                    computeEdgeBoxDOM(position, this.node, this.tracked)
+                    this.offsetFromTarget()
+                    this.updateArrow()
                    this.node.style.visibility = "visible"
                    setTimeout(updatePosition, 25)
                 }
@@ -87,9 +88,10 @@ class FloatingDock implements PanelDock {
           }
 
           // Append popup in document on top of stack
-          addOutsideEventListener(this._handleClickOutside)
-          computeEdgeBoxDOM(position, this.node, this.tracked, document.body)
-          this.updateArrow()
+           addOutsideEventListener(this._handleClickOutside)
+           computeEdgeBoxDOM(position, this.node, this.tracked, document.body)
+           this.offsetFromTarget()
+           this.updateArrow()
           overlays_stack.push({ node: this.node, close: this.hide.bind(this) })
 
          // Render popup on node
@@ -109,14 +111,27 @@ class FloatingDock implements PanelDock {
          this.close()
       }
    }
-    private updateArrow() {
-       if (!this.arrow || !this.node || !this.tracked) return
-       const nodeRect = this.node.getBoundingClientRect()
-       const trackedRect = this.tracked.getBoundingClientRect()
-       const { style } = this.arrow
-       const half = PopoverArrowSize / 2
-       // the arrow center straddles the dock border line
-       const strut = half + PopoverBorderWidth
+     private offsetFromTarget() {
+        if (this.opts.variant !== "popover" || !this.node || !this.tracked) return
+        const nodeRect = this.node.getBoundingClientRect()
+        const trackedRect = this.tracked.getBoundingClientRect()
+        const { style } = this.node
+        const below = nodeRect.top >= trackedRect.bottom - 2
+        const above = nodeRect.bottom <= trackedRect.top + 2
+        const right = nodeRect.left >= trackedRect.right - 2
+        if (below) style.top = `${parseFloat(style.top) + PopoverGap}px`
+        else if (above) style.bottom = `${parseFloat(style.bottom) + PopoverGap}px`
+        else if (right) style.left = `${parseFloat(style.left) + PopoverGap}px`
+        else style.right = `${parseFloat(style.right) + PopoverGap}px`
+     }
+     private updateArrow() {
+        if (!this.arrow || !this.node || !this.tracked) return
+        const nodeRect = this.node.getBoundingClientRect()
+        const trackedRect = this.tracked.getBoundingClientRect()
+        const { style } = this.arrow
+        const half = PopoverArrowSize / 2
+        // the arrow center straddles the dock border line
+        const strut = half + PopoverBorderWidth
        const inset = 10
        const clamp = (v: number, max: number) => Math.min(Math.max(v, inset), Math.max(inset, max))
        const below = nodeRect.top >= trackedRect.bottom - 2
@@ -203,6 +218,7 @@ const variantClasses = {
 
 const PopoverArrowSize = 12
 const PopoverBorderWidth = 1
+const PopoverGap = 3
 
 const stopableEvents = ["click", "dbclick", "contextmenu"]
 
