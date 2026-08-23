@@ -73,6 +73,17 @@ section .hint {
    transform: scale(1.08);
 }
 
+.tile-wrap {
+   display: inline-block;
+}
+
+.tile-hint {
+   display: inline-block;
+   padding: 2px 4px;
+   font-family: Consolas, monospace;
+   font-size: 0.8rem;
+}
+
 .items {
    list-style: none;
    margin: 0;

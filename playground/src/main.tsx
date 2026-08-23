@@ -52,9 +52,11 @@ function App() {
             "standard:account", "utility:salesforce_page", "fa:github",
             "bi:zap[primary]|utility:einstein[badge,info]",
          ].map(name => (
-            <div key={name} className="tile" title={name} onClick={() => setLastAction(`icon "${name}"`)}>
-               <Icon size="5.0em" name={name} />
-            </div>
+            <Popup key={name} className="tile-wrap" content={<span className="tile-hint">{name}</span>}>
+               <div className="tile" title={name} onClick={() => setLastAction(`icon "${name}"`)}>
+                  <Icon size="5.0em" name={name} />
+               </div>
+            </Popup>
          ))}
       </Section>
 
@@ -123,7 +125,7 @@ function DemoLayout({ onAction }: { onAction: (msg: string) => void }) {
    return <Stack gap={16}>
       <Button label="Ask a question…" icon="bi:chat-dots" variant="outline-brand" onClick={askName} />
       <Button label="Open a menu" icon="bi:list" variant="neutral" onClick={openMenu} />
-      <Popup content={<div className="popup-hint"><Icon name="bi:lightbulb" /> a panel, just by hovering</div>}>
+      <Popup position="up-right" content={<div className="popup-hint"><Icon name="bi:lightbulb" /> a popover bubble, anchored and arrowed</div>}>
          <Button label="Hover me" icon="bi:info-circle" variant="neutral" />
       </Popup>
       <ul className="items">

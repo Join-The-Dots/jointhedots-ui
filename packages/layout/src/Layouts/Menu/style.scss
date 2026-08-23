@@ -6,12 +6,12 @@
    font-size: 14px;
    min-height: 24px;
 
-   &:hover {
-      background-color: #ccc;
-   }
+    &:hover {
+       background-color: light-dark(#ccc, #3d3d3d);
+    }
 
-   &>:first-child {
-   }
+    &>:first-child {
+    }
 
    &>:last-child {
       flex: 1;
@@ -30,9 +30,9 @@
    font-size: 14px;
    min-height: 32px;
 
-   &:hover {
-      background-color: #ddd;
-   }
+    &:hover {
+       background-color: light-dark(#ddd, #333);
+    }
 
    &.selected {
       padding-left: 10px;
@@ -94,11 +94,11 @@
          font-size: 12px;
       }
 
-      &>:nth-child(2) {
-         color: #666;
-         font-size: 11px;
-         padding-top: 5px;
-      }
+       &>:nth-child(2) {
+          color: light-dark(#666, #9a9a9a);
+          font-size: 11px;
+          padding-top: 5px;
+       }
    }
    
    &>.item-tooling {
@@ -106,7 +106,7 @@
 }
 
 .jtd-menu-separator {
-   border-bottom: 1px solid #999;
+   border-bottom: 1px solid light-dark(#999, #555);
    margin: 5px;
    text-align: center;
    font-weight: bold;
@@ -121,8 +121,8 @@
    cursor: pointer;
    gap: 5px;
 
-   &:hover {
-      outline: solid thin #ddd;
-      background-color: #eee;
-   }
+    &:hover {
+       outline: solid thin light-dark(#ddd, #444);
+       background-color: light-dark(#eee, #333);
+    }
 }

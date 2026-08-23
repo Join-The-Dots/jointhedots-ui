@@ -379,3 +379,41 @@
   --vscode-tree-indentGuidesStroke: #585858;
   --vscode-widget-shadow: #000000;
 }
+
+.theme-dark {
+  color-scheme: dark;
+}
+
+// SLDS components are light-native: remap the shipped ones onto app tokens
+.theme-dark {
+  .slds-button {
+    color: var(--app-foreground);
+  }
+
+  .slds-button_neutral {
+    background-color: var(--app-button-sec-background);
+    border-color: var(--app-button-sec-border);
+    color: var(--app-button-sec-foreground);
+  }
+
+  .slds-button_neutral:hover,
+  .slds-button_neutral:focus {
+    background-color: var(--app-button-sec-hoverBackground);
+  }
+
+  .slds-text-link {
+    color: var(--app-foreground);
+  }
+
+  .slds-input,
+  .slds-textarea,
+  .slds-select {
+    background-color: var(--app-value-background);
+    color: var(--app-value-forecolor);
+    border-color: var(--app-separator);
+  }
+
+  .slds-form-element__label {
+    color: var(--app-foreground);
+  }
+}

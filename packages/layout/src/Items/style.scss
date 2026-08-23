@@ -128,10 +128,10 @@ body {
       }
 
       &>:nth-child(2) {
-         color: #666;
-         font-size: 11px;
-         padding-top: 5px;
-      }
+          color: light-dark(#666, #9a9a9a);
+          font-size: 11px;
+          padding-top: 5px;
+       }
    }
 
    &>.item-tooling {}

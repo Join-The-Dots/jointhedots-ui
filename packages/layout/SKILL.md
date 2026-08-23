@@ -46,7 +46,7 @@ const panel = usePanel(async () => ({ content: await buildContent(data) }), [dat
 | --- | --- |
 | `DrawerDock` (side) | tiroir latéral ancré droite/gauche, redimensionnable à la souris (bornes min/max/défaut), en-tête riche `ItemRowRich` |
 | `ModalDock` | superposition centrée, empilable, hauteur contrôlée par `height` (CSS `--jtd-panel-min/max-height`) |
-| `FloatingDock` | surcouche ancrée à une cible, repositionnée en continu (25 ms), refermée au clic extérieur ou survol sortant |
+| `FloatingDock` | surcouche ancrée à une cible, repositionnée en continu (25 ms), refermée au clic extérieur ou survol sortant ; `variant: "popover"` rend une bulle avec flèche pointant la cible |
 
 Les docks nommés (`side`, `modal`) sont des singletons ; un dock personnalisé
 peut implémenter `PanelDock` (`appendPanel` / `removePanel` / `refresh`) et
@@ -86,8 +86,16 @@ La **cible** peut être un `UIEvent` (clic), un `Element`, un
 `React.SyntheticEvent` ou une classe React — les événements cliquables sont
 automatiquement `stopPropagation`/`preventDefault`. La promise retournée
 expose `promise.close()` pour refermer programmatiquement. Options du dock
-flottant : `position` (voir computeEdgeBox), `variant: "menu" | "popup"`,
-`className`, `noAutoClose`.
+flottant : `position` (voir computeEdgeBox), `variant: "menu" | "popup" |
+"popover"`, `className`, `noAutoClose`.
+
+Le variant **popover** est la bulle classique : coins arrondis, ombre portée,
+et une **flèche** (losange CSS) collée au bord qui pointe vers le centre de la
+cible. Le côté porteur de la flèche se déduit du placement effectif (après
+retournement par computeEdgeBox) : bulle sous la cible → flèche en haut
+(pointe vers le haut), etc. Le décalage le long du bord suit le centre de la
+cible, borné aux marges de la bulle — tout est recalculé à chaque repositionnement
+(25 ms), donc la flèche suit une cible mobile.
 
 `PopupCancel` (sous-classe d'`Error`) est le signal d'annulation du modèle.
 
@@ -109,9 +117,12 @@ et au clic si aucun `onClick` n'est défini.
 
 ## 5. Popup et Stack
 
-- `Popup` : contenu flottant au survol de n'importe quel enfant —
+- `Popup` : bulle au survol de n'importe quel enfant —
   `<Popup content={…}>{anchor}</Popup>`. Le contenu peut être une fonction
-  async `(data) => Promise<ReactNode>` évaluée à l'ouverture.
+  async `(data) => Promise<ReactNode>` évaluée à l'ouverture. Props :
+  `variant` (défaut `"popover"` — bulle fléchée ; `"menu"` / `"popup"` pour
+  les gabarits nus), `position` (PlacementType, ex. `"up-right"`), `className`
+  (transmis au wrapper, p.ex. pour un affichage inline).
 - `Stack` : conteneur flex à espacement (`gap` = 4 par défaut, `padding` =
   gap/2, `vertical` pour une colonne). Sous-composants `Stack.FlexDock`
   (poids flexible + largeur min) et `Stack.FixedDock` (largeur fixe).
@@ -181,7 +192,8 @@ usePanel(render, deps)            // cycle de vie React
 openDialog(resolve => node)       // Promise<T | undefined>
 openContextualMenu(e, close => node, opts?)   // Promise + .close()
 Menu.Item / LargeItem + children  // sous-menus au survol
-Popup content={node | async fn}   // flottant au survol
+Popup content={node | async fn}   // bulle popover au survol (par défaut)
+Popup position="up-right" variant="menu" className=…
 Stack gap padding vertical        // + FlexDock / FixedDock
 OverflowStack overflow={fn}       // débordement mesuré
 ItemRowShort / Rich / LabelButton / ItemIcon

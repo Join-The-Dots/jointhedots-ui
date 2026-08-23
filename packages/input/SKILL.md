@@ -74,9 +74,11 @@ au chargement du package) :
 
 Les styles des deux composants sont compilés puis injectés au chargement
 (balise `<style id="jtd-input-styles">`, idempotent, sans effet en SSR) —
-aucun stylesheet à gérer. Le rendu SLDS de `InputData` suppose la feuille
-SLDS chargée (le package `@jointhedots/theme` ou `@jointhedots/button`
-l'apportent déjà dans un empilement typique).
+aucun stylesheet à gérer. Le bi-thème est natif : `jtd-input_*` utilise
+`light-dark()` et les gabarits SLDS (`slds-input`, labels) sont remappés sur
+les tokens `--app-*` par la cascade dark de @jointhedots/theme. Le rendu SLDS
+de `InputData` suppose la feuille SLDS chargée (le package `@jointhedots/theme`
+ou `@jointhedots/button` l'apportent déjà dans un empilement typique).
 
 ## Aide-mémoire
 

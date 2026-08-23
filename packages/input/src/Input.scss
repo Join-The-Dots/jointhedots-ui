@@ -8,12 +8,14 @@
 .jtd-input_label {
   display: flex;
   flex: 1;
-  color: #666;
+  color: light-dark(#555, #aaa);
 }
 .jtd-input_input {
   display: flex;
   flex: 2;
-  border: 1px solid #999;
+  border: 1px solid light-dark(#999, #555);
+  background-color: light-dark(#fff, var(--app-value-background, #222));
+  color: light-dark(#181818, var(--app-value-forecolor, #eee));
   padding-top: 7px;
   padding-bottom: 7px;
   padding-left: 10px;

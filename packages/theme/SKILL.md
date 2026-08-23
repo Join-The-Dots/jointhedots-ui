@@ -71,6 +71,13 @@ idempotent, sans effet hors navigateur) la cascade compilée :
 2. `theme-light.scss` — tokens `.theme-light` (palette claire) ;
 3. `theme.scss` — mapping `body { --app-*: var(--vscode-*) }`.
 
+Le package pose aussi `color-scheme` (`light` par défaut, `dark` sur
+`body.theme-dark`) : les contrôles natifs suivent le thème, et la fonction
+CSS `light-dark(a, b)` devient disponible pour tous les gabarits des
+packages UI — c'est le canal standard pour du bi-thème sans JS. Enfin, SLDS
+étant light par nature, la cascade dark remappe les composants SLDS livrés
+(boutons neutres, champs, labels) sur les tokens `--app-*`.
+
 Les composants consomment exclusivement les variables `--app-*`
 (`--app-background`, `--app-foreground`, `--app-button-prim-*`,
 `--app-value-*`, `--app-highlight-*`, `--app-separator`…). Redéfinir les

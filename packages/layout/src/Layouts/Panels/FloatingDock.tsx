@@ -11,13 +11,14 @@ export type FloatingTarget = UIEvent | Element | React.Component | React.Synthet
 
 export type FloatingDockOptions = {
    position?: PositionType
-   variant?: "menu" | "popup"
+   variant?: "menu" | "popup" | "popover"
    className?: string
    noAutoClose?: boolean
 }
 
 class FloatingDock implements PanelDock {
    node: HTMLElement
+   arrow: HTMLElement = null
    root: ReactDOMClient.Root = null
    tracked: Element = null
    main: Panel = null
@@ -55,30 +56,41 @@ class FloatingDock implements PanelDock {
             this.stackIndex++
          }
 
-         // Create popup node
-         this.node = document.createElement("div")
-         this.node.className = opts.className ? `${opts.className} ${variantClass}` : variantClass
-         this.node.setAttribute("style", `--jtd-floating-zindex:${getStackZIndex(this.stackIndex)};`)
-         this.root = ReactDOMClient.createRoot(this.node)
-         document.body.appendChild(this.node)
+          // Create popup node
+          this.node = document.createElement("div")
+          this.node.className = opts.className ? `${opts.className} ${variantClass}` : variantClass
+          this.node.setAttribute("style", `--jtd-floating-zindex:${getStackZIndex(this.stackIndex)};`)
+          let render_host: HTMLElement = this.node
+          if (opts.variant === "popover") {
+             this.arrow = document.createElement("div")
+             this.arrow.className = "jtd-popover-arrow"
+             this.node.appendChild(this.arrow)
+             render_host = document.createElement("div")
+             render_host.className = "jtd-popover-body"
+             this.node.appendChild(render_host)
+          }
+          this.root = ReactDOMClient.createRoot(render_host)
+          document.body.appendChild(this.node)
 
-         const updatePosition = () => {
-            if (this.node) {
-               if (this.tracked.isConnected) {
-                  computeEdgeBoxDOM(position, this.node, this.tracked)
-                  this.node.style.visibility = "visible"
-                  setTimeout(updatePosition, 25)
-               }
-               else {
-                  this.hide()
-               }
-            }
-         }
+          const updatePosition = () => {
+             if (this.node) {
+                if (this.tracked.isConnected) {
+                   computeEdgeBoxDOM(position, this.node, this.tracked)
+                   this.updateArrow()
+                   this.node.style.visibility = "visible"
+                   setTimeout(updatePosition, 25)
+                }
+                else {
+                   this.hide()
+                }
+             }
+          }
 
-         // Append popup in document on top of stack
-         addOutsideEventListener(this._handleClickOutside)
-         computeEdgeBoxDOM(position, this.node, this.tracked, document.body)
-         overlays_stack.push({ node: this.node, close: this.hide.bind(this) })
+          // Append popup in document on top of stack
+          addOutsideEventListener(this._handleClickOutside)
+          computeEdgeBoxDOM(position, this.node, this.tracked, document.body)
+          this.updateArrow()
+          overlays_stack.push({ node: this.node, close: this.hide.bind(this) })
 
          // Render popup on node
          setTimeout(updatePosition, 25)
@@ -97,15 +109,44 @@ class FloatingDock implements PanelDock {
          this.close()
       }
    }
+   private updateArrow() {
+      if (!this.arrow || !this.node || !this.tracked) return
+      const nodeRect = this.node.getBoundingClientRect()
+      const trackedRect = this.tracked.getBoundingClientRect()
+      const { style } = this.arrow
+      const half = PopoverArrowSize / 2
+      const inset = 10
+      const clamp = (v: number, max: number) => Math.min(Math.max(v, inset), Math.max(inset, max))
+      const below = nodeRect.top >= trackedRect.bottom - 2
+      const above = nodeRect.bottom <= trackedRect.top + 2
+      if (below || above) {
+         const x = clamp(trackedRect.left + trackedRect.width / 2 - nodeRect.left - half, nodeRect.width - PopoverArrowSize)
+         style.left = `${x}px`
+         style.top = below ? `${-half}px` : "auto"
+         style.bottom = above ? `${-half}px` : "auto"
+         style.right = "auto"
+         this.arrow.className = `jtd-popover-arrow ${below ? "up" : "down"}`
+      }
+      else {
+         const right = nodeRect.left >= trackedRect.right - 2
+         const y = clamp(trackedRect.top + trackedRect.height / 2 - nodeRect.top - half, nodeRect.height - PopoverArrowSize)
+         style.top = `${y}px`
+         style.left = right ? "auto" : `${-half}px`
+         style.right = right ? `${-half}px` : "auto"
+         style.bottom = "auto"
+         this.arrow.className = `jtd-popover-arrow ${right ? "left" : "right"}`
+      }
+   }
    private hide() {
       if (this.root) {
 
-         // Remove popup
-         removeOutsideEventListener(this._handleClickOutside)
-         document.body.removeChild(this.node)
-         this.root.unmount()
-         this.root = null
-         this.node = null
+          // Remove popup
+          removeOutsideEventListener(this._handleClickOutside)
+          document.body.removeChild(this.node)
+          this.root.unmount()
+          this.root = null
+          this.node = null
+          this.arrow = null
 
          // Close sub popup when not the top of stack
          if (this.stackIndex < overlays_stack.length - 1) {
@@ -151,7 +192,10 @@ const variantClasses = {
    "default": "jtd-panel-floating-dock menu",
    "menu": "jtd-panel-floating-dock menu",
    "popup": "jtd-panel-floating-dock popup",
+   "popover": "jtd-panel-floating-dock popover",
 }
+
+const PopoverArrowSize = 12
 
 const stopableEvents = ["click", "dbclick", "contextmenu"]
 

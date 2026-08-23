@@ -92,8 +92,10 @@ idéal pour actions internes d'interface (tooling d'items, barres d'outils).
 
 Le gabarit `jtd-button-icon` (styles injectés au chargement, id
 `jtd-button-styles`) rend la pastille circulaire, son état de survol et ses
-variantes. Le CSS SLDS est importé littéralement par le package : le bundler
-de l'application l'émet avec ses assets.
+variantes. Tous les états sont bi-thème via `light-dark()` : le rendu suit
+le `color-scheme` posé par @jointhedots/theme sans configuration. Le CSS
+SLDS est importé littéralement par le package : le bundler de l'application
+l'émet avec ses assets.
 
 ## Aide-mémoire
 
