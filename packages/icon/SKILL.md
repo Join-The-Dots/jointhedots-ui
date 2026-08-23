@@ -80,7 +80,10 @@ L'export salesforce applique les classes SLDS attendues
 (`salesforce_page` → `slds-icon-utility-salesforce-page`). L'export importe
 lui-même la feuille SLDS — c'est le seul point du repository où elle est
 chargée — car elle porte les couleurs des sprites ; l'application n'a rien à
-configurer.
+configurer. Face à l'éclairage : `utility` n'a pas de sprite sombre (glyphes
+monochromes pour fond clair) — le sprite clair est réutilisé et inversé par
+filtre CSS en éclairage sombre ; `standard`/`custom`/`action`/`doctype`
+portent leurs propres couleurs et passent le même sprite aux deux éclairages.
 
 Import pour effet de bord, une seule fois au démarrage de l'application :
 
@@ -95,6 +98,9 @@ Le composant lit le thème via le contexte de `@jointhedots/theme` :
 
 - une collection peut rendre différemment en clair/sombre (variantes light/dark
   de `IconSVGInnerCollection` et `IconSVGCollection`) ;
+- une collection sprite sans variante sombre (`dark_url` absent du constructeur
+  de `IconSVGInnerCollection`) dessine le sprite clair inversé par filtre CSS
+  en éclairage sombre — c'est le cas des `utility` Salesforce ;
 - le prop `inverse` bascule sur `theme.contrastTheme` : l'icône rend comme sur
   le fond opposé (utile sur bouton coloré, badge sélectionné…) ;
 - un `LocalTheme` ancêtre surcharge le thème global pour un sous-arbre.

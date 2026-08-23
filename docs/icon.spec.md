@@ -88,8 +88,17 @@ Le package theme définit :
 - le chargement des styles de base de l'interface.
 
 Les collections sensibles à l'éclairage choisissent leur variante (claire ou
-sombre) selon le thème reçu au dessin. Le prop `inverse` du composant bascule
-sur le thème contrasté, pour les icônes posées sur un fond inversé.
+sombre) selon le thème reçu au dessin. Une collection par sprite déclare sa
+relation à l'éclairage sombre de trois manières : un sprite sombre dédié (le
+dessin bascule de sprite), un sprite unique réutilisé à l'identique (icônes
+auto-colorées, correctes dans les deux éclairages), ou l'absence de variante
+sombre — le sprite clair est alors réutilisé et son rendu inversé par filtre
+CSS dans l'éclairage sombre. Salesforce illustre les trois cas : les glyphes
+`utility`, monochromes et conçus pour un fond clair, n'ont pas de variante
+sombre et sont inversés ; les collections `standard`, `custom`, `action` et
+`doctype` portent leurs propres couleurs et réutilisent leur sprite à
+l'identique. Le prop `inverse` du composant bascule sur le thème contrasté,
+pour les icônes posées sur un fond inversé.
 
 ## Frontières
 

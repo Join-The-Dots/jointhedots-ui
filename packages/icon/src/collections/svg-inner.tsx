@@ -19,26 +19,29 @@ function injectSprite(url: string): string {
 export class IconSVGInnerCollection implements IconCollection {
    public lightPrefix: string
    public darkPrefix: string
-   constructor(
-      readonly light_url: URL | string,
-      readonly dark_url: URL | string,
-      readonly classNamer?: (element: IconElement) => string,
-   ) {
-      this.lightPrefix = injectSprite(`${light_url}`)
-      this.darkPrefix = injectSprite(`${dark_url}`)
-   }
+    constructor(
+       readonly light_url: URL | string,
+       readonly dark_url?: URL | string | null,
+       readonly classNamer?: (element: IconElement) => string,
+    ) {
+       this.lightPrefix = injectSprite(`${light_url}`)
+       this.darkPrefix = dark_url != null ? injectSprite(`${dark_url}`) : this.lightPrefix
+    }
    setup(element: IconElement) {
       const { classNamer } = this
       element.className = classNamer ? classNamer(element) : element.className
       Object.assign(element.style, styles)
    }
-   draw(element: IconElement, theme: ThemeProvider) {
-      const { name, className, style } = element
-      const prefix = (theme.lighting === ThemeLighting.Light) ? this.lightPrefix : this.darkPrefix
-      return <svg className={className} style={style}>
-         <use xlinkHref={`#${prefix}${name}`}></use>
-      </svg>
-   }
+    draw(element: IconElement, theme: ThemeProvider) {
+       const { name, className, style } = element
+       const light = theme.lighting === ThemeLighting.Light
+       // Sprite shipped for light backgrounds only: invert its pixels for dark lighting
+       const svgStyle = light || this.dark_url != null ? style : { ...style, filter: "invert(1)" }
+       const prefix = light ? this.lightPrefix : this.darkPrefix
+       return <svg className={className} style={svgStyle}>
+          <use xlinkHref={`#${prefix}${name}`}></use>
+       </svg>
+    }
 }
 
 const styles = {

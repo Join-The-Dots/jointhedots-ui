@@ -12,7 +12,8 @@ registerIconCollection(
    "utility",
    new IconSVGInnerCollection(
       utility_symbols_svg,
-      utility_symbols_svg,
+      // no dark sprite: the glyphs are black-on-transparent, CSS-inverted in dark lighting
+      null,
       (e) => `slds-icon-utility-${e.name.replace("_", "-")} ${e.className}`,
    ),
 )
