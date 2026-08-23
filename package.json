@@ -12,6 +12,7 @@
    "scripts": {
       "build": "tsx scripts/build.mts",
       "typecheck": "tsx scripts/typecheck.mts",
+      "dev": "tsx scripts/dev.mts",
       "publish": "tsx scripts/publish.mts",
       "clean": "tsx scripts/clean.mts"
    },

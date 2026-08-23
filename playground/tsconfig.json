@@ -1,0 +1,19 @@
+{
+   "extends": "../tsconfig.base.json",
+   "compilerOptions": {
+      "paths": {
+         "@jointhedots/theme": ["../packages/theme/src/index.tsx"],
+         "@jointhedots/icon": ["../packages/icon/src/index.ts"],
+         "@jointhedots/icon/bootstrap": ["../packages/icon/src/bootstrap/index.ts"],
+         "@jointhedots/icon/font-awesome": ["../packages/icon/src/font-awesome/index.ts"],
+         "@jointhedots/icon/flag-icons": ["../packages/icon/src/flag-icons/index.ts"],
+         "@jointhedots/icon/salesforce": ["../packages/icon/src/salesforce/index.ts"],
+         "@jointhedots/button": ["../packages/button/src/index.ts"],
+         "@jointhedots/input": ["../packages/input/src/index.ts"],
+         "@jointhedots/layout": ["../packages/layout/src/index.ts"]
+      }
+   },
+   "include": [
+      "src"
+   ]
+}

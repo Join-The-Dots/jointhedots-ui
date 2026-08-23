@@ -1,37 +1,47 @@
 # jointhedots-ui
 
-Monorepo des packages UI Join.The.Dots. Il contient pour l'instant :
+Monorepo des packages UI Join.The.Dots, construits avec Vite library mode et
+publiés sur npm :
 
-- **@jointhedots/theme** (`packages/theme`) — thème global clair/sombre,
-  contexte React et styles de base.
-- **@jointhedots/icon** (`packages/icon`) — système d'icônes composable :
-  composant `Icon`, langage de nommage, registre de collections et exports
-  dédiés par collection (bootstrap, font-awesome, flag-icons, salesforce).
+- **@jointhedots/theme** — thème global clair/sombre, contexte React, styles
+  de base.
+- **@jointhedots/icon** — système d'icônes composable : composant `Icon`,
+  langage de nommage, registre de collections et exports dédiés
+  (bootstrap, font-awesome, flag-icons, salesforce).
+- **@jointhedots/button** — boutons SLDS : `Button` (variants, icônes,
+  tooltip) et `ButtonIcon` (pastille d'action, survol alternatif).
+- **@jointhedots/input** — champs pilotés : `InputData` (schéma JSON) et
+  `TextInput`.
+- **@jointhedots/layout** — panneaux et docks (`openDialog`,
+  `openContextualMenu`, `createFloatingDock`), menus, stacks et items.
 
 ## Développement
 
 ```bash
 pnpm install
-pnpm typecheck   # génère les styles, puis tsc sur chaque package
-pnpm build       # styles + vite build (theme puis icon)
+pnpm typecheck   # génère les styles, puis tsc sur chaque package + playground
+pnpm build       # styles + vite build (packages puis playground)
+pnpm dev         # serve le playground sur les sources des packages
 ```
 
-Prérequis : node ≥ 20, pnpm ≥ 10.
+Prérequis : node ≥ 20, pnpm ≥ 10. Le playground (`playground/`) est la
+vitrine exécutable de tous les packages — private, jamais publié.
 
 ## Publication
 
 Chaque package est publié sur npm depuis son dossier (`files: ["dist"]`) :
 
 ```bash
-pnpm publish              # build + pnpm publish --access public (theme puis icon)
+pnpm publish              # build + pnpm publish --access public, dans l'ordre des dépendances
 pnpm publish -- --dry     # simulation sans publier
 ```
 
-Le script refuse de publier une version `0.0.0` : bump la version dans le
-`package.json` du package concerné avant de lancer.
+Le script refuse une version `0.0.0`, vérifie la cohérence des plages de
+dépendances entre packages, et saute les versions déjà publiées.
 
 ## Documentation
 
-- Architecture et concepts : [docs/icon.spec.md](./docs/icon.spec.md)
-- Usage des icônes : [packages/icon/readme.md](./packages/icon/readme.md) et
-  [packages/icon/SKILL.md](./packages/icon/SKILL.md)
+- Méthodologie de packaging : [AGENT.md](./AGENT.md)
+- Architecture et concepts : [docs/](./docs/)
+- Par package : `README.md` (démarrage) et `SKILL.md` (usages avancés)
+- Vitrine exécutable : `pnpm dev`

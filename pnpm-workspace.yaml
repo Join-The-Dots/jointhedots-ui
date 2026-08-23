@@ -1,5 +1,13 @@
 packages:
    - "packages/*"
+   - "playground"
+
+overrides:
+   "@jointhedots/theme": "link:./packages/theme"
+   "@jointhedots/icon": "link:./packages/icon"
+   "@jointhedots/button": "link:./packages/button"
+   "@jointhedots/input": "link:./packages/input"
+   "@jointhedots/layout": "link:./packages/layout"
 
 catalog:
    react: "^19.2.0"

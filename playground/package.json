@@ -1,0 +1,24 @@
+{
+   "name": "@jointhedots/playground",
+   "version": "0.0.0",
+   "private": true,
+   "type": "module",
+   "description": "Showcase of the @jointhedots UI packages — not published",
+   "scripts": {
+      "dev": "vite"
+   },
+   "dependencies": {
+      "@jointhedots/button": "workspace:*",
+      "@jointhedots/icon": "workspace:*",
+      "@jointhedots/input": "workspace:*",
+      "@jointhedots/layout": "workspace:*",
+      "@jointhedots/theme": "workspace:*"
+   },
+   "devDependencies": {
+      "@types/react": "catalog:",
+      "react": "catalog:",
+      "react-dom": "catalog:",
+      "typescript": "catalog:",
+      "vite": "catalog:"
+   }
+}

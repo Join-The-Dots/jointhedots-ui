@@ -1,0 +1,36 @@
+{
+   "name": "@jointhedots/button",
+   "version": "0.1.0",
+   "type": "module",
+   "license": "MIT",
+   "description": "Join.The.Dots buttons — SLDS-styled Button and icon-only ButtonIcon",
+   "sideEffects": true,
+   "exports": {
+      ".": {
+         "types": "./dist/index.d.ts",
+         "import": "./dist/index.js"
+      }
+   },
+   "files": [
+      "dist"
+   ],
+   "dependencies": {
+      "@jointhedots/icon": "^0.1.0",
+      "@salesforce-ux/design-system": "^2.29.0",
+      "@salesforce/design-system-react": "^0.10.65",
+      "classnames": "^2.5.1"
+   },
+   "peerDependencies": {
+      "react": ">=18.2.0"
+   },
+   "devDependencies": {
+      "@types/react": "catalog:",
+      "react": "catalog:",
+      "typescript": "catalog:",
+      "vite": "catalog:",
+      "vite-plugin-dts": "catalog:"
+   },
+   "scripts": {
+      "build": "vite build"
+   }
+}

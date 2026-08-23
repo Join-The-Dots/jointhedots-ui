@@ -15,6 +15,22 @@ const packages = [
       dir: "packages/icon",
       styles: ["src/style.scss"],
    },
+   {
+      dir: "packages/button",
+      styles: ["src/Button.scss"],
+   },
+   {
+      dir: "packages/input",
+      styles: ["src/Input.scss"],
+   },
+   {
+      dir: "packages/layout",
+      styles: [
+         "src/Layouts/Panels/style.scss",
+         "src/Layouts/Menu/style.scss",
+         "src/Items/style.scss",
+      ],
+   },
 ]
 
 for (const pkg of packages) {

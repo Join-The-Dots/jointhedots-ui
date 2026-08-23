@@ -1,0 +1,38 @@
+{
+   "name": "@jointhedots/layout",
+   "version": "0.1.0",
+   "type": "module",
+   "license": "MIT",
+   "description": "Join.The.Dots layout — panel docks, floating menus, stacks and item rows",
+   "sideEffects": true,
+   "exports": {
+      ".": {
+         "types": "./dist/index.d.ts",
+         "import": "./dist/index.js"
+      }
+   },
+   "files": [
+      "dist"
+   ],
+   "dependencies": {
+      "@jointhedots/button": "^0.1.0",
+      "@jointhedots/core": "^2.1.0",
+      "@jointhedots/icon": "^0.1.0",
+      "react-toastify": "^11.0.5"
+   },
+   "peerDependencies": {
+      "react": ">=18.2.0",
+      "react-dom": ">=18.2.0"
+   },
+   "devDependencies": {
+      "@types/react": "catalog:",
+      "react": "catalog:",
+      "react-dom": "catalog:",
+      "typescript": "catalog:",
+      "vite": "catalog:",
+      "vite-plugin-dts": "catalog:"
+   },
+   "scripts": {
+      "build": "vite build"
+   }
+}

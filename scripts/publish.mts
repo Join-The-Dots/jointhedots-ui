@@ -6,31 +6,56 @@ import { fileURLToPath } from "node:url"
 const root = Path.resolve(fileURLToPath(new URL("..", import.meta.url)))
 const dry = process.argv.includes("--dry")
 
-const packages = ["packages/theme", "packages/icon"]
+// Dependencies first: theme → icon → button → input → layout
+const packages = [
+   "packages/theme",
+   "packages/icon",
+   "packages/button",
+   "packages/input",
+   "packages/layout",
+]
 
-const manifests = new Map<string, any>()
+const versions = new Map<string, string>()
 for (const pkg of packages) {
    const manifest = JSON.parse(await Fs.readFile(Path.join(root, pkg, "package.json"), "utf-8"))
-   manifests.set(pkg, manifest)
    if (manifest.version === "0.0.0") {
       throw new Error(`Refusing to publish ${pkg}: version is 0.0.0 (bump it first)`)
    }
+   versions.set(manifest.name, manifest.version)
 }
 
-// icon depends on a literal theme version (core links the folders via file:)
-{
-   const theme_version = manifests.get("packages/theme").version
-   const icon_theme_range = manifests.get("packages/icon").dependencies["@jointhedots/theme"]
-   if (!icon_theme_range.includes(theme_version)) {
-      throw new Error(
-         `packages/icon depends on @jointhedots/theme "${icon_theme_range}" but theme version is ${theme_version}`,
-      )
+for (const pkg of packages) {
+   const manifest = JSON.parse(await Fs.readFile(Path.join(root, pkg, "package.json"), "utf-8"))
+   for (const [dep, range] of Object.entries<any>(manifest.dependencies || {})) {
+      const version = versions.get(dep)
+      if (version && !String(range).includes(version)) {
+         throw new Error(`${pkg} depends on ${dep} "${range}" but its version is ${version}`)
+      }
+   }
+}
+
+function isPublished(name: string, version: string): boolean {
+   try {
+      const out = execFileSync("npm", ["view", `${name}@${version}`, "version"], {
+         shell: true,
+         encoding: "utf-8",
+         stdio: ["ignore", "pipe", "ignore"],
+      })
+      return out.trim() === version
+   }
+   catch {
+      return false
    }
 }
 
 await import("./build.mts")
 
 for (const pkg of packages) {
+   const manifest = JSON.parse(await Fs.readFile(Path.join(root, pkg, "package.json"), "utf-8"))
+   if (isPublished(manifest.name, manifest.version)) {
+      console.log(`\n=== skip ${pkg}: ${manifest.name}@${manifest.version} already published ===`)
+      continue
+   }
    console.log(`\n=== publish ${pkg} ===`)
    execFileSync(
       "pnpm",

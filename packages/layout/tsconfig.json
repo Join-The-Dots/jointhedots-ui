@@ -1,0 +1,19 @@
+{
+   "extends": "../../tsconfig.base.json",
+   "compilerOptions": {
+      "paths": {
+         "@jointhedots/theme": [
+            "../theme/src/index.tsx"
+         ],
+         "@jointhedots/icon": [
+            "../icon/src/index.ts"
+         ],
+         "@jointhedots/button": [
+            "../button/src/index.ts"
+         ]
+      }
+   },
+   "include": [
+      "src"
+   ]
+}
