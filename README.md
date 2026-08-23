@@ -33,12 +33,16 @@ vitrine exécutable de tous les packages — private, jamais publié.
 Chaque package est publié sur npm depuis son dossier (`files: ["dist"]`) :
 
 ```bash
-pnpm publish              # build + pnpm publish --access public, dans l'ordre des dépendances
-pnpm publish -- --dry     # simulation sans publier
+pnpm run publish          # build + publish, dans l'ordre des dépendances
+pnpm run publish --dry    # plan de versions, sans rien écrire ni publier
 ```
 
-Le script refuse une version `0.0.0`, vérifie la cohérence des plages de
-dépendances entre packages, et saute les versions déjà publiées.
+Le versionnement est automatique : une version déjà présente sur le registry
+est bumpée (patch par défaut, `--minor` / `--major` pour tout le run), une
+version inédite est publiée telle quelle, et les plages `@jointhedots/*` des
+packages dépendants suivent. Le script refuse une version `0.0.0` et saute
+les versions déjà publiées — un run interrompu (ex. échec OTP) peut être
+relancé tel quel.
 
 ## Documentation
 

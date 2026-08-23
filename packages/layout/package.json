@@ -17,7 +17,7 @@
    "dependencies": {
       "@jointhedots/button": "^0.1.0",
       "@jointhedots/core": "^2.1.0",
-      "@jointhedots/icon": "^0.1.0",
+      "@jointhedots/icon": "^0.1.1",
       "react-toastify": "^11.0.5"
    },
    "peerDependencies": {

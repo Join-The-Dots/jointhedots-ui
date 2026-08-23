@@ -43,11 +43,11 @@ n'est pas prêt pour TS 7 natif). Scripts racine en **tsx** avec top-level
 await — chaque script connaît l'ordre des packages (dépendances d'abord) :
 
 ```
-pnpm typecheck   # styles.mts → tsc --noEmit par package + playground
-pnpm build       # styles.mts → vite build par package + playground
-pnpm dev         # styles.mts → vite serve du playground (sources liées)
-pnpm publish     # build → pnpm publish par package (garde-fous §6)
-pnpm clean       # dist + src/generated
+pnpm typecheck       # styles.mts → tsc --noEmit par package + playground
+pnpm build           # styles.mts → vite build par package + playground
+pnpm dev             # styles.mts → vite serve du playground (sources liées)
+pnpm run publish     # build → bump auto + publish par package (§6)
+pnpm clean           # dist + src/generated
 ```
 
 ## 4. Le pipeline des styles (le cœur de la méthode)
@@ -89,17 +89,20 @@ d'auto-enregistrement (collections d'icônes) vivent d'import side-effect.
 
 ## 6. Publication
 
-`scripts/publish.mts` applique trois garde-fous puis publie dans l'ordre
-des dépendances :
+`scripts/publish.mts` (`pnpm run publish`) construit un plan de versions puis
+publie dans l'ordre des dépendances :
 
-1. refuse une version `0.0.0` ;
-2. vérifie la cohérence croisée : chaque dépendance `@jointhedots/*` d'un
-   package doit couvrir la version réelle du package dont elle dépend ;
-3. **saute** tout package dont `name@version` existe déjà sur le registry
-   (idempotence, publication reprise après échec OTP).
+1. refuse une version `0.0.0` (manifeste non finalisé) ;
+2. **bump automatique** : toute version déjà présente sur le registry est
+   bumpée — patch par défaut, `--minor` ou `--major` pour tout le run ; une
+   version inédite est publiée telle quelle ;
+3. réécrit les plages des dépendances `@jointhedots/*` de chaque package
+   vers `^<version cible>` du package dont elles dépendent ;
+4. **saute** tout `name@version` déjà sur le registry (idempotence, reprise
+   après un échec OTP).
 
-Versionner : bump la version du package concerné, mettre à jour la plage des
-packages qui en dépendent, `pnpm publish` (OTP requis si 2FA). Ne jamais
+`--dry` affiche le plan (`from → to` par package) sans rien écrire ni
+publier. Après un run réel, committer les `package.json` bumpés. Ne jamais
 publier depuis un état non buildé — le script build d'abord.
 
 ## 7. Consommation externe
@@ -130,7 +133,7 @@ overrides:
    avancés, aide-mémoire).
 6. Une démo dans `playground/` — c'est la vitrine et le test d'intégration
    des packages entre eux.
-7. Vérifier : `pnpm typecheck && pnpm build`, puis `pnpm publish -- --dry`.
+7. Vérifier : `pnpm typecheck && pnpm build`, puis `pnpm run publish --dry`.
 
 ## 9. Documentation — qui dit quoi
 
