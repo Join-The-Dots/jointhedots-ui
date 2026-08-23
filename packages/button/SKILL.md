@@ -15,19 +15,26 @@ modificateur calculé à partir de deux axes : `variant` (nature du bouton) et
 | --- | --- | --- |
 | `base` | aucun | nu, sans modificateur |
 | `neutral` (défaut) | `jtd-button--neutral` | surface + filet |
-| `brand` | `jtd-button--brand` | accent plein |
-| `outline-brand` | `jtd-button--outline-brand` | contour accent |
-| `destructive` / `text-destructive` | `jtd-button--destructive` / `--text-destructive` | action dangereuse pleine / texte |
-| `success` | `jtd-button--success` | action positive |
+| `primary` | `jtd-button--primary` | remplissage `--jtd-primary`, texte `--jtd-on-emphasis` |
+| `outline-primary` | `jtd-button--outline-primary` | contour `--jtd-primary` |
+| `error` / `text-error` | `jtd-button--error` / `--text-error` | action d'échec pleine / texte |
+| `warning` | `jtd-button--warning` | action d'attention pleine |
+| `success` | `jtd-button--success` | action positive pleine |
 | `link` | `jtd-button--link` | lien texte |
 | `icon` | `jtd-button--icon` | bouton-icône (voir `iconVariant`) |
+
+Tout variant coloré suit la palette sémantique du thème
+(`primary` / `success` / `warning` / `error`) ; la base `jtd-button` est
+transparente — un variant sans remplissage (outline, texte) ne montre
+jamais le fond natif du `<button>`. Le texte posé sur un remplissage
+saturé est toujours `--jtd-on-emphasis`.
 
 | `iconVariant` | Modificateur | Rendu |
 | --- | --- | --- |
 | `bare` (défaut des icon) | aucun | icône nue, halo au survol |
 | `container` | `jtd-button--icon-container` | pastille de fond |
 | `border` / `border-filled` | `--icon-border` / `--icon-border-filled` | contour / contour rempli |
-| `brand` | `jtd-button--icon-brand` | pastille accent |
+| `primary` | `jtd-button--icon-primary` | pastille `--jtd-primary` |
 | `more` | `jtd-button--icon-more` | chevron de débordement (rendu bare) |
 | `global-header` | rendu `container` | bouton d'entête globale |
 
@@ -41,12 +48,14 @@ L'icône interne reçoit aussi `inverse` et rend avec le thème contrasté (voir
 - `icon` : nom d'icône du système @jointhedots/icon (`"bi:save"`,
   `"utility:settings"`…). Toute la syntaxe de nommage s'applique.
 - `iconPosition` : `"left"` (défaut) ou `"right"`.
-- `iconSize` : `xs`/`sm`/`md`/`lg` — mappé sur IconSize ; ignoré quand un
-  `iconVariant` à conteneur est actif (le conteneur porte la taille :
-  `--icon-xs/-sm/-lg`, `md` par défaut).
+- `iconSize` : `xs`/`sm`/`md`/`lg` — échelle explicite du glyphe. Par défaut
+  le glyphe hérite de la typographie du bouton (1em, aligné sur le texte),
+  comme les lignes de menu et les champs ; `iconSize` ne sert qu'à déroger.
+  Ignoré quand un `iconVariant` à conteneur est actif (le conteneur porte la
+  taille : `--icon-xs/-sm/-lg`, `md` par défaut).
 
 ```tsx
-<Button label="Delete" icon="bi:trash" iconPosition="right" variant="destructive" />
+<Button label="Delete" icon="bi:trash" iconPosition="right" variant="error" />
 ```
 
 ## 3. Button — tooltip
@@ -70,7 +79,7 @@ Pour une simple infobulle native, préférer `title`.
   au montage.
 - Événements : `onClick(event, data)` (le second argument est réservé),
   `onBlur`, `onFocus`, `onKeyDown/Press/Up`, `onMouse*`.
-- `:focus-visible` rend un anneau `--jtd-accent` (outline + offset).
+- `:focus-visible` rend un anneau `--jtd-primary` (outline + offset).
 
 ## 5. Button — accessibilité et passthrough
 
@@ -93,7 +102,7 @@ idéal pour actions internes d'interface (tooling d'items, barres d'outils).
 | --- | --- |
 | `icon` / `hoveredIcon` | icône affichée ; `hoveredIcon` bascule au survol (état vs repos : favori, coche…) |
 | `size` | alias IconSize (`xs`…`lg`) ou valeur brute (`"2em"`) — appliquée en `font-size` |
-| `variant` | `primary`, `secondary`, `watermark` — classe additionnelle du même nom |
+| `variant` | `primary`, `neutral`, `watermark` — classe additionnelle du même nom |
 | `inversed` | rend l'icône avec le thème contrasté |
 | `title`, `className`, `style`, `onClick` | transmis au conteneur |
 
@@ -108,8 +117,8 @@ variantes — entièrement piloté par les tokens `--jtd-*`.
 ## Aide-mémoire
 
 ```
-variant: brand | neutral | destructive | outline-brand | success | link | icon | base | text-destructive
-iconVariant: bare | container | border | border-filled | brand | more | global-header
+variant: primary | neutral | error | outline-primary | success | warning | link | icon | base | text-error
+iconVariant: bare | container | border | border-filled | primary | more | global-header
 inverse: true            // fond opposé (bouton + icône)
 tooltip: <node>          // bulle CSS au hover/focus (~350 ms)
 buttonRef / requestFocus // contrôle du focus

@@ -28,6 +28,10 @@ dans une **collection** identifiée par son namespace. Les éléments sont rendu
 en calques superposés dans une boîte unitaire de 1em — la taille de l'icône est
 pilotée par la seule `font-size` du conteneur.
 
+Le placement des calques dans la boîte relève du composant, pas des
+collections : il est appliqué en styles inline et ne peut donc pas être
+contesté par les feuilles de style tierces que les collections chargent.
+
 La chaîne se décompose en :
 
 - des **options de base**, préfixées entre crochets, appliquées au conteneur ;
@@ -37,7 +41,9 @@ La chaîne se décompose en :
 Les options (base ou élément) combinent :
 
 - des **drapeaux** : couleurs sémantiques (`error`, `warn`, `info`, `primary`,
-  `secondary`, `success`) et réduction-positionnement en pastille (`badge`,
+  `secondary`, `success`) qui suivent la palette du thème — les drapeaux
+  colorés consomment les tokens `--jtd-*` (le gris de `info`/`secondary` est
+  le ton `muted`) — et réduction-positionnement en pastille (`badge`,
   coins `RT`/`RB`/`LT`/`LB`) ;
 - des **variables CSS** `clé=valeur`, exposées à la collection sous forme de
   custom properties.

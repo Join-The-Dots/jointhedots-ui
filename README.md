@@ -10,10 +10,11 @@ publiés sur npm :
   (bootstrap, font-awesome, flag-icons, salesforce).
 - **@jointhedots/button** — boutons : `Button` (variants, icônes,
   tooltip) et `ButtonIcon` (pastille d'action, survol alternatif).
-- **@jointhedots/input** — champs pilotés : `InputData` (schéma JSON) et
-  `TextInput`.
 - **@jointhedots/layout** — panneaux et docks (`openDialog`,
   `openContextualMenu`, `createFloatingDock`), menus, stacks et items.
+- **@jointhedots/input** — champs pilotés : `InputData` (schéma JSON,
+  tooling et déroulant enum sur le modèle d'items de layout) et
+  `TextInputSchema`, le constructeur du champ texte.
 
 ## Développement
 

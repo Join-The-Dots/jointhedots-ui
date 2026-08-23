@@ -7,6 +7,28 @@
     display: block;
 }
 
+// Menu rows are compact like the other line components (buttons, fields):
+// the wrapper declares the row typography — whatever the ambient font-size
+// where the menu docks (contextual menus attach at body level) — and the
+// glyph sits at 1em of it, in line with the row text. Item rows outside a
+// menu (lists, panels) keep their larger standalone metrics.
+
+.jtd-menu-item {
+    font-size: 12px;
+
+    &>.jtd-item-short>.item-icon {
+        font-size: 1em;
+    }
+}
+
+.jtd-menu-item-large {
+    font-size: 14px;
+
+    &>.jtd-item-large>.item-icon {
+        font-size: 1em;
+    }
+}
+
 .jtd-menu-separator {
     border-bottom: 1px solid var(--jtd-border);
     margin: 5px;

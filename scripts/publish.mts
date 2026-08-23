@@ -6,13 +6,13 @@ import { fileURLToPath } from "node:url"
 const root = Path.resolve(fileURLToPath(new URL("..", import.meta.url)))
 const dry = process.argv.includes("--dry")
 
-// Dependencies first: theme → icon → button → input → layout
+// Dependencies first: theme → icon → button → layout → input
 const packages = [
    "packages/theme",
    "packages/icon",
    "packages/button",
-   "packages/input",
    "packages/layout",
+   "packages/input",
 ]
 
 const versions = new Map<string, string>()

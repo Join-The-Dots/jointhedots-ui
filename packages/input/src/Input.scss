@@ -1,4 +1,4 @@
-// Field family shared by InputData and TextInput.
+// Field family of the schema-driven inputs.
 
 .jtd-field {
    display: flex;
@@ -26,7 +26,7 @@
    transition: border-color 120ms ease;
 
    &:focus-within {
-      border-color: var(--jtd-accent);
+      border-color: var(--jtd-primary);
    }
 }
 
@@ -67,41 +67,87 @@ textarea.jtd-input {
    width: 16px;
    height: 16px;
    margin: 8px 0;
-   accent-color: var(--jtd-accent);
+   accent-color: var(--jtd-primary);
    cursor: pointer;
 
    &:focus-visible {
-      outline: 2px solid var(--jtd-accent);
+      outline: 2px solid var(--jtd-primary);
       outline-offset: 2px;
    }
 }
 
+// Field tooling renders the item model's widgets (LabelButton pills).
 .jtd-field-tooling {
    display: flex;
    flex: none;
+   gap: 2px;
 }
 
-.jtd-field-action {
-   display: inline-flex;
+// Enum trigger: shows the value, opens a contextual menu of item rows.
+.jtd-select {
+   display: flex;
    align-items: center;
-   justify-content: center;
-   width: 24px;
-   height: 24px;
-   padding: 0;
-   border: none;
-   background: none;
-   color: var(--jtd-muted);
-   border-radius: 4px;
+   justify-content: space-between;
+   gap: 6px;
    cursor: pointer;
-   transition: background-color 120ms ease, color 120ms ease;
+   text-align: left;
+}
 
-   &:hover {
-      color: var(--jtd-foreground);
-      background-color: var(--jtd-hover);
+.jtd-select-caret {
+   flex: none;
+   color: var(--jtd-muted);
+}
+
+// Size declinations scale the composite — the metric source; everything it
+// contains (icon, tooling pills, caret, widget text) inherits via font-size.
+.jtd-field--xs {
+   font-size: 12px;
+   gap: 2px;
+
+   & > .jtd-field-label {
+      font-size: 10px;
    }
 
-   &:focus-visible {
-      outline: 2px solid var(--jtd-accent);
-      outline-offset: 1px;
+   & > .jtd-field-control {
+      min-height: 18px;
+      padding: 1px 6px;
+      gap: 3px;
+      border-radius: 4px;
+   }
+
+   .jtd-checkbox {
+      width: 12px;
+      height: 12px;
+      margin: 2px 0;
+   }
+}
+
+.jtd-field--sm {
+   font-size: 13px;
+
+   & > .jtd-field-control {
+      min-height: 24px;
+      padding: 2px 9px;
+   }
+
+   .jtd-checkbox {
+      width: 14px;
+      height: 14px;
+      margin: 4px 0;
+   }
+}
+
+.jtd-field--lg {
+   font-size: 15px;
+
+   & > .jtd-field-control {
+      min-height: 40px;
+      padding: 5px 12px;
+   }
+
+   .jtd-checkbox {
+      width: 18px;
+      height: 18px;
+      margin: 10px 0;
    }
 }

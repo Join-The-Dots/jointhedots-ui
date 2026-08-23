@@ -4,4 +4,4 @@ import styles from "./generated/styles"
 injectStyles(styles, "jtd-input-styles")
 
 export * from "./InputData"
-export * from "./TextInput"
+export * from "./TextInputSchema"

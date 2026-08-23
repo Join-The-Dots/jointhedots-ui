@@ -125,6 +125,9 @@ importers:
       '@jointhedots/icon':
         specifier: link:../icon
         version: link:../icon
+      '@jointhedots/layout':
+        specifier: link:../layout
+        version: link:../layout
     devDependencies:
       '@types/react':
         specifier: 'catalog:'

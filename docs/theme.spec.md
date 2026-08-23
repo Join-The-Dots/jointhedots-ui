@@ -27,10 +27,18 @@ chaque token doit être consommé par au moins un composant :
   `surface-foreground`) ;
 - `border` : le filet hairline unique des bordures et séparateurs ;
 - `muted` : texte secondaire ; `hover` : teinte de survol ;
-- `accent` / `on-accent` : l'accent interactif (actions primaires, focus,
-  marqueur de sélection) et le texte posé dessus ;
-- `danger` / `success` : accents sémantiques ;
+- la **palette sémantique** : `primary` (l'interactif — actions primaires,
+  focus, marqueur de sélection), `success`, `warning`, `error`, et
+  `on-emphasis` — le texte posé sur tout remplissage saturé de la palette ;
 - `font-family` : police de l'interface.
+
+La palette est la seule source de colorisation : tout composant coloré
+(bouton plein ou contouré, pastille d'action, drapeau d'icône) consomme
+l'un de ces cinq tokens — jamais une couleur littérale. Le même rôle
+s'appelle toujours pareil : la couleur d'action est `primary` du token au
+variant de bouton au drapeau d'icône. Ce qui n'est pas coloré est
+`neutral` (chrome de surface, filet, survol doux) — ce n'est pas un
+membre de la palette.
 
 Invariants :
 

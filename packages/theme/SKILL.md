@@ -77,15 +77,19 @@ l'ensemble des tokens. Le sombre est la palette par défaut sur `body` ;
 | `--jtd-border` | filet hairline : bordures, séparateurs |
 | `--jtd-muted` | texte secondaire / désactivé |
 | `--jtd-hover` | teinte de survol |
-| `--jtd-accent` / `--jtd-on-accent` | accent interactif (boutons primaires, focus, sélection) et texte posé dessus |
-| `--jtd-danger` / `--jtd-success` | accents sémantiques destructif / positif |
+| `--jtd-primary` | couleur d'action : boutons primaires, focus, sélection — membre de la palette sémantique |
+| `--jtd-success` / `--jtd-warning` / `--jtd-error` | palette sémantique : positif / attention / échec |
+| `--jtd-on-emphasis` | texte posé sur tout remplissage saturé de la palette |
 | `--jtd-font-family` | police de l'interface |
 
 Règles d'usage pour les composants :
 
 - consommer exclusivement ces tokens — jamais de couleur littérale ni de
   `light-dark()` dans un gabarit de package ;
-- dériver les états (hover d'un bouton accenté…) par `color-mix()` sur un
+- toute colorisation passe par la palette (`primary`, `success`,
+  `warning`, `error`) ; ce qui n'est pas coloré est `neutral` (surface,
+  filet, survol doux) ;
+- dériver les états (hover d'un bouton coloré…) par `color-mix()` sur un
   token plutôt qu'en ajoutant un token ;
 - `color-scheme` (`dark` par défaut, `light` sur `body.theme-light`) suit le
   thème : les contrôles natifs (scrollbars, checkboxes) s'alignent seuls ;

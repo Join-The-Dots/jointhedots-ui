@@ -9,9 +9,9 @@ publie un package ici.
 - **Un package = une responsabilité UI** (icônes, thème, boutons, champs,
   layout…), versionné et publiable indépendamment sur npm.
 - **Le graphe de dépendances est acyclique et fixe** :
-  `theme → icon → button → layout`, `icon → input`. Tout nouveau package
-  déclare ses dépendances vers les packages existants avec une plage de
-  version littérale (`^x.y.z`) — jamais `workspace:*` dans un package
+  `theme → icon → button → layout`, `icon → input → layout`. Tout nouveau
+  package déclare ses dépendances vers les packages existants avec une plage
+  de version littérale (`^x.y.z`) — jamais `workspace:*` dans un package
   publié (un `file:` link externe ne saurait pas le résoudre).
 - **Zéro legacy** : un déplacement de composant est total — sources,
   manifestes, scripts, docs, playground — dans la même tâche.

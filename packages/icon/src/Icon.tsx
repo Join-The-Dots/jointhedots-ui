@@ -90,12 +90,12 @@ const IconCollections: { [namespace: string]: IconCollection } = {
 const IconParsedCache = new Map<string, IconComposed>()
 
 const IconFlags: Record<string, IconStyle> = {
-   "error": makeColorFlag("red"),
-   "warn": makeColorFlag("gold"),
-   "info": makeColorFlag("grey"),
-   "primary": makeColorFlag("#36f"),
-   "secondary": makeColorFlag("#666"),
-   "success": makeColorFlag("#6d0"),
+    "error": makeColorFlag("var(--jtd-error)"),
+    "warn": makeColorFlag("var(--jtd-warning)"),
+    "info": makeColorFlag("var(--jtd-muted)"),
+    "primary": makeColorFlag("var(--jtd-primary)"),
+    "secondary": makeColorFlag("var(--jtd-muted)"),
+    "success": makeColorFlag("var(--jtd-success)"),
    "badge": {
       style: {
          "fontSize": "0.6em",
@@ -131,6 +131,13 @@ const IconFlags: Record<string, IconStyle> = {
          "right": "unset", "top": "unset",
       }
    },
+}
+
+// Inline so collection stylesheets (e.g. flag-icons `.fi { position: relative }`)
+// can never wrestle a layer out of the unit box
+const IconLayerStyle: Record<string, string | number> = {
+   position: "absolute",
+   top: 0, right: 0, bottom: 0, left: 0,
 }
 
 const IconBaseRegex = /^(?:\[(?<options>[^\]]*)\])?(?<elements>.*)$/
@@ -178,12 +185,12 @@ function parseIconElement(icon: IconComposed, name: string) {
    if (match && match.groups) {
       const { set, name, options } = match.groups
       const collection = (set ? IconCollections[set] : IconCollections[name]) || IconCollections["?"]
-      element = { collection, name, className: "", style: {} }
+      element = { collection, name, className: "", style: { ...IconLayerStyle } }
       parseIconStyle(element, options)
    }
    else {
       const collection = IconCollections["?"]
-      element = { collection, name, className: "", style: {} }
+      element = { collection, name, className: "", style: { ...IconLayerStyle } }
       console.error(`Icon element '${name}' is invalid`)
    }
    element.collection.setup(element)

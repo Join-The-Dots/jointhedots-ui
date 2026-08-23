@@ -30,7 +30,7 @@ Disponibles dans toute option `[…]` :
 
 | Drapeau | Effet |
 | --- | --- |
-| `error` / `warn` / `info` / `primary` / `secondary` / `success` | force `color` et `--color` (rouge, or, gris, #36f, #666, #6d0) |
+| `error` / `warn` / `info` / `primary` / `secondary` / `success` | force `color` et `--color` sur la palette du thème (`--jtd-error`, `--jtd-warning`, `--jtd-muted`, `--jtd-primary`, `--jtd-muted`, `--jtd-success`) |
 | `badge` | réduit l'élément (0.6em) et le colle au coin haut-droit — usage typique : pastille de compteur ou d'état sur un glyph principal (souvent combiné à l'élément `label:`) |
 | `RT` / `RB` / `LT` / `LB` | comme `badge` mais haut-droit / bas-droit / haut-gauche / bas-gauche |
 
@@ -105,7 +105,10 @@ Le composant lit le thème via le contexte de `@jointhedots/theme` :
   `sm`) ou une valeur brute (`"3.2em"`), appliquée en `font-size` : tous les
   calques et la boîte suivent (dimensions en `em`).
 - La boîte fait toujours 1em × 1em (`div.jtd-icon`, position relative) ; les
-  calques sont absolus et remplissent la boîte.
+  calques sont absolus et remplissent la boîte. Ce positionnement est posé en
+  styles inline par le composant lors du parsing : une règle tierce chargée par
+  un CSS de collection (ex. `.fi { position: relative }` de flag-icons) ne peut
+  pas en déloger un calque.
 - Le CSS du gabarit est auto-injecté au premier chargement du module (balise
   `<style id="jtd-icon-styles">`, idempotent, sans effet en SSR).
 - `title`, `className`, `style`, `onClick` sont transmis au conteneur ;
@@ -155,7 +158,7 @@ bi:house-door-fill                          glyph simple
 bi:bell[badge]                              pastille coin haut-droit
 bi:bell|label:3                             compteur superposé
 [error]bi:exclamation-triangle-fill         couleur forcée sur la base
-bi:zap[primary]|utility:einstein[badge,info] empilement multi-collections
+bi:lightning-fill[primary]|utility:einstein[badge,info] empilement multi-collections
 avatar:Jean Dupont                          pastille initiales déterministe
 flag:fr                                     drapeau (export flag-icons)
 label:new                                   pastille texte

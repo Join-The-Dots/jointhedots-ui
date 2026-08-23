@@ -19,7 +19,7 @@ Peer dependency : `react` ≥ 18.2.0. Le package dépend de
 import { Button, ButtonIcon } from "@jointhedots/button"
 import "@jointhedots/icon/bootstrap"
 
-<Button label="Save" icon="bi:save" variant="brand" onClick={...} />
+<Button label="Save" icon="bi:save" variant="primary" onClick={...} />
 <ButtonIcon icon="bi:trash" variant="primary" title="Delete" />
 <ButtonIcon icon="bi:star" hoveredIcon="bi:star-fill" size="lg" />
 ```

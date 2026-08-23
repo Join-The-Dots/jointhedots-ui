@@ -6,13 +6,13 @@ const root = Path.resolve(fileURLToPath(new URL("..", import.meta.url)))
 
 await import("./styles.mts")
 
-// Dependencies first: theme → icon → button → input → layout
+// Dependencies first: theme → icon → button → layout → input
 const packages = [
    "packages/theme",
    "packages/icon",
    "packages/button",
-   "packages/input",
    "packages/layout",
+   "packages/input",
 ]
 
 for (const pkg of packages) {

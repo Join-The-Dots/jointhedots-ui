@@ -6,8 +6,8 @@ const packages = [
    "packages/theme",
    "packages/icon",
    "packages/button",
-   "packages/input",
    "packages/layout",
+   "packages/input",
    "playground",
 ]
 

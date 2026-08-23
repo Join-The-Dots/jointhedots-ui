@@ -3,7 +3,7 @@
    "version": "0.1.0",
    "type": "module",
    "license": "MIT",
-   "description": "Join.The.Dots inputs — schema-driven InputData and plain TextInput",
+   "description": "Join.The.Dots inputs — schema-driven InputData and the TextInputSchema builder",
    "sideEffects": true,
    "exports": {
       ".": {
@@ -16,7 +16,8 @@
    ],
    "dependencies": {
       "@jointhedots/core": "^2.1.0",
-      "@jointhedots/icon": "^0.1.0"
+      "@jointhedots/icon": "^0.1.0",
+      "@jointhedots/layout": "^0.1.0"
    },
    "peerDependencies": {
       "react": ">=18.2.0"

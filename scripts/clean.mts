@@ -8,8 +8,8 @@ const packages = [
    "packages/theme",
    "packages/icon",
    "packages/button",
-   "packages/input",
    "packages/layout",
+   "packages/input",
 ]
 
 for (const pkg of [...packages, "playground"]) {

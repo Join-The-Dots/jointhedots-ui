@@ -11,7 +11,7 @@ interface ButtonProps {
    icon?: string
    iconPosition?: 'left' | 'right'
    iconSize?: 'xs' | 'sm' | 'md' | 'lg'
-   iconVariant?: 'bare' | 'container' | 'border' | 'border-filled' | 'brand' | 'more' | 'global-header'
+   iconVariant?: 'bare' | 'container' | 'border' | 'border-filled' | 'primary' | 'more' | 'global-header'
    id?: string
    inverse?: boolean
    label?: string | React.ReactNode
@@ -33,7 +33,7 @@ interface ButtonProps {
    type?: 'reset' | 'submit' | 'button'
    title?: string
    tooltip?: React.ReactNode
-   variant?: 'base' | 'link' | 'neutral' | 'brand' | 'outline-brand' | 'destructive' | 'success' | 'text-destructive' | 'icon'
+   variant?: 'base' | 'link' | 'neutral' | 'primary' | 'outline-primary' | 'error' | 'text-error' | 'success' | 'warning' | 'icon'
    style?: React.CSSProperties
    children?: React.ReactNode
 }
@@ -41,7 +41,6 @@ interface ButtonProps {
 const defaultProps: Partial<ButtonProps> = {
    disabled: false,
    hint: false,
-   iconSize: 'md',
    responsive: false,
    type: 'button',
    variant: 'neutral',
@@ -72,7 +71,7 @@ export function Button(inProps: ButtonProps) {
             'jtd-button--icon-inverse': props.inverse && isIcon && !iconBorder,
             'jtd-button--icon-border-inverse': props.inverse && isIcon && iconBorder,
             [`jtd-button--icon-${props.iconSize}`]:
-               isIcon && iconVariant && props.iconSize !== 'md',
+               isIcon && iconVariant && props.iconSize && props.iconSize !== 'md',
          },
          props.className
       )
@@ -157,7 +156,7 @@ export type ButtonIconProps = {
    size?: IconSize | string
    title?: string
    inversed?: boolean
-   variant?: "primary" | "secondary" | "watermark"
+    variant?: "primary" | "neutral" | "watermark"
    className?: string
    style?: React.CSSProperties
    onClick?: React.MouseEventHandler
