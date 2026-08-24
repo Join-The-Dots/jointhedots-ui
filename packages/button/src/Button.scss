@@ -124,26 +124,11 @@
          background-color: var(--jtd-hover);
       }
 
-      &:active {
-         transform: scale(0.95);
-      }
+       &:active {
+          transform: scale(0.95);
+       }
 
-      &.jtd-button--icon-xs {
-         width: 20px;
-         height: 20px;
-      }
-
-      &.jtd-button--icon-sm {
-         width: 24px;
-         height: 24px;
-      }
-
-      &.jtd-button--icon-lg {
-         width: 40px;
-         height: 40px;
-      }
-
-      &.jtd-button--icon-container {
+       &.jtd-button--icon-container {
          background-color: color-mix(in srgb, var(--jtd-foreground), transparent 88%);
 
          &:hover {
@@ -186,14 +171,71 @@
           }
        }
 
-      &.jtd-button--icon-border-inverse {
-          color: var(--jtd-on-emphasis);
-          border-color: color-mix(in srgb, var(--jtd-on-emphasis), transparent 50%);
+       &.jtd-button--icon-border-inverse {
+           color: var(--jtd-on-emphasis);
+           border-color: color-mix(in srgb, var(--jtd-on-emphasis), transparent 50%);
 
-          &:hover {
-             background-color: color-mix(in srgb, var(--jtd-on-emphasis), transparent 84%);
-          }
-       }
+           &:hover {
+              background-color: color-mix(in srgb, var(--jtd-on-emphasis), transparent 84%);
+           }
+        }
+   }
+
+   // Size declinations mirror the field metrics (jtd-field--*) so a button
+   // sits flush beside its input; the glyph follows via font-size inheritance.
+   &.jtd-button--xs {
+      height: 18px;
+      padding: 0 8px;
+      gap: 3px;
+      font-size: 12px;
+      border-radius: 4px;
+
+      &.jtd-button--icon {
+         width: 18px;
+         height: 18px;
+         padding: 0;
+      }
+
+      &.jtd-button--link {
+         height: auto;
+         padding: 0;
+      }
+   }
+
+   &.jtd-button--sm {
+      height: 24px;
+      padding: 0 11px;
+      gap: 5px;
+      font-size: 13px;
+
+      &.jtd-button--icon {
+         width: 24px;
+         height: 24px;
+         padding: 0;
+      }
+
+      &.jtd-button--link {
+         height: auto;
+         padding: 0;
+      }
+   }
+
+   &.jtd-button--lg {
+      height: 40px;
+      padding: 0 16px;
+      gap: 8px;
+      font-size: 15px;
+
+      &.jtd-button--icon {
+         width: 40px;
+         height: 40px;
+         padding: 0;
+      }
+
+      &.jtd-button--link {
+         height: auto;
+         padding: 0;
+      }
    }
 }
 

@@ -48,17 +48,29 @@ L'icône interne reçoit aussi `inverse` et rend avec le thème contrasté (voir
 - `icon` : nom d'icône du système @jointhedots/icon (`"bi:save"`,
   `"utility:settings"`…). Toute la syntaxe de nommage s'applique.
 - `iconPosition` : `"left"` (défaut) ou `"right"`.
-- `iconSize` : `xs`/`sm`/`md`/`lg` — échelle explicite du glyphe. Par défaut
-  le glyphe hérite de la typographie du bouton (1em, aligné sur le texte),
-  comme les lignes de menu et les champs ; `iconSize` ne sert qu'à déroger.
-  Ignoré quand un `iconVariant` à conteneur est actif (le conteneur porte la
-  taille : `--icon-xs/-sm/-lg`, `md` par défaut).
+
+Le glyphe hérite toujours de la typographie du bouton (1em, aligné sur le
+texte), comme les lignes de menu et les champs.
 
 ```tsx
 <Button label="Delete" icon="bi:trash" iconPosition="right" variant="error" />
 ```
 
-## 3. Button — tooltip
+## 3. Button — taille
+
+`size` : `xs`/`sm`/`md` (défaut)/`lg` — les mêmes déclinaisons que les icônes
+et les champs. La taille met à l'échelle le bouton entier : hauteur, police,
+espacements, rayon ; le glyphe suit par héritage de la fonte. Les métriques
+sont celles du composite de champ (`jtd-field--*` de @jointhedots/input),
+donc un bouton posé à côté d'un champ de même taille partage sa hauteur
+(18/24/32/40 px). Le bouton-icône (`variant="icon"`) dérive sa boîte de la
+même taille ; le variant `link` ne retient que la typographie.
+
+```tsx
+<Button label="Save" icon="bi:save" size="sm" variant="primary" />
+```
+
+## 4. Button — tooltip
 
 Quand `tooltip` est fourni (React node), le bouton est enveloppé dans un
 `span.jtd-tooltip` et la bulle `jtd-tooltip__content` s'affiche au survol ou
@@ -72,7 +84,7 @@ flèche dont le contour prolonge celui de la bulle.
 
 Pour une simple infobulle native, préférer `title`.
 
-## 4. Button — focus et références
+## 5. Button — focus et références
 
 - `buttonRef: (node | null) => void` reçoit l'élément `<button>` monté.
 - `requestFocus` + `onRequestFocus(node)` demandent le focus programmatique
@@ -81,7 +93,7 @@ Pour une simple infobulle native, préférer `title`.
   `onBlur`, `onFocus`, `onKeyDown/Press/Up`, `onMouse*`.
 - `:focus-visible` rend un anneau `--jtd-primary` (outline + offset).
 
-## 5. Button — accessibilité et passthrough
+## 6. Button — accessibilité et passthrough
 
 - `assistiveText` : libellé lecteur d'écran — rendu en `aria-label` ; pour un
   bouton-icône sans `assistiveText`, un `label` chaîne est promu en
@@ -92,7 +104,7 @@ Pour une simple infobulle native, préférer `title`.
 - `title` : infobulle native.
 - `disabled`, `responsive`, `hint`, `id`, `style`, `className` standard.
 
-## 6. ButtonIcon — pastille d'action
+## 7. ButtonIcon — pastille d'action
 
 `ButtonIcon` est un déclencheur icône légèrement différent d'un `Button
 variant="icon"` : c'est un `<div>` focusable via tabIndex passé au props,
@@ -124,6 +136,7 @@ variantes — entièrement piloté par les tokens `--jtd-*`.
 ```
 variant: primary | neutral | error | outline-primary | success | warning | link | icon | base | text-error
 iconVariant: bare | container | border | border-filled | primary | more | global-header
+size: xs | sm | md | lg   // métriques des champs — le bouton suit son input
 inverse: true            // fond opposé (bouton + icône)
 tooltip: <node>          // bulle CSS au hover/focus (~350 ms)
 buttonRef / requestFocus // contrôle du focus

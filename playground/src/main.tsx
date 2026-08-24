@@ -115,16 +115,23 @@ function App() {
                <Button label="Just a link" variant="link" onClick={() => setLastAction("link")} />
                <Button label="Base" variant="base" onClick={() => setLastAction("base")} />
             </div>
-            <div className="demo-row">
-               <span className="row-caption">disabled</span>
-               <Button label="Primary" icon="bi:rocket-takeoff" variant="primary" disabled />
-               <Button label="Warning" variant="warning" disabled />
-               <Button label="Neutral" variant="neutral" disabled />
-            </div>
+             <div className="demo-row">
+                <span className="row-caption">disabled</span>
+                <Button label="Primary" icon="bi:rocket-takeoff" variant="primary" disabled />
+                <Button label="Warning" variant="warning" disabled />
+                <Button label="Neutral" variant="neutral" disabled />
+             </div>
+             <div className="demo-row">
+                <span className="row-caption">size</span>
+                {(["xs", "sm", "md", "lg"] as const).map(size => (
+                   <Button key={size} label="Save" icon="bi:save" size={size} variant="neutral" onClick={() => setLastAction(`saved (${size})`)} />
+                ))}
+                <Button label="A link" variant="link" size="xs" onClick={() => setLastAction("xs link")} />
+             </div>
          </div>
       </Section>
 
-       <Section title="Buttons — icon affordances" hint='variant="icon" × iconVariant · iconSize · tooltip · ButtonIcon variants & faded hover swap'>
+        <Section title="Buttons — icon affordances" hint='variant="icon" × iconVariant · size · tooltip · ButtonIcon variants & faded hover swap'>
          <div className="demo-card">
             <div className="demo-row">
                <span className="row-caption">iconVariant</span>
@@ -134,12 +141,12 @@ function App() {
                <Button icon="bi:gear" variant="icon" iconVariant="border-filled" title="border-filled" onClick={() => setLastAction("border-filled gear")} />
                <Button icon="bi:gear" variant="icon" iconVariant="primary" title="primary" onClick={() => setLastAction("primary gear")} />
             </div>
-            <div className="demo-row">
-               <span className="row-caption">iconSize</span>
-               {(["xs", "sm", "md", "lg"] as const).map(size => (
-                  <Button key={size} icon="bi:person" variant="icon" iconVariant="container" iconSize={size} title={`container ${size}`} onClick={() => setLastAction(`icon ${size}`)} />
-               ))}
-            </div>
+             <div className="demo-row">
+                <span className="row-caption">size</span>
+                {(["xs", "sm", "md", "lg"] as const).map(size => (
+                   <Button key={size} icon="bi:person" variant="icon" iconVariant="container" size={size} title={`container ${size}`} onClick={() => setLastAction(`icon ${size}`)} />
+                ))}
+             </div>
             <div className="demo-row">
                <span className="row-caption">tooltip</span>
                <Button icon="bi:question-circle" variant="icon" iconVariant="border"
@@ -161,7 +168,7 @@ function App() {
          <DemoForms onAction={setLastAction} />
       </Section>
 
-      <Section title="Inputs — sizes" hint="size=xs|sm|md|lg — same declinations as icons; the composite carries the metrics">
+       <Section title="Inputs — sizes" hint="size=xs|sm|md|lg — same declinations as icons and buttons; the composite carries the metrics">
          <DemoInputSizes onAction={setLastAction} />
       </Section>
 
@@ -276,29 +283,34 @@ function DemoInputSizes({ onAction }: { onAction: (msg: string) => void }) {
    const [watch, setWatch] = useState(false)
    return <div className="demo-grid">
       {(["xs", "sm", "md", "lg"] as const).map(size => (
-         <div className="demo-card" key={size}>
-            <InputData
-               label={`size="${size}"`}
-               value={text}
-               schema={TextInputSchema("type here…", "text")}
-               icon="bi:text-cursor"
-               size={size}
-               onChange={v => { setText(v); onAction(`${size} = "${v}"`) }}
-            />
-            <InputData
-               value={flavor}
-               schema={{ type: "string", enum: ["vanilla", "chocolate", "mint"] }}
-               icon="bi:cup-straw"
-               size={size}
-               onChange={v => { setFlavor(v); onAction(`${size} flavor = ${v}`) }}
-            />
-            <InputData
-               value={watch}
-               schema={{ type: "boolean" }}
-               size={size}
-               onChange={v => { setWatch(v); onAction(`${size} watch = ${v}`) }}
-            />
-         </div>
+          <div className="demo-card" key={size}>
+             <InputData
+                label={`size="${size}"`}
+                value={text}
+                schema={TextInputSchema("type here…", "text")}
+                icon="bi:text-cursor"
+                size={size}
+                onChange={v => { setText(v); onAction(`${size} = "${v}"`) }}
+             />
+             <div className="demo-row">
+                <Button label="Go" icon="bi:play" size={size} variant="primary" onClick={() => onAction(`${size} go`)} />
+                <Button label="Cancel" size={size} variant="neutral" onClick={() => onAction(`${size} cancel`)} />
+                <Button icon="bi:gear" variant="icon" iconVariant="border" size={size} title="settings" onClick={() => onAction(`${size} settings`)} />
+             </div>
+             <InputData
+                value={flavor}
+                schema={{ type: "string", enum: ["vanilla", "chocolate", "mint"] }}
+                icon="bi:cup-straw"
+                size={size}
+                onChange={v => { setFlavor(v); onAction(`${size} flavor = ${v}`) }}
+             />
+             <InputData
+                value={watch}
+                schema={{ type: "boolean" }}
+                size={size}
+                onChange={v => { setWatch(v); onAction(`${size} watch = ${v}`) }}
+             />
+          </div>
       ))}
    </div>
 }

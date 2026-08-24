@@ -10,7 +10,6 @@ interface ButtonProps {
    hint?: boolean
    icon?: string
    iconPosition?: 'left' | 'right'
-   iconSize?: 'xs' | 'sm' | 'md' | 'lg'
    iconVariant?: 'bare' | 'container' | 'border' | 'border-filled' | 'primary' | 'more' | 'global-header'
    id?: string
    inverse?: boolean
@@ -29,6 +28,7 @@ interface ButtonProps {
    buttonRef?: (component: HTMLButtonElement | null) => void
    requestFocus?: boolean
    responsive?: boolean
+   size?: 'xs' | 'sm' | 'md' | 'lg'
    tabIndex?: string
    type?: 'reset' | 'submit' | 'button'
    title?: string
@@ -42,6 +42,7 @@ const defaultProps: Partial<ButtonProps> = {
    disabled: false,
    hint: false,
    responsive: false,
+   size: 'md',
    type: 'button',
    variant: 'neutral',
 }
@@ -70,8 +71,7 @@ export function Button(inProps: ButtonProps) {
             [`jtd-button--icon-${iconVariant}`]: isIcon && iconVariant && iconVariant !== 'bare',
             'jtd-button--icon-inverse': props.inverse && isIcon && !iconBorder,
             'jtd-button--icon-border-inverse': props.inverse && isIcon && iconBorder,
-            [`jtd-button--icon-${props.iconSize}`]:
-               isIcon && iconVariant && props.iconSize && props.iconSize !== 'md',
+            [`jtd-button--${props.size}`]: props.size !== 'md',
          },
          props.className
       )
@@ -84,8 +84,7 @@ export function Button(inProps: ButtonProps) {
    }
 
    const renderIcon = (name: string): React.ReactNode => {
-      const iconSize = !props.iconSize || props.iconVariant ? null : props.iconSize
-      return <Icon name={name} inverse={props.inverse} size={iconSize} />
+      return <Icon name={name} inverse={props.inverse} />
    }
 
    const renderLabel = (): React.ReactNode => {

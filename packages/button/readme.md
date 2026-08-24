@@ -1,6 +1,6 @@
 # @jointhedots/button
 
-Boutons Join.The.Dots : `Button` (label, icône, variante,
+Boutons Join.The.Dots : `Button` (label, icône, variante, taille,
 tooltip) et `ButtonIcon` (icône seule, survol alternatif, pastilles colorées).
 
 ## Installation
@@ -20,9 +20,14 @@ import { Button, ButtonIcon } from "@jointhedots/button"
 import "@jointhedots/icon/bootstrap"
 
 <Button label="Save" icon="bi:save" variant="primary" onClick={...} />
+<Button label="Save" icon="bi:save" variant="primary" size="sm" />
 <ButtonIcon icon="bi:trash" variant="primary" title="Delete" />
 <ButtonIcon icon="bi:star" hoveredIcon="bi:star-fill" size="lg" />
 ```
+
+`size` (`xs`/`sm`/`md`/`lg`) partage les métriques des champs
+d'@jointhedots/input : un bouton aligné sur un champ de même taille partage
+sa hauteur.
 
 Les styles du package (gabarits `jtd-button*`, `jtd-tooltip`) sont injectés
 automatiquement au chargement du module — aucun stylesheet à gérer.
