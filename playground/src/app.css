@@ -97,6 +97,12 @@ section .hint {
    border: 1px solid var(--jtd-border);
 }
 
+/* Overflow is only observable when the list width is bounded: flex items
+   size to their content, so without a cap long rows just widen the list. */
+.items-fixed-width {
+   width: 380px;
+}
+
 .popup-hint {
    display: flex;
    align-items: center;

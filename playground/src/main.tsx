@@ -482,7 +482,7 @@ function DemoItemOverflow({ onAction }: { onAction: (msg: string) => void }) {
    const longSummary = "connected app · 1 284 093 API calls today · healthcheck every 5 min"
    return <div className="items-demo">
       {(["wrap", "truncate"] as const).map(mode => (
-         <ul className="items" key={mode}>
+         <ul className="items items-fixed-width" key={mode}>
             <ItemRowRich
                name={`textOverflow: "${mode}"`}
                icon="bi:input-cursor-text"
