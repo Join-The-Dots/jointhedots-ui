@@ -13,8 +13,16 @@
 // glyph sits at 1em of it, in line with the row text. Item rows outside a
 // menu (lists, panels) keep their larger standalone metrics.
 
+// The 1em glyph centered in its fixed-width icon box leaves dead air before
+// it, so each row trims its left padding until both ends read the same inset
+// (right inset: 8px infos + 6px row).
+
 .jtd-menu-item {
     font-size: 12px;
+
+    &>.jtd-item-short {
+        padding-left: 4px;
+    }
 
     &>.jtd-item-short>.item-icon {
         font-size: 1em;
@@ -23,6 +31,10 @@
 
 .jtd-menu-item-large {
     font-size: 14px;
+
+    &>.jtd-item-large {
+        padding-left: 1px;
+    }
 
     &>.jtd-item-large>.item-icon {
         font-size: 1em;
