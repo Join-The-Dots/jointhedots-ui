@@ -44,11 +44,14 @@ export type ToolingProps = LabelProps & {
 
 export type ItemVariant = "minimal" | "outlined"
 
+export type ItemTextOverflow = "wrap" | "truncate"
+
 export type ItemProps<T = any> = LabelProps<T> & {
    tags?: TagProps[]
    selected?: LabelSelected
    onSelect?: (item: ItemProps) => void
    variant?: ItemVariant
+   textOverflow?: ItemTextOverflow
 }
 
 export type DisplayProps = React.ReactNode | ((props: LabelProps) => React.ReactElement)
@@ -196,11 +199,17 @@ function ItemVariantClass(item: ItemProps): string {
    return item.variant || "minimal"
 }
 
+function ItemRowClasses(item: ItemProps, base: string): string[] {
+   const classes = [base, ItemVariantClass(item)]
+   if (item.textOverflow === "truncate") classes.push("truncate")
+   return classes
+}
+
 export function ItemRowShort(item: ItemProps) {
    let { name, summary, selected, onSelect, onActivate } = item
    if (!onActivate) onActivate = onSelect
    return <li
-      className={["jtd-item-short", ItemVariantClass(item)].join(" ")}
+      className={ItemRowClasses(item, "jtd-item-short").join(" ")}
       title={GetNodeText(summary)}
       onClick={onActivate && ((e) => {
          e.stopPropagation()
@@ -247,7 +256,7 @@ export function ItemRowRich(item: ItemProps) {
    }
    const select = onSelect && ((e) => { e.stopPropagation(); onSelect(item) })
    const activate = onActivate ? ((e) => { e.stopPropagation(); onActivate(item, createFloatingDock(e)) }) : select
-   const className = ["jtd-item-large", ItemVariantClass(item)]
+   const className = ItemRowClasses(item, "jtd-item-large")
    if (selected & LabelSelected.Enabled) {
       className.push("selected")
    }

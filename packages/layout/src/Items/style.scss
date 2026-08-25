@@ -80,6 +80,20 @@ body {
     }
 }
 
+// truncate: single-line text fields, so the row keeps a fixed height — the
+// default wrap lets long labels flow onto several lines.
+.jtd-item-short.truncate,
+.jtd-item-large.truncate {
+    &>.item-infos {
+        white-space: nowrap;
+
+        &>div {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+}
+
 // minimal: no box chrome — quiet hover shade, selection reads as a slim
 // accent bar on a tinted row.
 .jtd-item-short.minimal,

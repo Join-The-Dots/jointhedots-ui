@@ -182,7 +182,11 @@ function App() {
       </Section>
 
       <Section title="Items — selection states, decorations, tooling" hint="LabelSelected flags · shape/badge decorations · optional tooling overflow">
-         <DemoItemStates onAction={setLastAction} />
+          <DemoItemStates onAction={setLastAction} />
+       </Section>
+
+      <Section title="Items — long labels" hint="textOverflow=wrap (default) | truncate — truncate keeps a fixed row height">
+          <DemoItemOverflow onAction={setLastAction} />
       </Section>
 
       <Section title="Items — atoms & toolbars" hint="ItemIcon · LabelButton · tooling strips">
@@ -415,7 +419,7 @@ function DemoItemStates({ onAction }: { onAction: (msg: string) => void }) {
    ]
    const decorated: LabelProps[] = [
       {
-         name: "Payment service",
+          name: "Payment service",
          icon: "bi:credit-card",
          summary: "decorations: colored shape behind the glyph",
          decorations: [{ type: "shape", color: "#0e639c" }],
@@ -470,6 +474,37 @@ function DemoItemStates({ onAction }: { onAction: (msg: string) => void }) {
             onActivate={() => onAction("avatar fallback row activated")}
          />
       </ul>
+   </div>
+}
+
+function DemoItemOverflow({ onAction }: { onAction: (msg: string) => void }) {
+   const longName = "Payment service — EU45 sandbox integration (org 00D5g000004Hh1wEAK)"
+   const longSummary = "connected app · 1 284 093 API calls today · healthcheck every 5 min"
+   return <div className="items-demo">
+      {(["wrap", "truncate"] as const).map(mode => (
+         <ul className="items" key={mode}>
+            <ItemRowRich
+               name={`textOverflow: "${mode}"`}
+               icon="bi:input-cursor-text"
+               summary={mode === "truncate" ? "one line per field — fixed row height" : "long labels flow onto several lines"}
+               textOverflow={mode}
+               onActivate={() => onAction(`${mode} caption row activated`)}
+            />
+            <ItemRowRich
+               name={longName}
+               icon="bi:credit-card"
+               summary={longSummary}
+               textOverflow={mode}
+               onActivate={() => onAction(`${mode} long rich row activated`)}
+            />
+            <ItemRowShort
+               name={longName}
+               icon="bi:align-start"
+               textOverflow={mode}
+               onSelect={() => onAction(`${mode} long short row picked`)}
+            />
+         </ul>
+      ))}
    </div>
 }
 

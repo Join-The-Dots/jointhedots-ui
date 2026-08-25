@@ -150,7 +150,7 @@ LabelProps = {
    data?: T,                      // charge utile libre
    onActivate?: (label, dock) => void    // activation : reçoit un FloatingDock collé à l'élément
 }
-ItemProps = LabelProps & { tags?, selected?, onSelect?, variant? }
+ItemProps = LabelProps & { tags?, selected?, onSelect?, variant?, textOverflow? }
 ```
 
 Les lignes combinent une **taille** (`short` compacte / large riche) et un
@@ -159,6 +159,11 @@ survol en teinte douce, sélection lue comme une fine barre d'accent sur une
 rangée teintée) ou `outlined` (chrome encadré : survol en filet hairline,
 sélection bordée sur trois côtés par la couleur d'item). Les deux variantes
 partagent la même géométrie et teignent leurs accents via `--jtd-item-color`.
+
+Le prop `textOverflow` régit l'écoulement du texte des lignes : `wrap`
+(défaut) laisse les libellés longs passer à la ligne et la hauteur suivre ;
+`truncate` maintient nom et summary sur une seule ligne terminée par une
+ellipse, donc une hauteur de ligne fixe.
 
 Composants de rendu :
 
