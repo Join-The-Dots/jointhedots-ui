@@ -1,6 +1,6 @@
 {
    "name": "@jointhedots/layout",
-   "version": "0.1.0",
+   "version": "0.1.1",
    "type": "module",
    "license": "MIT",
    "description": "Join.The.Dots layout — panel docks, floating menus, stacks and item rows",
@@ -15,9 +15,9 @@
       "dist"
    ],
    "dependencies": {
-      "@jointhedots/button": "^0.1.0",
+      "@jointhedots/button": "^0.1.1",
       "@jointhedots/core": "^2.1.0",
-      "@jointhedots/icon": "^0.1.1",
+      "@jointhedots/icon": "^0.1.2",
       "react-toastify": "^11.0.5"
    },
    "peerDependencies": {
