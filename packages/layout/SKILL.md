@@ -55,7 +55,10 @@ peut implémenter `PanelDock` (`appendPanel` / `removePanel` / `refresh`) et
 La pile `overlays_stack` maintient l'ordre d'empilement ; `getStackZIndex`
 produit les z-index (base 10000000 + 1000/niveau). L'ouverture d'un
 floating dock purge les docks supérieurs qui ne contiennent pas sa cible —
-c'est ce qui referme les sous-menus.
+c'est ce qui referme les sous-menus, et chaque dock purgé résout sa
+promise en annulation. Rouvrir un dock flottant sur une ancre déjà occupée
+referme l'existant au lieu de recréer le panneau : le déclencheur d'un
+menu déroulant agit en bascule.
 
 ## 3. Les ouvertures asynchrones
 
@@ -87,7 +90,8 @@ La **cible** peut être un `UIEvent` (clic), un `Element`, un
 automatiquement `stopPropagation`/`preventDefault`. La promise retournée
 expose `promise.close()` pour refermer programmatiquement. Options du dock
 flottant : `position` (voir computeEdgeBox), `variant: "menu" | "popup" |
-"popover"`, `className`, `noAutoClose`.
+"popover"`, `className`, `noAutoClose`. Réouvrir le menu sur la même cible
+le referme (bascule) et résout `undefined`.
 
 Le variant **popover** est la bulle classique : coins arrondis, filet hairline,
 ombre portée, et une **flèche** (losange CSS bordé) collée au bord qui pointe

@@ -46,15 +46,20 @@ class FloatingDock implements PanelDock {
          const variantClass = variantClasses[opts.variant] || variantClasses.default
          const position = opts.position || "down-right"
 
-         // Purge top of stack popup
-         this.stackIndex = 0
-         while (this.stackIndex < overlays_stack.length) {
-            if (!overlays_stack[this.stackIndex].node.contains(this.tracked)) {
-               overlays_stack[this.stackIndex].close()
-               break
-            }
-            this.stackIndex++
-         }
+          // Purge top of stack popup
+          this.stackIndex = 0
+          while (this.stackIndex < overlays_stack.length) {
+             const overlay = overlays_stack[this.stackIndex]
+             if (!overlay.node.contains(this.tracked)) {
+                overlay.close()
+                // same anchor: reopening toggles the overlay closed instead of recreating it
+                if (overlay.anchor === this.tracked) {
+                   return false
+                }
+                break
+             }
+             this.stackIndex++
+          }
 
           // Create popup node
           this.node = document.createElement("div")
@@ -92,7 +97,7 @@ class FloatingDock implements PanelDock {
            computeEdgeBoxDOM(position, this.node, this.tracked, document.body)
            this.offsetFromTarget()
            this.updateArrow()
-          overlays_stack.push({ node: this.node, close: this.hide.bind(this) })
+           overlays_stack.push({ node: this.node, anchor: this.tracked, close: this.close.bind(this) })
 
          // Render popup on node
          setTimeout(updatePosition, 25)
@@ -194,19 +199,22 @@ class FloatingDock implements PanelDock {
          this.hide()
       }
    }
-   refresh(panel: Panel) {
-      if (panel == this.main) {
-         const displayed = this.main?.displayed
-         if (displayed) {
-            if (this.show()) {
-               this.root.render(displayed.content)
-            }
-         }
-         else {
-            this.hide()
-         }
-      }
-   }
+    refresh(panel: Panel) {
+       if (panel == this.main) {
+          const displayed = this.main?.displayed
+          if (displayed) {
+             if (this.show()) {
+                this.root.render(displayed.content)
+             }
+             else {
+                panel.close()
+             }
+          }
+          else {
+             this.hide()
+          }
+       }
+    }
 }
 
 const variantClasses = {

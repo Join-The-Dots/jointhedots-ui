@@ -2,6 +2,7 @@ import { type Panel, type PanelDock } from "."
 
 export interface StackedOverlay {
    node: HTMLElement
+   anchor: Element
    close()
 }
 

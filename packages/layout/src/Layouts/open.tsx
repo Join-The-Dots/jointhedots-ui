@@ -41,10 +41,10 @@ export function openContextualMenu<T>(
       panel.display({
          title: "",
          icon: "",
-         content: await renderer((res) => {
-            panel.close()
-            resolve(res)
-         }),
+          content: await renderer((res) => {
+             resolve(res)
+             panel.close()
+          }),
          onClose: () => resolve(undefined),
       })
       panel.open(createFloatingDock(target, options))
