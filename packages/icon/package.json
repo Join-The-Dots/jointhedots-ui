@@ -1,6 +1,6 @@
 {
    "name": "@jointhedots/icon",
-   "version": "0.1.4",
+   "version": "0.1.5",
    "type": "module",
    "license": "MIT",
    "description": "Join.The.Dots icon system — composable Icon component, collection registry and dedicated collection exports",
@@ -32,7 +32,7 @@
       "SKILL.md"
    ],
    "dependencies": {
-      "@jointhedots/theme": "^0.1.4",
+      "@jointhedots/theme": "^0.1.5",
       "@salesforce-ux/design-system": "^2.29.0",
       "bootstrap-icons": "^1.11.3",
       "flag-icons": "^7.5.0",

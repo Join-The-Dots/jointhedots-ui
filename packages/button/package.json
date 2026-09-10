@@ -1,6 +1,6 @@
 {
    "name": "@jointhedots/button",
-   "version": "0.1.3",
+   "version": "0.1.4",
    "type": "module",
    "license": "MIT",
    "description": "Join.The.Dots buttons — Button with variants and icon-only ButtonIcon",
@@ -15,7 +15,7 @@
       "dist"
    ],
    "dependencies": {
-      "@jointhedots/icon": "^0.1.4",
+      "@jointhedots/icon": "^0.1.5",
       "classnames": "^2.5.1"
    },
    "peerDependencies": {
