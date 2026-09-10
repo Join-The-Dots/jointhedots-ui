@@ -173,7 +173,7 @@ Composants de rendu :
 
 | Composant | Usage |
 | --- | --- |
-| `ItemRowShort` | ligne compacte icône + nom ; clic → `onActivate(item, floatingDock)` ; sélection éditable (Switch) via `LabelSelected.EnabledEditable` / `DisabledEditable` |
+| `ItemRowShort` | ligne compacte icône + nom ; clic → `onActivate(item, floatingDock)` ; sélection visuelle via `LabelSelected.Enabled` (barre d'accent du variant), sélection éditable (Switch) via les combinaisons `*Editable` |
 | `ItemRowRich` | ligne large avec summary, tooling, survol de `content` dans un dock flottant |
 
 `ItemRowShort` et `ItemRowRich` acceptent `variant: "minimal" | "outlined"`

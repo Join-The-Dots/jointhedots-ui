@@ -206,21 +206,25 @@ function ItemRowClasses(item: ItemProps, base: string): string[] {
 }
 
 export function ItemRowShort(item: ItemProps) {
-   let { name, summary, selected, onSelect, onActivate } = item
-   if (!onActivate) onActivate = onSelect
-   return <li
-      className={ItemRowClasses(item, "jtd-item-short").join(" ")}
-      title={GetNodeText(summary)}
-      onClick={onActivate && ((e) => {
-         e.stopPropagation()
-         onActivate(item, createFloatingDock(e))
-      })}
-   >
-      <div className="item-icon">{DrawLabelIcon(item)}</div>
-      <div className="item-infos">{name}</div>
-      {(selected == LabelSelected.EnabledEditable) ? <Switch selected={true} onSelect={() => onSelect(item)} /> : null}
-      {(selected == LabelSelected.DisabledEditable) ? <Switch selected={false} onSelect={() => onSelect(item)} /> : null}
-   </li>
+    let { name, summary, selected, onSelect, onActivate } = item
+    if (!onActivate) onActivate = onSelect
+    const classes = ItemRowClasses(item, "jtd-item-short")
+    if (selected & LabelSelected.Enabled) {
+        classes.push("selected")
+    }
+    return <li
+        className={classes.join(" ")}
+        title={GetNodeText(summary)}
+        onClick={onActivate && ((e) => {
+            e.stopPropagation()
+            onActivate(item, createFloatingDock(e))
+        })}
+    >
+        <div className="item-icon">{DrawLabelIcon(item)}</div>
+        <div className="item-infos">{name}</div>
+        {(selected == LabelSelected.EnabledEditable) ? <Switch selected={true} onSelect={() => onSelect(item)} /> : null}
+        {(selected == LabelSelected.DisabledEditable) ? <Switch selected={false} onSelect={() => onSelect(item)} /> : null}
+    </li>
 }
 
 export function ItemRowRich(item: ItemProps) {
