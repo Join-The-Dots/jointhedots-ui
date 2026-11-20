@@ -1,4 +1,4 @@
-import { IconCollection, IconElement, registerIconCollection } from "../Icon"
+import { IconCollection, IconElement, registerIconCollection } from "../Icon.tsx"
 
 export class IconAvatarCollection implements IconCollection {
    setup(element: IconElement) {
@@ -10,9 +10,9 @@ export class IconAvatarCollection implements IconCollection {
    }
    draw(element: IconElement) {
       const { tag, className, style } = element
-      return <div className={className} style={style}>
-         <div>{tag}</div>
-      </div>
+      return <span className={className} style={style}>
+         <span>{tag}</span>
+      </span>
    }
 }
 
@@ -34,7 +34,7 @@ function getTag(name: string): string {
    return tag.toUpperCase()
 }
 
-function stringToRGB(str) {
+function stringToRGB(str: string) {
    const color = getRandomLikeNumber(str)
    return hueToRgb(color * 360)
 }
@@ -57,7 +57,7 @@ function getRandomLikeNumber(str?: string, seed: number = 0) {
    }
 }
 
-function hueToRgb(hue) {
+function hueToRgb(hue: number) {
    let s = 0.7 // Saturation
    let l = 0.5 // Lightness
 
@@ -65,7 +65,7 @@ function hueToRgb(hue) {
    let x = c * (1 - Math.abs((hue / 60) % 2 - 1))
    let m = l - c / 2
 
-   let r, g, b
+   let r = 0, g = 0, b = 0
 
    if (hue >= 0 && hue < 60) {
       r = c

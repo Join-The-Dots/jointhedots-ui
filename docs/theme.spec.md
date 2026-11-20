@@ -19,18 +19,27 @@ flowchart TD
 ## Le concept de token
 
 Un token est une variable CSS `--jtd-*` nommée par son rôle sémantique dans
-l'interface, jamais par sa valeur. Le jeu complet est volontairement minimal —
-chaque token doit être consommé par au moins un composant :
+l'interface, jamais par sa valeur. Le jeu est volontairement minimal —
+chaque token est consommé par au moins un composant :
 
+- typographie : `font-family` (interface) et `font-mono` (chasse fixe) ;
 - fonds et textes : la page (`background`, `foreground`) et les surfaces
-  élevées — popovers, menus, champs, panneaux (`surface`,
-  `surface-foreground`) ;
+  élevées — popovers, menus, champs, panneaux, modales, tiroirs
+  (`surface`, `surface-foreground`) ;
 - `border` : le filet hairline unique des bordures et séparateurs ;
 - `muted` : texte secondaire ; `hover` : teinte de survol ;
 - la **palette sémantique** : `primary` (l'interactif — actions primaires,
   focus, marqueur de sélection), `success`, `warning`, `error`, et
   `on-emphasis` — le texte posé sur tout remplissage saturé de la palette ;
-- `font-family` : police de l'interface.
+- `avatar-foreground` : le texte posé sur un badge d'icône ;
+- `item-color` : la teinte d'accent d'une ligne d'item, `primary` par
+  défaut, redéfinissable par item ;
+- formes : `radius` (contrôles), `radius-panel` (modales et tiroirs) et
+  `radius-floating` (menus, popups et popovers flottants) ;
+- profondeur : `backdrop` (voile derrière une superposition modale),
+  `shadow-floating` (bulles et menus flottants), `shadow-panel`
+  (modales et tiroirs) ;
+- plans : `drawer-zindex` < `modal-zindex` < `tooltip-zindex`.
 
 La palette est la seule source de colorisation : tout composant coloré
 (bouton plein ou contouré, pastille d'action, drapeau d'icône) consomme
@@ -40,6 +49,10 @@ variant de bouton au drapeau d'icône. Ce qui n'est pas coloré est
 `neutral` (chrome de surface, filet, survol doux) — ce n'est pas un
 membre de la palette.
 
+Toute couleur, ombre, rayon de base et plan de superposition des packages
+lit un token : une application remappe les tokens une seule fois, sur
+`body`, pour habiller l'ensemble des composants.
+
 Invariants :
 
 - un composant ne porte jamais de couleur littérale : il consomme un token ou
@@ -47,7 +60,9 @@ Invariants :
   les tokens ;
 - la valeur d'un token peut changer (thème, re-thémage d'un sous-arbre), sa
   signification jamais ;
-- `color-scheme` suit l'éclairage pour aligner les contrôles natifs.
+- `color-scheme` suit l'éclairage pour aligner les contrôles natifs ;
+- l'éclairage clair redéfinit les couleurs, le voile et l'ombre des
+  superpositions ; typographie, rayons et plans sont communs.
 
 ## Thème global et éclairage
 
@@ -58,14 +73,16 @@ l'utilisateur, puis préférence système, puis sombre. Le contexte React et le
 thème contrasté (`contrastTheme`) permettent aux composants de s'inverser sur
 un fond opposé sans connaître la palette.
 
-Re-thémer un sous-arbre consiste à redéfinir les tokens sur un conteneur —
-aucun composant n'a besoin d'être informé.
+Re-thémer consiste à redéfinir les tokens sur `body` (toute l'application)
+ou sur un conteneur (un sous-arbre) — aucun composant n'a besoin d'être
+informé. Les superpositions étant rendues à la racine du document, seul un
+remappage posé sur `body` les atteint.
 
 ## Frontières des couches de styles
 
-- **Styles de composant** : compilés au build puis injectés au runtime par
-  chaque package (balise `<style>` idempotente). Ils ne contiennent que des
-  gabarits `jtd-*` consommant des tokens.
+- **Styles de composant** : feuilles CSS natives de chaque package, chargées
+  en chaîne et injectées au runtime (balise `<style>` idempotente). Elles ne
+  contiennent que des gabarits `jtd-*` consommant des tokens.
 - **Styles d'assets tiers** : importés littéralement, résolus par le
   bundler de l'application. Une seule subsiste : la feuille Salesforce,
   importée par l'export de collections `salesforce` d'@jointhedots/icon car

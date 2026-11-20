@@ -65,27 +65,43 @@ Le prop `theme` optionnel retombe sur le thème global quand il est absent.
 ## 4. Les tokens de design
 
 Le package injecte au chargement (balise `<style id="jtd-theme-styles">`,
-idempotent, sans effet hors navigateur) la cascade compilée de
+idempotente, sans effet hors navigateur) la feuille CSS native
 `src/theme.scss` : un reset minimal (`box-sizing`, `margin` de `body`) et
 l'ensemble des tokens. Le sombre est la palette par défaut sur `body` ;
 `body.theme-light` la surcharge.
 
 | Token | Rôle |
 | --- | --- |
+| `--jtd-font-family` | police de l'interface |
+| `--jtd-font-mono` | police à chasse fixe (champ `monospace` d'@jointhedots/input) |
 | `--jtd-background` / `--jtd-foreground` | fond et texte de la page |
-| `--jtd-surface` / `--jtd-surface-foreground` | surfaces élevées : popovers, menus, champs, panneaux |
+| `--jtd-surface` / `--jtd-surface-foreground` | surfaces élevées : popovers, menus, champs, panneaux, modales, tiroirs |
 | `--jtd-border` | filet hairline : bordures, séparateurs |
 | `--jtd-muted` | texte secondaire / désactivé |
 | `--jtd-hover` | teinte de survol |
 | `--jtd-primary` | couleur d'action : boutons primaires, focus, sélection — membre de la palette sémantique |
 | `--jtd-success` / `--jtd-warning` / `--jtd-error` | palette sémantique : positif / attention / échec |
 | `--jtd-on-emphasis` | texte posé sur tout remplissage saturé de la palette |
-| `--jtd-font-family` | police de l'interface |
+| `--jtd-avatar-foreground` | texte posé sur les badges `label:` d'@jointhedots/icon (les initiales `avatar:` prennent la teinte de leur pastille) |
+| `--jtd-item-color` | teinte d'accent des lignes d'items (défaut : `var(--jtd-primary)`) |
+| `--jtd-radius` | rayon des contrôles : boutons, champs, lignes et ancres de menu |
+| `--jtd-radius-panel` | rayon des panneaux : modales, tiroirs |
+| `--jtd-radius-floating` | rayon des docks flottants : menus, popups, popovers |
+| `--jtd-backdrop` | voile posé derrière une modale |
+| `--jtd-shadow-floating` | ombre des docks flottants et du tooltip de bouton |
+| `--jtd-shadow-panel` | ombre des modales et tiroirs |
+| `--jtd-drawer-zindex` | plan des tiroirs |
+| `--jtd-modal-zindex` | plan des modales (au-dessus des tiroirs) |
+| `--jtd-tooltip-zindex` | plan du tooltip de bouton (au-dessus de tout) |
+
+La palette claire redéfinit les couleurs, `--jtd-backdrop` et
+`--jtd-shadow-panel` ; polices, rayons, `--jtd-shadow-floating`, plans et
+`--jtd-avatar-foreground` sont communs aux deux éclairages.
 
 Règles d'usage pour les composants :
 
-- consommer exclusivement ces tokens — jamais de couleur littérale ni de
-  `light-dark()` dans un gabarit de package ;
+- consommer exclusivement ces tokens — jamais de couleur, d'ombre ou de
+  plan littéral ni de `light-dark()` dans un gabarit de package ;
 - toute colorisation passe par la palette (`primary`, `success`,
   `warning`, `error`) ; ce qui n'est pas coloré est `neutral` (surface,
   filet, survol doux) ;
@@ -93,7 +109,10 @@ Règles d'usage pour les composants :
   token plutôt qu'en ajoutant un token ;
 - `color-scheme` (`dark` par défaut, `light` sur `body.theme-light`) suit le
   thème : les contrôles natifs (scrollbars, checkboxes) s'alignent seuls ;
-- re-thémer un sous-arbre : redéfinir les `--jtd-*` sur un conteneur.
+- re-thémer : redéfinir les `--jtd-*` sur `body` (toute l'application) ou
+  sur un conteneur (un sous-arbre). Les superpositions (modales, tiroirs,
+  docks flottants) sont rendues à la racine de `document.body` : seul un
+  remappage posé sur `body` les atteint.
 
 ## 5. Contrat de consommation pour un composant
 
@@ -113,5 +132,5 @@ theme.contrastTheme                          // fond opposé (prop inverse)
 React.useContext(ThemeContext)               // lecture dans un composant
 localStorage["application#theme"]            // persistance du choix
 body.theme-dark / body.theme-light           // cascade de tokens
---jtd-*                                      // variables de consommation
+--jtd-*                                      // tokens : couleurs, polices, rayons, ombres, plans
 ```

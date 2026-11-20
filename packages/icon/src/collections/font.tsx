@@ -1,5 +1,5 @@
 import React from "react"
-import { IconCollection, IconElement } from "../Icon"
+import { IconCollection, IconElement } from "../Icon.tsx"
 
 export class IconFontCollection implements IconCollection {
    constructor(

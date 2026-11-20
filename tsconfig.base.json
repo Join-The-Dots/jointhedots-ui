@@ -9,11 +9,17 @@
       "module": "esnext",
       "moduleResolution": "bundler",
       "jsx": "react-jsx",
-      "strict": false,
+      "strict": true,
       "noEmit": true,
       "skipLibCheck": true,
       "isolatedModules": true,
       "esModuleInterop": true,
-      "allowSyntheticDefaultImports": true
+      "allowSyntheticDefaultImports": true,
+      "types": [
+         "vite/client"
+      ],
+      "noUncheckedIndexedAccess": true,
+      "noImplicitOverride": true,
+      "allowImportingTsExtensions": true
    }
 }

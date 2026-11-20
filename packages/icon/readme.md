@@ -24,6 +24,9 @@ import "@jointhedots/icon/bootstrap"
 <Icon name="bi:house-door-fill[primary]|bi:exclamation-triangle-fill[badge,error]" />
 ```
 
+L'icône est décorative par défaut (`aria-hidden`) ; `title` en fait une
+image nommée (`role="img"`, `aria-label`).
+
 Le CSS du cœur du système (boîte unitaire, pastilles) est injecté
 automatiquement au chargement du module — aucun import de stylesheet à gérer.
 Les styles et sprites des collections sont résolus par le bundler de

@@ -1,9 +1,9 @@
 import React from "react"
 import { ThemeContext, ThemeProvider } from "@jointhedots/theme"
-import { IconUrlCollection } from "./collections/url"
-import { IconBlank, IconError } from "./collections/defaults"
-import { injectStyles } from "./inject-styles"
-import styles from "./generated/styles"
+import { IconUrlCollection } from "./collections/url.tsx"
+import { IconBlank, IconError } from "./collections/defaults.tsx"
+import { injectStyles } from "./inject-styles.ts"
+import styles from "./style.scss?inline"
 
 injectStyles(styles, "jtd-icon-styles")
 
@@ -12,9 +12,11 @@ export interface IconStyle {
    style?: Record<string, string | number>
 }
 
-export interface IconElement extends IconStyle {
+export interface IconElement {
    collection: IconCollection
    name: string
+   className: string
+   style: Record<string, string | number>
    [key: string]: any
 }
 
@@ -23,7 +25,7 @@ export interface IconComposed extends IconStyle {
 }
 
 export interface IconCollection {
-   setup(element: IconElement)
+   setup(element: IconElement): void
    draw(element: IconElement, theme: ThemeProvider): React.ReactElement
 }
 
@@ -41,25 +43,25 @@ export type IconProps = {
    title?: string
    className?: string
    style?: React.CSSProperties
-   onClick?: (evt) => void
+   onClick?: (evt: React.MouseEvent<HTMLSpanElement>) => void
 }
 
 export function registerIconCollection(namespace: string, collection: IconCollection) {
    IconCollections[namespace] = collection
 }
 
-export function getIconName(icon: string, name: string): string {
+export function getIconName(icon?: string, name?: string): string {
    if (icon) {
       return icon
    }
    else if (name) {
       return "avatar:" + name
    }
-   return null
+   return "blank"
 }
 
 export function Icon(props: IconProps): React.ReactElement {
-   const { name, size, inverse: inversed, className, style } = props
+   const { name, size, inverse: inversed, title, className, style } = props
    const theme = React.useContext(ThemeContext)
    const icon = getIconParsed(name)
    const iconTheme = inversed ? theme.contrastTheme : theme
@@ -67,31 +69,36 @@ export function Icon(props: IconProps): React.ReactElement {
    for (const element of icon.elements) {
       iconLayers.push(element.collection.draw(element, iconTheme))
    }
-   return React.createElement("div", {
+   return React.createElement("span", {
       ...props,
       name: undefined,
-      inversed: undefined,
+      inverse: undefined,
+      role: title ? "img" : undefined,
+      "aria-label": title,
+      "aria-hidden": title ? undefined : true,
       className: (className && icon.className)
          ? `${className} ${icon.className}`
          : (className || icon.className),
       style: {
-         fontSize: size && (IconSize[size] || size),
+         fontSize: size && (IconSize[size as keyof typeof IconSize] || size),
          ...style,
          ...icon.style,
       }
    }, ...iconLayers)
 }
 
+const ErrorCollection = new IconError()
+
 const IconCollections: { [namespace: string]: IconCollection } = {
    "blank": new IconBlank(),
-   "?": new IconError(),
+   "?": ErrorCollection,
 }
 
 const IconParsedCache = new Map<string, IconComposed>()
 
 const IconFlags: Record<string, IconStyle> = {
     "error": makeColorFlag("var(--jtd-error)"),
-    "warn": makeColorFlag("var(--jtd-warning)"),
+    "warning": makeColorFlag("var(--jtd-warning)"),
     "info": makeColorFlag("var(--jtd-muted)"),
     "primary": makeColorFlag("var(--jtd-primary)"),
     "secondary": makeColorFlag("var(--jtd-muted)"),
@@ -151,26 +158,26 @@ function makeColorFlag(color: string): IconStyle {
    }
 }
 
-function parseIconStyle(icon: IconStyle, options: string) {
+function parseIconStyle(icon: IconStyle, options?: string) {
    if (options) {
       const style = icon.style || {}
-      const classnames = []
+      const classnames: string[] = []
       if (icon.className) {
          classnames.push(icon.className)
       }
       for (const opt of options.split(',')) {
-         const [key, val] = opt.split('=')
+         const [key = "", val] = opt.split('=')
          if (val) {
             style["--" + key] = val
          }
          else {
             const flag = IconFlags[key]
             if (flag) {
-               classnames.push(flag.className)
+               if (flag.className) classnames.push(flag.className)
                Object.assign(style, flag.style)
             }
             else {
-               console.error(`Icon '${name}' has invalid flag '${key}'`)
+               console.error(`Icon option '${options}' has invalid flag '${key}'`)
             }
          }
       }
@@ -180,17 +187,16 @@ function parseIconStyle(icon: IconStyle, options: string) {
 }
 
 function parseIconElement(icon: IconComposed, name: string) {
-   let element: IconElement = null
+   let element: IconElement
    const match = name.match(IconElementRegex)
    if (match && match.groups) {
-      const { set, name, options } = match.groups
-      const collection = (set ? IconCollections[set] : IconCollections[name]) || IconCollections["?"]
+      const { set, name = "", options } = match.groups
+      const collection = (set ? IconCollections[set] : IconCollections[name]) || ErrorCollection
       element = { collection, name, className: "", style: { ...IconLayerStyle } }
       parseIconStyle(element, options)
    }
    else {
-      const collection = IconCollections["?"]
-      element = { collection, name, className: "", style: { ...IconLayerStyle } }
+      element = { collection: ErrorCollection, name, className: "", style: { ...IconLayerStyle } }
       console.error(`Icon element '${name}' is invalid`)
    }
    element.collection.setup(element)
@@ -204,7 +210,7 @@ function parseIconStack(name: string): IconComposed {
    }
    const match = name.match(IconBaseRegex)
    if (match && match.groups) {
-      const { options, elements } = match.groups
+      const { options, elements = "" } = match.groups
       parseIconStyle(icon, options)
       for (const element of elements.split("|")) {
          parseIconElement(icon, element)
@@ -212,8 +218,7 @@ function parseIconStack(name: string): IconComposed {
    }
    else {
       console.error(`Icon '${name}' is invalid`)
-      const collection = IconCollections["?"]
-      icon.elements.push({ collection, name })
+      icon.elements.push({ collection: ErrorCollection, name, className: "", style: { ...IconLayerStyle } })
    }
    return icon
 }

@@ -1,7 +1,9 @@
 
+type EdgeRect = Pick<DOMRect, "left" | "right" | "width" | "top" | "bottom" | "height">
+
 const defaultMargin = 5
 
-function computeHorizontalEdgeBox(position: number, element: HTMLElement, tracked: ClientRect | DOMRect, host: ClientRect | DOMRect): any {
+function computeHorizontalEdgeBox(position: number, element: HTMLElement, tracked: EdgeRect, host: EdgeRect): any {
    const { style } = element
    // Vertical position
    var top_0 = tracked.top - host.top
@@ -76,7 +78,7 @@ function computeHorizontalEdgeBox(position: number, element: HTMLElement, tracke
    }
 }
 
-function computeVerticalEdgeBox(position: number, element: HTMLElement, tracked: ClientRect | DOMRect, host: ClientRect | DOMRect): any {
+function computeVerticalEdgeBox(position: number, element: HTMLElement, tracked: EdgeRect, host: EdgeRect): any {
    const { style } = element
    // Vertical position
    var top_0 = tracked.top - host.top
@@ -167,9 +169,8 @@ export type PositionType = keyof typeof positionsMap
 // - Axis => (0) horizontal, (1) vertical
 // - Axis direction => (0) default side, (2) other side
 // - Cross axis alignement => (0) default side, (4) other side
-export function computeEdgeBox(position: string, element: HTMLElement, tracked: ClientRect | DOMRect, host: ClientRect | DOMRect): Object {
-   let positionId = positionsMap[position]
-   if (position === undefined) positionId = positionsMap["down-left"]
+export function computeEdgeBox(position: PositionType | undefined, element: HTMLElement, tracked: EdgeRect, host: EdgeRect): Object {
+   const positionId = positionsMap[position ?? "down-left"]
    if (positionId & 1) {
       return computeVerticalEdgeBox(positionId, element, tracked, host)
    }
@@ -178,8 +179,8 @@ export function computeEdgeBox(position: string, element: HTMLElement, tracked: 
    }
 }
 
-export function computeEdgeBoxDOM(position: string, element: HTMLElement, trackedElement: Element, hostElement?: HTMLElement): Object {
-   let hostRect
+export function computeEdgeBoxDOM(position: PositionType | undefined, element: HTMLElement, trackedElement: Element, hostElement?: HTMLElement): Object {
+   let hostRect: EdgeRect
    if (!hostElement) {
       const hostWidth = document.documentElement.clientWidth
       const hostHeight = document.documentElement.clientHeight

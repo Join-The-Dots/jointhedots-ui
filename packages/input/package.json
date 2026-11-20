@@ -6,16 +6,20 @@
    "description": "Join.The.Dots inputs — schema-driven InputData and the TextInputSchema builder",
    "sideEffects": true,
    "exports": {
-      ".": {
-         "types": "./dist/index.d.ts",
-         "import": "./dist/index.js"
+      ".": "./src/index.ts"
+   },
+   "publishConfig": {
+      "exports": {
+         ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
+         }
       }
    },
    "files": [
       "dist"
    ],
    "dependencies": {
-      "@jointhedots/core": "^2.1.0",
       "@jointhedots/icon": "^0.1.5",
       "@jointhedots/layout": "^0.1.4"
    },

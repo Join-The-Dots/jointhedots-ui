@@ -6,9 +6,14 @@
    "description": "Join.The.Dots layout — panel docks, floating menus, stacks and item rows",
    "sideEffects": true,
    "exports": {
-      ".": {
-         "types": "./dist/index.d.ts",
-         "import": "./dist/index.js"
+      ".": "./src/index.ts"
+   },
+   "publishConfig": {
+      "exports": {
+         ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
+         }
       }
    },
    "files": [
@@ -16,7 +21,6 @@
    ],
    "dependencies": {
       "@jointhedots/button": "^0.1.4",
-      "@jointhedots/core": "^2.1.0",
       "@jointhedots/icon": "^0.1.5",
       "react-toastify": "^11.0.5"
    },
@@ -26,6 +30,7 @@
    },
    "devDependencies": {
       "@types/react": "catalog:",
+      "@types/react-dom": "catalog:",
       "react": "catalog:",
       "react-dom": "catalog:",
       "typescript": "catalog:",

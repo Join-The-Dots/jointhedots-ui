@@ -1,7 +1,5 @@
 import { execFileSync } from "node:child_process"
 
-await import("./styles.mts")
-
 const packages = [
    "packages/theme",
    "packages/icon",

@@ -1,4 +1,4 @@
-import { IconCollection, IconElement } from "../Icon"
+import { IconCollection, IconElement } from "../Icon.tsx"
 import { ThemeLighting, ThemeProvider } from "@jointhedots/theme"
 
 const sprites = new Map<string, string>()

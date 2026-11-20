@@ -1,5 +1,5 @@
 import React from "react"
-import { Icon, IconProps, IconSize } from "./Icon"
+import { Icon, IconProps, IconSize } from "./Icon.tsx"
 
 export type FadeIconProps = IconProps & {
    duration?: number // milliseconds, default 300
@@ -12,9 +12,14 @@ interface FadeState {
 
 // Same rationale as IconLayerStyle: collection stylesheets must not
 // wrestle a fade layer out of the unit box
+// Flex so the inline-block Icon is centred in the layer instead of sitting on
+// a text line box (baseline + line-height would push it down)
 const FadeLayerStyle: Record<string, string | number> = {
    position: "absolute",
    top: 0, right: 0, bottom: 0, left: 0,
+   display: "flex",
+   alignItems: "center",
+   justifyContent: "center",
 }
 
 const DefaultFadeDuration = 300
@@ -28,12 +33,12 @@ export function FadeIcon(props: FadeIconProps): React.ReactElement {
       setState({ name, retired: state.name })
    }
    const layers = [
-      React.createElement("div", { key: String(name), style: { ...FadeLayerStyle } },
+      React.createElement("span", { key: String(name), style: { ...FadeLayerStyle } },
          React.createElement(Icon, { name, inverse })),
    ]
    if (state.retired) {
       // The retiring layer fades out on top, revealing the new icon below
-      layers.push(React.createElement("div", {
+      layers.push(React.createElement("span", {
          key: String(state.retired),
          style: { ...FadeLayerStyle, opacity: 0, transition: `opacity ${duration}ms ease` },
          onTransitionEnd: (evt: React.TransitionEvent<HTMLDivElement>) => {
@@ -43,7 +48,7 @@ export function FadeIcon(props: FadeIconProps): React.ReactElement {
          },
       }, React.createElement(Icon, { name: state.retired, inverse })))
    }
-   return React.createElement("div", {
+   return React.createElement("span", {
       ...props,
       name: undefined,
       size: undefined,
@@ -51,7 +56,7 @@ export function FadeIcon(props: FadeIconProps): React.ReactElement {
       duration: undefined,
       className: ["jtd-icon-fade", className].filter(Boolean).join(" ") || undefined,
       style: {
-         fontSize: size && (IconSize[size] || size),
+         fontSize: size && (IconSize[size as keyof typeof IconSize] || size),
          ...style,
       },
    }, ...layers)

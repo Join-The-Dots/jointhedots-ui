@@ -1,7 +1,7 @@
 import { Button, ButtonIcon } from '@jointhedots/button'
 import React, { createRef } from 'react'
-import { usePanel } from '../Panels'
-import { createFloatingDock } from '../Panels/FloatingDock'
+import { usePanel } from '../Panels/index.ts'
+import { createFloatingDock } from '../Panels/FloatingDock.tsx'
 
 
 function FlexDock(props: React.HTMLAttributes<HTMLDivElement> & { weight?: number, width?: number, children?: React.ReactNode }) {
@@ -24,7 +24,7 @@ export interface StackProps extends React.HTMLAttributes<HTMLDivElement> {
 export class Stack extends React.Component<StackProps> {
    static FlexDock = FlexDock
    static FixedDock = FixedDock
-   render(): React.ReactElement {
+   override render(): React.ReactElement {
       const { vertical, gap, padding, style, ...otherProps } = this.props
       const cgap = (gap === undefined) ? 4 : gap
       const cpadding = padding || (cgap / 2)
@@ -57,8 +57,8 @@ export interface OverflowStackProps extends StackProps {
 export class OverflowStack extends React.Component<OverflowStackProps, {
    visibleCount: number
 }> {
-   containerRef: React.RefObject<HTMLDivElement>
-   resizeObserver: ResizeObserver | null
+   containerRef: React.RefObject<HTMLDivElement | null>
+   resizeObserver?: ResizeObserver
 
    constructor(props: OverflowStackProps) {
       super(props)
@@ -66,10 +66,10 @@ export class OverflowStack extends React.Component<OverflowStackProps, {
          visibleCount: React.Children.count(props.children),
       }
       this.containerRef = createRef<HTMLDivElement>()
-      this.resizeObserver = null
+      this.resizeObserver = undefined
    }
 
-   componentDidMount() {
+   override componentDidMount() {
       this.updateLayout()
       window.addEventListener("resize", this.updateLayout)
 
@@ -79,13 +79,13 @@ export class OverflowStack extends React.Component<OverflowStackProps, {
       }
    }
 
-   componentDidUpdate(prevProps: OverflowStackProps) {
+   override componentDidUpdate(prevProps: OverflowStackProps) {
       if (prevProps.children !== this.props.children) {
          this.updateLayout()
       }
    }
 
-   componentWillUnmount() {
+   override componentWillUnmount() {
       window.removeEventListener("resize", this.updateLayout)
       if (this.resizeObserver && this.containerRef.current) {
          this.resizeObserver.disconnect()
@@ -122,7 +122,7 @@ export class OverflowStack extends React.Component<OverflowStackProps, {
       this.setState({ visibleCount: fitCount })
    };
 
-   render() {
+   override render() {
       const { vertical, gap, padding, style, overflow: OverflowComponent, children, ...otherProps } = this.props
       const { visibleCount } = this.state
 
@@ -180,7 +180,7 @@ function OverflowButton(props: {
          content: children
       }
    }, [children])
-   return <ButtonIcon icon="bi:chevron-double-down" variant='primary' onClick={(e) => {
+   return <ButtonIcon icon="bi:chevron-double-down" title="More" variant='primary' onClick={(e) => {
       if (overflowPanel.isOpen) overflowPanel.close()
       else overflowPanel.open(createFloatingDock(e))
    }} />

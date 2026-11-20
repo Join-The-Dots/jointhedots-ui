@@ -16,8 +16,7 @@ flowchart LR
    Core --> Registry[Registre de collections]
    Coll --> Registry
    Core --> Theme[theme / contexte]
-   UI["@jointhedots/ui"] --> Core
-   UI --> Theme
+   Comps["button, input, layout"] --> Core
 ```
 
 ## Le concept d'icône
@@ -31,6 +30,13 @@ pilotée par la seule `font-size` du conteneur.
 Le placement des calques dans la boîte relève du composant, pas des
 collections : il est appliqué en styles inline et ne peut donc pas être
 contesté par les feuilles de style tierces que les collections chargent.
+La boîte est un élément en ligne (`span` en `inline-block`), valide dans
+un bouton comme dans un paragraphe.
+
+Une icône est **décorative par défaut** : elle est masquée aux technologies
+d'assistance, le sens appartenant au contrôle qui la porte (bouton, ligne
+d'item). Une icône qui porte seule une information reçoit un titre et
+devient alors une image nommée.
 
 La chaîne se décompose en :
 
@@ -40,7 +46,7 @@ La chaîne se décompose en :
 
 Les options (base ou élément) combinent :
 
-- des **drapeaux** : couleurs sémantiques (`error`, `warn`, `info`, `primary`,
+- des **drapeaux** : couleurs sémantiques (`error`, `warning`, `info`, `primary`,
   `secondary`, `success`) qui suivent la palette du thème — les drapeaux
   colorés consomment les tokens `--jtd-*` (le gris de `info`/`secondary` est
   le ton `muted`) — et réduction-positionnement en pastille (`badge`,
@@ -77,8 +83,8 @@ Deux familles d'entrées :
 - l'**entrée principale** expose le composant, les types, les classes de
   collections génériques (police CSS, sprites SVG, images par URL) et garantit
   l'enregistrement des collections intégrées : `blank`, `?` (erreur), `data`
-  (URL relative), `avatar` (pastille déterministe : teinte issue d'un hash du
-  nom, initiales), `label` (pastille à valeur brute) ;
+  (URL relative), `avatar` (pastille translucide déterministe : teinte issue d'un hash du
+  nom, initiales), `label` (gamme de badges : pilule à valeur brute, teintée par les drapeaux de couleur) ;
 - les **exports de collections dédiées** — un export par famille d'assets
   (bootstrap, font-awesome, flag-icons, salesforce) — s'importent pour leur
   effet de bord : chargement des assets (police, sprite) et enregistrement du
@@ -114,8 +120,9 @@ pour les icônes posées sur un fond inversé.
 
 - `@jointhedots/icon` dépend de `@jointhedots/theme` et n'a aucune dépendance
   vers les composants d'interface.
-- `@jointhedots/ui` consomme les deux ; il n'expose plus d'icônes ni de thème
-  par lui-même.
+- `@jointhedots/button`, `@jointhedots/input` et `@jointhedots/layout`
+  consomment icon pour leurs glyphes ; aucun ne définit d'icône par
+  lui-même.
 - Une application déclare les collections qu'elle veut rendre disponibles en
   important les exports dédiés ; toute icône référencée sans collection
   correspondante affiche le glyph d'erreur.

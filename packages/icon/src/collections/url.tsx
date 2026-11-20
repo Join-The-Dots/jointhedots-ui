@@ -1,4 +1,4 @@
-import { IconCollection, IconElement } from "../Icon"
+import { IconCollection, IconElement } from "../Icon.tsx"
 
 export class IconUrlCollection implements IconCollection {
    constructor(readonly baseUrl: string) {
@@ -10,7 +10,7 @@ export class IconUrlCollection implements IconCollection {
    }
    draw(element: IconElement) {
       const { className, style } = element
-      return <div className={className} style={style} />
+      return <span className={className} style={style} />
    }
 }
 

@@ -9,28 +9,37 @@ publiés sur npm :
   langage de nommage, registre de collections et exports dédiés
   (bootstrap, font-awesome, flag-icons, salesforce).
 - **@jointhedots/button** — boutons : `Button` (variants, icônes,
-  tooltip) et `ButtonIcon` (pastille d'action, survol alternatif).
-- **@jointhedots/layout** — panneaux et docks (`openDialog`,
-  `openContextualMenu`, `createFloatingDock`), menus, stacks et items.
+  tooltip, rendu lien avec `href`) et `ButtonIcon` (pastille d'action
+  accessible, survol alternatif).
+- **@jointhedots/layout** — panneaux et docks, base de toute superposition
+  (`usePanel`, `createPanel`, `openDialog`, `openContextualMenu`,
+  `createFloatingDock`), menus accessibles (`Menu`), stacks et items.
 - **@jointhedots/input** — champs pilotés : `InputData` (schéma JSON,
-  tooling et déroulant enum sur le modèle d'items de layout) et
-  `TextInputSchema`, le constructeur du champ texte.
+  libellé, aide, erreur, validation, choix restreints en menu, radios,
+  segments ou cases à cocher) et `TextInputSchema`, le constructeur du
+  champ texte.
 
 ## Développement
 
 ```bash
 pnpm install
-pnpm typecheck   # génère les styles, puis tsc sur chaque package + playground
-pnpm build       # styles + vite build (packages puis playground)
+pnpm typecheck   # tsc sur chaque package + playground
+pnpm build       # vite build (packages puis playground)
 pnpm dev         # serve le playground sur les sources des packages
 ```
 
 Prérequis : node ≥ 20, pnpm ≥ 10. Le playground (`playground/`) est la
 vitrine exécutable de tous les packages — private, jamais publié.
 
+Les `exports` des packages pointent vers leurs sources TypeScript : le
+workspace, et toute application qui lie les dossiers des packages, les
+compilent directement avec Vite, sans build préalable (voir
+[AGENT.md](./AGENT.md) §7 pour le développement croisé).
+
 ## Publication
 
-Chaque package est publié sur npm depuis son dossier (`files: ["dist"]`) :
+Chaque package est publié sur npm depuis son dossier (`files: ["dist"]`) ;
+son `publishConfig.exports` fait pointer le manifeste publié vers le build :
 
 ```bash
 pnpm run publish          # build + publish, dans l'ordre des dépendances

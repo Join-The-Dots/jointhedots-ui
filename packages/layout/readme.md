@@ -1,10 +1,11 @@
 # @jointhedots/layout
 
-Système de mise en page Join.The.Dots : docks et panneaux (`createPanel`,
-`openDialog`, `openContextualMenu`, `DrawerDock`, `ModalDock`,
-`createFloatingDock`), menus contextuels (`Menu`), empilements (`Stack`,
-`OverflowStack`, `Popup`) et lignes d'items (`ItemRowShort`, `ItemRowRich`,
-`LabelButton`, `ItemIcon`).
+Système de mise en page Join.The.Dots : panneaux et docks — base de toute
+modale, tiroir, menu ou popover (`usePanel`, `createPanel`, `openDialog`,
+`openContextualMenu`, `createFloatingDock`, `DrawerDock`, `ModalDock`),
+menu accessible (`Menu`), empilements (`Stack`, `OverflowStack`, `Popup`)
+et lignes d'items (`ItemRowShort`, `ItemRowRich`, `LabelButton`,
+`ItemIcon`).
 
 ## Installation
 
@@ -14,25 +15,34 @@ pnpm add @jointhedots/layout
 
 Peer dependencies : `react`, `react-dom` ≥ 18.2.0. Dépend de
 `@jointhedots/icon` (glyphes), `@jointhedots/button` (actions) et
-`@jointhedots/core` (utilitaires) ; `react-toastify` pour les retours
-d'activation d'item.
+`react-toastify` (retours d'erreur d'activation d'item). Les glyphes
+internes sont des `bi:` : importer `@jointhedots/icon/bootstrap` dans
+l'application.
 
 ## Usage
 
 ```tsx
-import { openDialog, openContextualMenu, Stack, ItemRowShort } from "@jointhedots/layout"
+import { Overlays, Menu, openDialog, openContextualMenu } from "@jointhedots/layout"
 
-const answer = await openDialog(resolve => <MyDialogContent onDone={resolve} />)
+const settings = Overlays.useModal(() => ({ title: "Settings", content: <SettingsForm />, footer: actions }), [])
+settings.open()
 
-await openContextualMenu(event, close => (
-   <Menu>
+const answer = await openDialog(resolve => <MyDialogContent onDone={resolve} />, { title: "Pick" })
+
+const action = await openContextualMenu(event, close => (
+   <Menu aria-label="File">
       <Menu.Item name="Open" icon="bi:folder" onClick={() => close("open")} />
    </Menu>
 ))
 ```
 
-Le panneau est l'unité centrale : il expose un contenu (`display`) et s'ouvre
-sur un dock — latéral (`side`), modal (`modal`) ou flottant accroché à une
-cible (`createFloatingDock(target)`). Les styles du package (gabarits
-`jtd-panel-*`, `jtd-menu-*`, `jtd-item-*`) sont injectés automatiquement au
-chargement du module — aucun stylesheet à gérer.
+Toute superposition est un panneau ouvert sur un dock — latéral (`side`,
+`left`), modal (`modal`) ou flottant accroché à une cible
+(`createFloatingDock(target)`) — qui gère focus, Escape et inertie du reste
+de la page. Les styles du package sont injectés
+automatiquement au chargement du module — aucun stylesheet à gérer.
+
+## Usage avancé
+
+Contrat complet (panneaux, docks, menus, items, pièges) : voir
+[SKILL.md](./SKILL.md).

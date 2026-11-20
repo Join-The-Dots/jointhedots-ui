@@ -1,9 +1,9 @@
-import { usePanel } from "../Panels"
-import { createFloatingDock, FloatingDockOptions } from "../Panels/FloatingDock"
-import { PositionType } from "../../computeEdgeBox"
+import { usePanel } from "../Panels/index.ts"
+import { createFloatingDock, type FloatingDockOptions } from "../Panels/FloatingDock.tsx"
+import type { PositionType } from "../../computeEdgeBox.tsx"
 
 export function Popup<D = unknown>(props: {
-   content: React.ReactNode | ((data: D) => Promise<React.ReactNode> | React.ReactNode)
+   content: React.ReactNode | ((data: D | undefined) => Promise<React.ReactNode> | React.ReactNode)
    data?: D
    variant?: "menu" | "popup" | "popover"
    position?: PositionType

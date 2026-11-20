@@ -1,21 +1,34 @@
-// Menu rows are item rows (jtd-item-*) in a structural wrapper: every bit of
-// chrome — hover, radius, selection — lives on the inner row. The wrapper
-// only carries the event handlers (click, submenu open on hover).
+/* Menu rows are item rows (jtd-item-*) in a structural wrapper: every bit of
+   chrome — hover, radius, selection — lives on the inner row. The wrapper
+   only carries the event handlers (click, submenu open on hover). */
 
 .jtd-menu-item,
 .jtd-menu-item-large {
     display: block;
+    border-radius: var(--jtd-radius);
+    outline: none;
+    cursor: pointer;
+
+    &:focus-visible>* {
+        background-color: var(--jtd-hover);
+        box-shadow: inset 0 0 0 1px var(--jtd-primary);
+    }
 }
 
-// Menu rows are compact like the other line components (buttons, fields):
-// the wrapper declares the row typography — whatever the ambient font-size
-// where the menu docks (contextual menus attach at body level) — and the
-// glyph sits at 1em of it, in line with the row text. Item rows outside a
-// menu (lists, panels) keep their larger standalone metrics.
+.jtd-menu>.jtd-menu-separator:first-child,
+.jtd-menu>[role=group]:first-child>.jtd-menu-separator:first-child {
+    border: none;
+}
 
-// The 1em glyph centered in its fixed-width icon box leaves dead air before
-// it, so each row trims its left padding until both ends read the same inset
-// (right inset: 8px infos + 6px row).
+/* Menu rows are compact like the other line components (buttons, fields):
+   the wrapper declares the row typography — whatever the ambient font-size
+   where the menu docks (contextual menus attach at body level) — and the
+   short row's glyph sits at 1em of it, in line with the row text. Large rows
+   and item rows outside a menu (lists, panels) keep the standalone metrics. */
+
+/* The 1em glyph centered in its fixed-width icon box leaves dead air before
+   it, so the short row trims its left padding until both ends read the same inset
+   (right inset: 8px infos + 6px row). */
 
 .jtd-menu-item {
     font-size: 12px;
@@ -29,16 +42,10 @@
     }
 }
 
+/* Large rows keep the standalone item metrics (200% glyph in its 40px box):
+   their two-line block calls for the same icon as in lists and panels. */
 .jtd-menu-item-large {
     font-size: 14px;
-
-    &>.jtd-item-large {
-        padding-left: 1px;
-    }
-
-    &>.jtd-item-large>.item-icon {
-        font-size: 1em;
-    }
 }
 
 .jtd-menu-separator {
@@ -53,11 +60,16 @@
     display: flex;
     flex-direction: row;
     padding: 5px;
-    border-radius: 5px;
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: none;
+    border-radius: var(--jtd-radius);
     cursor: pointer;
     gap: 5px;
 
-    &:hover {
+    &:hover,
+    &:focus-visible {
         outline: solid thin var(--jtd-border);
         background-color: var(--jtd-hover);
     }

@@ -30,7 +30,7 @@ Disponibles dans toute option `[…]` :
 
 | Drapeau | Effet |
 | --- | --- |
-| `error` / `warn` / `info` / `primary` / `secondary` / `success` | force `color` et `--color` sur la palette du thème (`--jtd-error`, `--jtd-warning`, `--jtd-muted`, `--jtd-primary`, `--jtd-muted`, `--jtd-success`) |
+| `error` / `warning` / `info` / `primary` / `secondary` / `success` | force `color` et `--color` sur la palette du thème (`--jtd-error`, `--jtd-warning`, `--jtd-muted`, `--jtd-primary`, `--jtd-muted`, `--jtd-success`) |
 | `badge` | réduit l'élément (0.6em) et le colle au coin haut-droit — usage typique : pastille de compteur ou d'état sur un glyph principal (souvent combiné à l'élément `label:`) |
 | `RT` / `RB` / `LT` / `LB` | comme `badge` mais haut-droit / bas-droit / haut-gauche / bas-gauche |
 
@@ -45,7 +45,7 @@ qui s'appuie sur des `var(--…)` dans son rendu.
 ### 1.3 Options de base
 
 Placées en tête (`[error]bi:house`), les options s'appliquent au conteneur
-(`div.jtd-icon`) plutôt qu'au calque. Combiner `[badge]` en base n'a pas de
+(`span.jtd-icon`) plutôt qu'au calque. Combiner `[badge]` en base n'a pas de
 sens (le conteneur est la boîte de référence) ; les drapeaux de couleur et les
 variables y sont pertinents.
 
@@ -58,8 +58,8 @@ variables y sont pertinents.
 | `blank` | calque vide (1em) — cible de `undefined`/`null` |
 | `?` | glyph d'erreur hachuré rouge — namespace inconnu ou nom invalide |
 | `data` | image par URL relative (`data:images/foo.png` → `url(images/foo.png)`) |
-| `avatar` | pastille circulaire colorée déterministe (hash du nom → teinte HSL), initiales (2 premières lettres significatives) |
-| `label` | pastille grise affichant la valeur brute (`label:3`, `label:new`) |
+| `avatar` | pastille circulaire translucide teintée de façon déterministe (hash du nom → teinte HSL), initiales (2 premières lettres significatives) dans la teinte |
+| `label` | gamme de badges : pilule pleine affichant la valeur brute (`label:3`, `label:99+`, `label:new`), largeur ajustée à la valeur (disque 1em minimum), cerclée du fond (`--jtd-label-ring`, défaut `--jtd-background`) ; teinte = drapeau de couleur (`[error]`, `[primary]`…) ou `[color=#hex]`, `--jtd-muted` sinon |
 
 Un `name` numérique est automatiquement converti en `label:<valeur>` ; une
 valeur non-chaîne invalide devient `error:typeof <t>`.
@@ -110,15 +110,21 @@ Le composant lit le thème via le contexte de `@jointhedots/theme` :
 - `size` accepte un alias (`xs` 0.8em, `sm` 1em, `md` 1.5em, `lg` 2em — défaut
   `sm`) ou une valeur brute (`"3.2em"`), appliquée en `font-size` : tous les
   calques et la boîte suivent (dimensions en `em`).
-- La boîte fait toujours 1em × 1em (`div.jtd-icon`, position relative) ; les
-  calques sont absolus et remplissent la boîte. Ce positionnement est posé en
+- La boîte fait toujours 1em × 1em (`span.jtd-icon`, `inline-block`, position
+  relative) : elle est valide dans un bouton comme dans un paragraphe. Les
+  calques sont des `span` (les collections par police rendent un `<i>`, les
+  sprites un `<svg>`), absolus, et remplissent la boîte. Ce positionnement est posé en
   styles inline par le composant lors du parsing : une règle tierce chargée par
   un CSS de collection (ex. `.fi { position: relative }` de flag-icons) ne peut
   pas en déloger un calque.
 - Le CSS du gabarit est auto-injecté au premier chargement du module (balise
   `<style id="jtd-icon-styles">`, idempotent, sans effet en SSR).
-- `title`, `className`, `style`, `onClick` sont transmis au conteneur ;
+- `className`, `style`, `onClick` sont transmis au conteneur ;
   `className`/`style` fusionnent avec ceux calculés par le parseur.
+- **Accessibilité** : l'icône est décorative par défaut — le conteneur porte
+  `aria-hidden`, le libellé appartient au contrôle qui l'entoure (bouton,
+  ligne d'item). Avec `title`, elle devient une image nommée :
+  `role="img"` et `aria-label={title}`, sans `aria-hidden`.
 
 ## 5. FadeIcon — fondu au changement d'icône
 
@@ -181,7 +187,10 @@ bi:bell|label:3                             compteur superposé
 bi:lightning-fill[primary]|utility:einstein[badge,info] empilement multi-collections
 avatar:Jean Dupont                          pastille initiales déterministe
 flag:fr                                     drapeau (export flag-icons)
-label:new                                   pastille texte
+label:new                                   badge texte (teinte muted)
+label:99+[error]                            badge coloré par drapeau
+bi:bell|label:5[badge,primary]              compteur coloré au coin
 standard:account                            icône SLDS standard
 FadeIcon                                    fondu (300 ms) au changement de name
+title="…"                                   icône nommée (role="img") — sinon aria-hidden
 ```

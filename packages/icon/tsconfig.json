@@ -1,12 +1,5 @@
 {
    "extends": "../../tsconfig.base.json",
-   "compilerOptions": {
-      "paths": {
-         "@jointhedots/theme": [
-            "../theme/src/index.tsx"
-         ]
-      }
-   },
    "include": [
       "src"
    ]

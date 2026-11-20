@@ -1,17 +1,6 @@
-const formPropsSet = new Set([
-   'form',
-   'formAction',
-   'formEncType',
-   'formMethod',
-   'formNoValidate',
-   'formTarget',
-])
+const formProps = new Set(['form', 'formAction', 'formEncType', 'formMethod', 'formNoValidate', 'formTarget'])
 
-export function getHtmlProps(props) {
-   return Object.keys(props).reduce((prev, key) => {
-      if (formPropsSet.has(key) || key.startsWith("aria-") || key.startsWith("data-")) {
-         prev[key] = props[key]
-      }
-      return prev
-   }, {})
+export function getHtmlProps(props: object): Record<string, unknown> {
+   return Object.fromEntries(Object.entries(props).filter(([key]) =>
+      formProps.has(key) || key.startsWith("aria-") || key.startsWith("data-")))
 }

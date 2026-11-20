@@ -4,8 +4,6 @@ import { build } from "vite"
 
 const root = Path.resolve(fileURLToPath(new URL("..", import.meta.url)))
 
-await import("./styles.mts")
-
 // Dependencies first: theme → icon → button → layout → input
 const packages = [
    "packages/theme",

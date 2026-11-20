@@ -1,4 +1,4 @@
-// Buttons and icon buttons — everything derives from the --jtd-* design tokens.
+/* Buttons and icon buttons — everything derives from the --jtd-* design tokens. */
 
 .jtd-button {
    display: inline-flex;
@@ -9,9 +9,11 @@
    padding: 0 14px;
    font: inherit;
    font-size: 14px;
+   color: inherit;
+   text-decoration: none;
    background-color: transparent;
    border: 1px solid transparent;
-   border-radius: 5px;
+   border-radius: var(--jtd-radius);
    cursor: pointer;
    user-select: none;
    white-space: nowrap;
@@ -20,7 +22,8 @@
       border-color 120ms ease,
       color 120ms ease;
 
-   &:disabled {
+   &:disabled,
+   &[aria-disabled="true"] {
       opacity: 0.45;
       pointer-events: none;
    }
@@ -45,7 +48,7 @@
        color: var(--jtd-on-emphasis);
 
        &:hover {
-          background-color: color-mix(in srgb, var(--jtd-primary), white 14%);
+          background-color: color-mix(in srgb, var(--jtd-primary), var(--jtd-on-emphasis) 14%);
        }
     }
 
@@ -63,7 +66,7 @@
        color: var(--jtd-on-emphasis);
 
        &:hover {
-          background-color: color-mix(in srgb, var(--jtd-error), white 14%);
+          background-color: color-mix(in srgb, var(--jtd-error), var(--jtd-on-emphasis) 14%);
        }
     }
 
@@ -80,7 +83,7 @@
        color: var(--jtd-on-emphasis);
 
        &:hover {
-          background-color: color-mix(in srgb, var(--jtd-warning), white 14%);
+          background-color: color-mix(in srgb, var(--jtd-warning), var(--jtd-on-emphasis) 14%);
        }
     }
 
@@ -89,7 +92,7 @@
        color: var(--jtd-on-emphasis);
 
        &:hover {
-          background-color: color-mix(in srgb, var(--jtd-success), white 14%);
+          background-color: color-mix(in srgb, var(--jtd-success), var(--jtd-on-emphasis) 14%);
        }
     }
 
@@ -159,7 +162,7 @@
           color: var(--jtd-on-emphasis);
 
           &:hover {
-             background-color: color-mix(in srgb, var(--jtd-primary), white 14%);
+             background-color: color-mix(in srgb, var(--jtd-primary), var(--jtd-on-emphasis) 14%);
           }
        }
 
@@ -181,8 +184,8 @@
         }
    }
 
-   // Size declinations mirror the field metrics (jtd-field--*) so a button
-   // sits flush beside its input; the glyph follows via font-size inheritance.
+   /* Size declinations mirror the field metrics (jtd-field--*) so a button
+      sits flush beside its input; the glyph follows via font-size inheritance. */
    &.jtd-button--xs {
       height: 18px;
       padding: 0 8px;
@@ -239,9 +242,9 @@
    }
 }
 
-// Tooltip bubble — same visual language as the layout popover: the bordered
-// diamond paints behind the opaque bubble, so its outline continues the
-// bubble border into a tip.
+/* Tooltip bubble — same visual language as the layout popover: the bordered
+   diamond paints behind the opaque bubble, so its outline continues the
+   bubble border into a tip. */
 .jtd-tooltip {
    position: relative;
    display: inline-flex;
@@ -266,14 +269,14 @@
       bottom: calc(100% + 9px);
       left: 50%;
       transform: translateX(-50%);
-      z-index: 10000001;
+      z-index: var(--jtd-tooltip-zindex);
       max-width: 300px;
       padding: 6px 10px;
       background-color: var(--jtd-surface);
       color: var(--jtd-surface-foreground);
       border: 1px solid var(--jtd-border);
       border-radius: 6px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      box-shadow: var(--jtd-shadow-floating);
       font-size: 12px;
       white-space: normal;
       visibility: hidden;
@@ -292,7 +295,7 @@
    }
 }
 
-// Icon trigger pill (tooling of items, toolbars) — sized by font-size.
+/* Icon trigger pill (tooling of items, toolbars) — sized by font-size. */
 .jtd-button-icon {
    display: flex;
    justify-content: center;
@@ -303,6 +306,10 @@
    min-height: 1.8em;
    max-width: 1.8em;
    max-height: 1.8em;
+   padding: 0;
+   border: none;
+   background: transparent;
+   font: inherit;
    color: var(--jtd-foreground);
    border-radius: 100%;
    cursor: pointer;
@@ -328,7 +335,7 @@
        color: var(--jtd-on-emphasis);
 
        &:hover {
-          background-color: color-mix(in srgb, var(--jtd-primary), white 14%);
+          background-color: color-mix(in srgb, var(--jtd-primary), var(--jtd-on-emphasis) 14%);
        }
     }
 

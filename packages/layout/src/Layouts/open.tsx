@@ -1,18 +1,20 @@
-import { PositionType } from "../computeEdgeBox"
-import { createPanel } from "./Panels"
-import { createFloatingDock, FloatingDockOptions, FloatingTarget, StyleType } from "./Panels/FloatingDock"
+import { createPanel } from "./Panels/index.ts"
+import { createFloatingDock, type FloatingDockOptions, type FloatingTarget } from "./Panels/FloatingDock.tsx"
+import type { ModalSize } from "./Panels/ModalDock.tsx"
 
-export class PopupCancel extends Error {
+export type DialogOptions = {
+   title?: string
+   size?: ModalSize
+   height?: string
 }
 
-export function openDialog<T>(renderer: (resolve: (data: T) => void) => React.ReactNode, height?: string): Promise<T> {
+/** Opens a modal panel and resolves with the value given to `resolve`, or `undefined` when the user closes it. */
+export function openDialog<T>(renderer: (resolve: (data: T) => void) => React.ReactNode, options?: DialogOptions): Promise<T | undefined> {
    return new Promise(resolve => {
-      const panel = createPanel()
+      const panel = createPanel(undefined, "modal")
       let done = false
       panel.display({
-         title: "",
-         icon: "",
-         height,
+         ...options,
          content: renderer((res) => {
             if (!done) {
                done = true
@@ -27,29 +29,29 @@ export function openDialog<T>(renderer: (resolve: (data: T) => void) => React.Re
             }
          },
       })
-      panel.open("modal")
+      panel.open()
    })
 }
 
+export type ContextualMenuPromise<T> = Promise<T | undefined> & { close(): void }
+
+/** Opens a floating panel next to `target` and resolves with the value given to `close`, or `undefined`. */
 export function openContextualMenu<T>(
    target: FloatingTarget,
    renderer: (close: (value?: T) => void) => React.ReactNode | Promise<React.ReactNode>,
    options?: FloatingDockOptions,
-): Promise<T> {
-   const panel = createPanel()
-   const promise = new Promise<T>(async (resolve) => {
+): ContextualMenuPromise<T> {
+   const panel = createPanel(undefined, createFloatingDock(target, options))
+   const promise = new Promise<T | undefined>(async (resolve) => {
       panel.display({
-         title: "",
-         icon: "",
-          content: await renderer((res) => {
-             resolve(res)
-             panel.close()
-          }),
+         content: await renderer((res) => {
+            resolve(res)
+            panel.close()
+         }),
          onClose: () => resolve(undefined),
       })
-      panel.open(createFloatingDock(target, options))
-   })
-   promise["close"] = panel.close.bind(panel)
+      panel.open()
+   }) as ContextualMenuPromise<T>
+   promise.close = () => panel.close()
    return promise
 }
-

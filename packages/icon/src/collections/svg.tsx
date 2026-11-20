@@ -1,4 +1,4 @@
-import { IconCollection, IconElement } from "../Icon"
+import { IconCollection, IconElement } from "../Icon.tsx"
 import { ThemeLighting, ThemeProvider } from "@jointhedots/theme"
 
 export class IconSVGCollection implements IconCollection {
@@ -18,7 +18,7 @@ export class IconSVGCollection implements IconCollection {
       const icon = theme.lighting === ThemeLighting.Light
          ? this.lights[name] || this.lights[this.defaultIcon]
          : this.darks[name] || this.darks[this.defaultIcon]
-      return <div className={className} style={{ backgroundImage: icon, ...style }} />
+      return <span className={className} style={{ backgroundImage: icon, ...style }} />
    }
 }
 

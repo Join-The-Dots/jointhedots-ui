@@ -6,9 +6,14 @@
    "description": "Join.The.Dots theme — global light/dark theme, React context, design tokens and base styles",
    "sideEffects": true,
    "exports": {
-      ".": {
-         "types": "./dist/index.d.ts",
-         "import": "./dist/index.js"
+      ".": "./src/index.tsx"
+   },
+   "publishConfig": {
+      "exports": {
+         ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
+         }
       }
    },
    "files": [

@@ -6,25 +6,34 @@
    "description": "Join.The.Dots icon system — composable Icon component, collection registry and dedicated collection exports",
    "sideEffects": true,
    "exports": {
-      ".": {
-         "types": "./dist/index.d.ts",
-         "import": "./dist/index.js"
-      },
-      "./bootstrap": {
-         "types": "./dist/bootstrap/index.d.ts",
-         "import": "./dist/bootstrap.js"
-      },
-      "./font-awesome": {
-         "types": "./dist/font-awesome/index.d.ts",
-         "import": "./dist/font-awesome.js"
-      },
-      "./flag-icons": {
-         "types": "./dist/flag-icons/index.d.ts",
-         "import": "./dist/flag-icons.js"
-      },
-      "./salesforce": {
-         "types": "./dist/salesforce/index.d.ts",
-         "import": "./dist/salesforce.js"
+      ".": "./src/index.ts",
+      "./bootstrap": "./src/bootstrap/index.ts",
+      "./font-awesome": "./src/font-awesome/index.ts",
+      "./flag-icons": "./src/flag-icons/index.ts",
+      "./salesforce": "./src/salesforce/index.ts"
+   },
+   "publishConfig": {
+      "exports": {
+         ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
+         },
+         "./bootstrap": {
+            "types": "./dist/bootstrap/index.d.ts",
+            "import": "./dist/bootstrap.js"
+         },
+         "./font-awesome": {
+            "types": "./dist/font-awesome/index.d.ts",
+            "import": "./dist/font-awesome.js"
+         },
+         "./flag-icons": {
+            "types": "./dist/flag-icons/index.d.ts",
+            "import": "./dist/flag-icons.js"
+         },
+         "./salesforce": {
+            "types": "./dist/salesforce/index.d.ts",
+            "import": "./dist/salesforce.js"
+         }
       }
    },
    "files": [

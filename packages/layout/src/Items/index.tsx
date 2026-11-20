@@ -1,8 +1,10 @@
 import React from "react"
-import { Menu } from "../Layouts/Menu"
+import { Menu } from "../Layouts/Menu/index.tsx"
 import Icon, { getIconName } from "@jointhedots/icon"
 import { toast } from 'react-toastify'
-import { createFloatingDock, openContextualMenu, PanelDock } from "../Layouts"
+import { createFloatingDock, type FloatingTarget } from "../Layouts/Panels/FloatingDock.tsx"
+import type { PanelDock } from "../Layouts/Panels/index.ts"
+import { openContextualMenu } from "../Layouts/open.tsx"
 import { ButtonIcon } from "@jointhedots/button"
 
 export type ShapeDecoration = {
@@ -21,12 +23,12 @@ export type LabelProps<T = any> = {
    name: string // Object name
    icon?: string // Object icon
    decorations?: LabelDecoration[]
-   tooling?: ToolingProps[] // Object tooling list
+   tooling?: (ToolingProps | false | null | undefined)[] // Object tooling list
    summary?: React.ReactNode // Object short description
    tooltip?: DisplayProps // Object tooltip
    content?: DisplayProps // Object content
    data?: T // Object custom data
-   onActivate?: (label: LabelProps, dock: PanelDock) => void // On Object activation
+   onActivate?: (label: LabelProps, dock: PanelDock) => void | Promise<void> // On Object activation
 }
 
 export enum LabelSelected {
@@ -47,8 +49,14 @@ export type ItemVariant = "minimal" | "outlined"
 export type ItemTextOverflow = "wrap" | "truncate"
 
 export type ItemProps<T = any> = LabelProps<T> & {
+   /** Leading visual replacing the icon, such as an avatar image. */
+   avatar?: React.ReactNode
    tags?: TagProps[]
+   /** Trailing actions, after the tooling. */
+   actions?: React.ReactNode
    selected?: LabelSelected
+   /** Marks the item as the current one of its list (current organization, page…). */
+   current?: boolean
    onSelect?: (item: ItemProps) => void
    variant?: ItemVariant
    textOverflow?: ItemTextOverflow
@@ -58,36 +66,38 @@ export type DisplayProps = React.ReactNode | ((props: LabelProps) => React.React
 
 export type TagProps = string | React.ReactElement | LabelProps
 
-function GetNodeText(node?: React.ReactNode): string {
+function GetNodeText(node?: React.ReactNode): string | undefined {
    return (typeof node === "string") ? node : undefined
 }
 
-function GetLabelIcon(label: LabelProps): string {
-   const { icon, name } = label
-   return getIconName(icon, name)
-}
-
-function DrawLabelIcon(label: LabelProps): React.ReactNode {
-   const { icon, name, decorations } = label
+function DrawLabelIcon(label: ItemProps): React.ReactNode {
+   const { icon, name, decorations, avatar } = label
+   if (avatar) return avatar
    let content = <Icon name={getIconName(icon, name)} />
-   if (decorations) {
-      for (const deco of decorations) {
-         if (deco.type === "shape") {
-            content = <div className="colored" style={{ "--jtd-item-color": deco.color } as any}>
-               <div className="colored-inner">
-                  {content}
-               </div>
-            </div>
-         }
-         if (deco.type === "badge") {
-            content = <div style={{ position: "relative" }}>
+   for (const deco of decorations ?? []) {
+      if (deco.type === "shape") {
+         content = <div className="colored" style={{ "--jtd-item-color": deco.color } as React.CSSProperties}>
+            <div className="colored-inner">
                {content}
-               <Icon name={deco.name} style={{ color: "red", position: "absolute", fontSize: "60%", top: "-0.25em", right: "-0.25em" }} />
             </div>
-         }
+         </div>
+      }
+      if (deco.type === "badge") {
+         content = <div className="badged">
+            {content}
+            <Icon className="badge" name={deco.name} />
+         </div>
       }
    }
    return content
+}
+
+function DrawTag(tag: TagProps, key: number): React.ReactNode {
+   if (typeof tag === "string") return <span key={key} className="jtd-item-tag">{tag}</span>
+   if (React.isValidElement(tag)) return <React.Fragment key={key}>{tag}</React.Fragment>
+   return <span key={key} className="jtd-item-tag" title={GetNodeText(tag.summary)}>
+      {tag.icon ? <Icon name={tag.icon} /> : null}{tag.name}
+   </span>
 }
 
 function DrawDisplay(label: LabelProps, display: DisplayProps): React.ReactNode {
@@ -97,56 +107,36 @@ function DrawDisplay(label: LabelProps, display: DisplayProps): React.ReactNode 
    return display
 }
 
-function DifferDisplay(label: LabelProps, display: DisplayProps): (props: LabelProps) => React.ReactNode {
-   if (display instanceof Function) {
-      return () => display(label)
-   }
-   else {
-      return () => display
-   }
-}
-
 function DrawToolingMenu(tooling: ToolingProps[], onClose: () => void): React.ReactNode {
-   return <>
-      {...tooling.map((label, i) => (label && <Menu.Item
+   return <Menu>
+      {tooling.map((label, i) => <Menu.Item
          key={i}
          name={label.name}
          icon={label.icon}
          onClick={(e) => {
             onClose()
-            label.onActivate(label, createFloatingDock(e))
+            label.onActivate?.(label, createFloatingDock(e))
          }}
-      />))}
-   </>
+      />)}
+   </Menu>
 }
 
-export function DrawToolingWidgets(tooling: ToolingProps[]): React.ReactNode {
-   if (tooling) {
-      let onToolMenu = null
-      const buttons = []
-      for (const label of tooling) {
-         if (label) {
-            if (!label.optional) {
-               buttons.push(React.createElement(LabelButton, label))
-            }
-            else if (!onToolMenu) {
-               onToolMenu = (e) => {
-                  e.stopPropagation()
-                  openContextualMenu(e, (close) => {
-                     return DrawToolingMenu(tooling, close)
-                  })
-               }
-            }
-         }
-      }
-      if (onToolMenu) {
-         buttons.push(<ButtonIcon icon="bi:three-dots-vertical" onClick={onToolMenu} />)
-      }
-      if (buttons.length > 0) {
-         return React.createElement(React.Fragment, null, ...buttons)
-      }
+export function DrawToolingWidgets(tooling: LabelProps["tooling"]): React.ReactNode {
+   const labels = (tooling ?? []).filter((label): label is ToolingProps => !!label)
+   const buttons = labels.filter((label) => !label.optional).map((label, i) => <LabelButton key={i} {...label} />)
+   if (labels.some((label) => label.optional)) {
+      buttons.push(<ButtonIcon
+         key="more"
+         icon="bi:three-dots-vertical"
+         title="More actions"
+         aria-haspopup="menu"
+         onClick={(e) => {
+            e.stopPropagation()
+            openContextualMenu(e, (close) => DrawToolingMenu(labels, close))
+         }}
+      />)
    }
-   return null
+   return buttons.length > 0 ? <>{buttons}</> : null
 }
 
 function Switch(props: {
@@ -157,128 +147,140 @@ function Switch(props: {
    return <ButtonIcon
       icon={selected ? "bi:check-circle" : "bi:circle"}
       hoveredIcon={selected ? "bi:circle" : "bi:check-circle"}
+      title={selected ? "Deselect" : "Select"}
+      aria-pressed={!!selected}
       onClick={onSelect}
    />
 }
 
+async function activate(label: LabelProps, target: FloatingTarget) {
+   try {
+      await label.onActivate?.(label, createFloatingDock(target))
+   } catch (e) {
+      console.error(label.name + ".onActivate", e)
+      toast.error(e instanceof Error ? e.message : String(e))
+   }
+}
+
 export function LabelButton(label: LabelProps) {
-   const onClick = async (e) => {
-      try {
-         e.stopPropagation()
-         e.preventDefault()
-         if (label.onActivate) {
-            await label.onActivate(label, createFloatingDock(e))
-         }
-         else if (label.content) {
-            openContextualMenu(e, DifferDisplay(label, label.content))
-         }
-      } catch (e) {
-         console.error(label.name + ".onActivate", e)
-         toast.error(e.message)
+   const onClick = (e: React.MouseEvent) => {
+      e.stopPropagation()
+      e.preventDefault()
+      if (label.onActivate) {
+         activate(label, e)
+      }
+      else if (label.content) {
+         openContextualMenu(e, () => DrawDisplay(label, label.content))
       }
    }
    return <ButtonIcon
-      icon={GetLabelIcon(label)}
+      icon={getIconName(label.icon, label.name)}
       title={GetNodeText(label.summary) || label.name}
       onClick={onClick}
    />
 }
 
+/** Props making an element activable by click, Enter and Space, and focusable. */
+function activableProps(onActivate: ((event: React.SyntheticEvent) => void) | undefined) {
+   if (!onActivate) return {}
+   return {
+      role: "button",
+      tabIndex: 0,
+      onClick: onActivate,
+      onKeyDown: (event: React.KeyboardEvent) => {
+         if ((event.key === "Enter" || event.key === " ") && event.target === event.currentTarget) {
+            event.preventDefault()
+            onActivate(event)
+         }
+      },
+   }
+}
+
 export function ItemIcon(item: LabelProps) {
-   let { summary, onActivate } = item
+   const { summary, onActivate } = item
    return <div
       className="jtd-item-short"
-      title={GetNodeText(summary)}
-      onClick={onActivate && ((e) => onActivate(item, createFloatingDock(e)))}
+      title={GetNodeText(summary) || item.name}
+      {...activableProps(onActivate && ((e) => activate(item, e)))}
    >
       <div className="item-icon">{DrawLabelIcon(item)}</div>
-   </div >
+   </div>
 }
 
-function ItemVariantClass(item: ItemProps): string {
-   return item.variant || "minimal"
-}
-
-function ItemRowClasses(item: ItemProps, base: string): string[] {
-   const classes = [base, ItemVariantClass(item)]
+function ItemRowClasses(item: ItemProps, base: string): string {
+   const classes = [base, item.variant || "minimal"]
    if (item.textOverflow === "truncate") classes.push("truncate")
-   return classes
+   if ((item.selected ?? 0) & LabelSelected.Enabled) classes.push("selected")
+   if (item.current) classes.push("current")
+   return classes.join(" ")
+}
+
+function ItemSwitch(item: ItemProps) {
+   const onSelect = item.onSelect && ((e: React.SyntheticEvent) => { e.stopPropagation(); item.onSelect!(item) })
+   if (item.selected === LabelSelected.EnabledEditable) return <Switch selected={true} onSelect={onSelect} />
+   if (item.selected === LabelSelected.DisabledEditable) return <Switch selected={false} onSelect={onSelect} />
+   return null
 }
 
 export function ItemRowShort(item: ItemProps) {
-    let { name, summary, selected, onSelect, onActivate } = item
-    if (!onActivate) onActivate = onSelect
-    const classes = ItemRowClasses(item, "jtd-item-short")
-    if (selected & LabelSelected.Enabled) {
-        classes.push("selected")
-    }
-    return <li
-        className={classes.join(" ")}
-        title={GetNodeText(summary)}
-        onClick={onActivate && ((e) => {
-            e.stopPropagation()
-            onActivate(item, createFloatingDock(e))
-        })}
-    >
-        <div className="item-icon">{DrawLabelIcon(item)}</div>
-        <div className="item-infos">{name}</div>
-        {(selected == LabelSelected.EnabledEditable) ? <Switch selected={true} onSelect={() => onSelect(item)} /> : null}
-        {(selected == LabelSelected.DisabledEditable) ? <Switch selected={false} onSelect={() => onSelect(item)} /> : null}
-    </li>
+   const { name, summary, onSelect, onActivate } = item
+   const onRowActivate = onActivate
+      ? (e: React.SyntheticEvent) => { e.stopPropagation(); activate(item, e) }
+      : onSelect && ((e: React.SyntheticEvent) => { e.stopPropagation(); onSelect(item) })
+   return <div
+      className={ItemRowClasses(item, "jtd-item-short")}
+      title={GetNodeText(summary)}
+      aria-current={item.current || undefined}
+      {...activableProps(onRowActivate)}
+   >
+      <div className="item-icon">{DrawLabelIcon(item)}</div>
+      <div className="item-infos">{name}</div>
+      <ItemSwitch {...item} />
+   </div>
 }
 
 export function ItemRowRich(item: ItemProps) {
-   let { name, summary, content, selected, onSelect, onActivate } = item
-   let onMouseEnter, onMouseLeave, onClick
+   const { name, summary, content, tags, actions, onSelect, onActivate } = item
+   let onMouseEnter: ((e: React.MouseEvent) => void) | undefined
+   let onMouseLeave: (() => void) | undefined
+   let onRowActivate: ((e: React.SyntheticEvent) => void) | undefined
+   if (onActivate) {
+      onRowActivate = (e) => { e.stopPropagation(); activate(item, e) }
+   }
+   else if (content) {
+      onRowActivate = (e) => { openContextualMenu(e, () => DrawDisplay(item, content)) }
+   }
+   else if (onSelect) {
+      onRowActivate = (e) => { e.stopPropagation(); onSelect(item) }
+   }
    if (content) {
-      let closeCallback
+      let close: (() => void) | undefined
       onMouseEnter = (e) => {
          openContextualMenu(e, (f) => {
-            closeCallback = f
-            return DrawDisplay(item, item.content)
+            close = f
+            return DrawDisplay(item, content)
          })
       }
-      onMouseLeave = () => {
-         closeCallback && closeCallback()
-      }
-      if (!onActivate) {
-         onClick = (e) => {
-            openContextualMenu(e, DifferDisplay(item, item.content))
-         }
-      }
-      else {
-         onClick = async (e) => {
-            try {
-               e.stopPropagation()
-               await onActivate(item, createFloatingDock(e))
-            } catch (e) {
-               console.error("ItemRowRich.onActivate", e)
-               toast.error(e.message)
-            }
-         }
-      }
+      onMouseLeave = () => close?.()
    }
-   const select = onSelect && ((e) => { e.stopPropagation(); onSelect(item) })
-   const activate = onActivate ? ((e) => { e.stopPropagation(); onActivate(item, createFloatingDock(e)) }) : select
-   const className = ItemRowClasses(item, "jtd-item-large")
-   if (selected & LabelSelected.Enabled) {
-      className.push("selected")
-   }
-   return <li
-      className={className.join(" ")}
+   return <div
+      className={ItemRowClasses(item, "jtd-item-large")}
       title={GetNodeText(summary)}
-      onClick={onClick || activate}
+      aria-current={item.current || undefined}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
+      {...activableProps(onRowActivate)}
    >
-      {(selected == LabelSelected.EnabledEditable) ? <Switch selected={true} onSelect={select} /> : null}
-      {(selected == LabelSelected.DisabledEditable) ? <Switch selected={false} onSelect={select} /> : null}
+      <ItemSwitch {...item} />
       <div className="item-icon">{DrawLabelIcon(item)}</div>
       <div className="item-infos">
-         <div>{name}</div>
-         {summary && <div>{summary}</div>}
+         <div className="item-title">
+            <span className="item-name">{name}</span>
+            {tags?.map(DrawTag)}
+         </div>
+         {summary ? <div className="item-summary">{summary}</div> : null}
       </div>
       {DrawToolingWidgets(item.tooling)}
-   </li>
+      {actions ? <div className="item-actions" onClick={(e) => e.stopPropagation()}>{actions}</div> : null}
+   </div>
 }
-

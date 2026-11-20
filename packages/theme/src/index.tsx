@@ -1,6 +1,6 @@
 import React from "react";
-import { injectStyles } from "./inject-styles"
-import styles from "./generated/styles"
+import { injectStyles } from "./inject-styles.ts"
+import styles from "./theme.scss?inline"
 
 injectStyles(styles, "jtd-theme-styles")
 
@@ -11,7 +11,7 @@ export enum ThemeLighting {
 }
 
 export class ThemeProvider {
-   static globalTheme: ThemeProvider = null
+   static globalTheme: ThemeProvider
    contrastTheme: ThemeProvider = this
    constructor(
       readonly lighting: ThemeLighting,

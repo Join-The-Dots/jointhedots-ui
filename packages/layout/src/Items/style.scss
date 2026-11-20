@@ -1,20 +1,24 @@
-body {
-    --jtd-item-color: rgb(50, 100, 200);
-}
-
-// Item rows combine a size flavor (short/large — geometry) with a variant
-// flavor (minimal/outlined — chrome). The variant owns hover and selection,
-// never the metrics.
+/* Item rows combine a size flavor (short/large — geometry) with a variant
+   flavor (minimal/outlined — chrome). The variant owns hover and selection,
+   never the metrics. */
 
 .jtd-item-short,
 .jtd-item-large {
     display: flex;
     flex-direction: row;
     align-items: center;
-    cursor: pointer;
     position: relative;
     padding: 0 6px 0 10px;
-    border-radius: 5px;
+    border-radius: var(--jtd-radius);
+
+    &[role=button] {
+        cursor: pointer;
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--jtd-primary);
+        outline-offset: -2px;
+    }
 
     &>.item-selector {
         min-width: 32px;
@@ -26,18 +30,38 @@ body {
         min-width: 32px;
         align-items: center;
         justify-content: center;
-        overflow: hidden;
         padding: 3px;
         font-size: 150%;
 
+        /* Colored disc behind the glyph: same 1em footprint as a bare icon, the
+           glyph shrunk inside so its corners stay clear of the round edge.
+           flex, not block: a block wrapping the inline-block icon gets a line box
+           taller than 1em, turning the disc into an oval. */
         &>.colored {
-            padding: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 1em;
+            height: 1em;
             border-radius: 50%;
             background-color: var(--jtd-item-color);
 
             &>.colored-inner {
-                border-radius: 50%;
-                overflow: hidden;
+                display: flex;
+                font-size: 0.6em;
+            }
+        }
+
+        &>.badged {
+            display: flex;
+            position: relative;
+
+            &>.badge {
+                position: absolute;
+                top: -0.5em;
+                right: -0.5em;
+                font-size: 60%;
+                color: var(--jtd-error);
             }
         }
     }
@@ -63,45 +87,73 @@ body {
 
     &>.item-infos {
         padding: 5px 8px;
-        font-size: 14px;
 
-        &>:first-child {
-            text-overflow: ellipsis;
-            font-weight: bold;
-            font-size: 12px;
+        &>.item-title {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+            font-weight: 600;
+            font-size: 14px;
         }
 
-        &>:nth-child(2) {
+        &>.item-summary {
             color: var(--jtd-muted);
-            font-size: 11px;
-            padding-top: 5px;
+            font-size: 12px;
+            padding-top: 3px;
         }
+    }
+
+    &>.item-actions {
+        display: flex;
+        flex: none;
+        align-items: center;
+        gap: 6px;
     }
 }
 
-// truncate: single-line text fields, so the row keeps a fixed height — the
-// default wrap lets long labels flow onto several lines.
+.jtd-item-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 1px 8px;
+    border: 1px solid var(--jtd-border);
+    border-radius: 999px;
+    color: var(--jtd-muted);
+    font-size: 11px;
+    font-weight: normal;
+    white-space: nowrap;
+}
+
+/* truncate: single-line text fields, so the row keeps a fixed height — the
+   default wrap lets long labels flow onto several lines. */
 .jtd-item-short.truncate,
 .jtd-item-large.truncate {
     &>.item-infos {
         white-space: nowrap;
 
-        &>div {
+        &>div,
+        .item-name {
             overflow: hidden;
             text-overflow: ellipsis;
+        }
+
+        &>.item-title {
+            flex-wrap: nowrap;
         }
     }
 }
 
-// minimal: no box chrome — quiet hover shade, selection reads as a slim
-// accent bar on a tinted row.
+/* minimal: no box chrome — quiet hover shade, selection reads as a slim
+   accent bar on a tinted row. */
 .jtd-item-short.minimal,
 .jtd-item-large.minimal {
     &:hover {
         background-color: var(--jtd-hover);
     }
 
-    &.selected {
+    &.selected,
+    &.current {
         background-color: color-mix(in srgb, var(--jtd-item-color), transparent 90%);
 
         &::before {
@@ -117,8 +169,8 @@ body {
     }
 }
 
-// outlined: boxed chrome — hairline hover outline, selection framed on three
-// sides by the item color.
+/* outlined: boxed chrome — hairline hover outline, selection framed on three
+   sides by the item color. */
 .jtd-item-short.outlined,
 .jtd-item-large.outlined {
     &:hover {

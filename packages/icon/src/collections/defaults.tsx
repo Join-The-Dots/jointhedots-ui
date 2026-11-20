@@ -1,4 +1,4 @@
-import { IconCollection, IconElement } from "../Icon"
+import { IconCollection, IconElement } from "../Icon.tsx"
 
 export class IconError implements IconCollection {
    setup(element: IconElement) {
@@ -7,7 +7,7 @@ export class IconError implements IconCollection {
    draw(element: IconElement) {
       const { name, className, style } = element
       const title = `[Bad icon '${name}']`
-      return <div title={title} className={className} style={style} />
+      return <span title={title} className={className} style={style} />
    }
 }
 
@@ -16,13 +16,13 @@ export class IconBlank implements IconCollection {
    }
    draw(element: IconElement) {
       const { className, style } = element
-      return <div className={className} style={style} />
+      return <span className={className} style={style} />
    }
 }
 
 const error_styles = {
    height: "1em",
    width: "1em",
-   background: 'repeating-linear-gradient(45deg,#0000,#0000 1px,#f00 2px,#f00 3px)',
+   background: 'repeating-linear-gradient(45deg, transparent, transparent 1px, var(--jtd-error) 2px, var(--jtd-error) 3px)',
 }
 

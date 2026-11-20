@@ -18,6 +18,7 @@ import {
    LabelSelected,
    Menu,
    OverflowStack,
+   Overlays,
    Popup,
    Stack,
    openContextualMenu,
@@ -93,8 +94,17 @@ function App() {
                <span className="icon-sizes" title="[badge,info]"><Icon name="bi:folder|label:42[badge,info]" size="lg" /></span>
             </div>
             <div className="demo-row">
+               <span className="row-caption">label badges</span>
+               {["label:3", "label:12[primary]", "label:99+[error]", "label:new[success]", "label:beta[warning]", "label:!", "label:off[secondary]"].map(name => (
+                  <span className="icon-sizes" key={name} title={name}><Icon name={name} size="md" /></span>
+               ))}
+               {["primary", "success", "warning", "error"].map(flag => (
+                  <span className="icon-sizes" key={flag} title={`bi:bell|label:5[badge,${flag}]`}><Icon name={`bi:bell|label:5[badge,${flag}]`} size="lg" /></span>
+               ))}
+            </div>
+            <div className="demo-row">
                <span className="row-caption">css vars</span>
-               <span className="icon-sizes" title="label:EU[--jtd-avatar-bg=#0e639c]"><Icon name="label:EU[--jtd-avatar-bg=#0e639c]" size="md" /></span>
+               <span className="icon-sizes" title="label:EU[color=#0e639c]"><Icon name="label:EU[color=#0e639c]" size="md" /></span>
                <span className="icon-sizes" title="blank & unknown"><Icon name="blank" size="md" /><Icon name="nope:ghost" size="md" /></span>
             </div>
          </div>
@@ -127,6 +137,11 @@ function App() {
                    <Button key={size} label="Save" icon="bi:save" size={size} variant="neutral" onClick={() => setLastAction(`saved (${size})`)} />
                 ))}
                 <Button label="A link" variant="link" size="xs" onClick={() => setLastAction("xs link")} />
+             </div>
+             <div className="demo-row">
+                <span className="row-caption">href</span>
+                <Button label="Open the docs" icon="bi:box-arrow-up-right" iconPosition="right" variant="outline-primary" href="https://github.com" target="_blank" />
+                <Button label="Anchor link" variant="link" href="#root" />
              </div>
          </div>
       </Section>
@@ -193,8 +208,28 @@ function App() {
          <DemoItemAtoms onAction={setLastAction} />
       </Section>
 
-      <Section title="Layout — panels, menus, dialogs from anywhere" hint="await openDialog(…) / openContextualMenu(…) / submenus / hover previews">
-         <DemoLayout onAction={setLastAction} />
+      <Section title="Inputs — accessible fields & extra controls" hint="hint · error · onValidate · oneOf labels · radio · segmented · multi-select · date · file · suggestions">
+         <DemoFieldControls onAction={setLastAction} />
+      </Section>
+
+      <Section title="Layout — dialogs" hint="await openDialog(render, { title, size }) from anywhere — resolves with the value passed to the callback">
+         <DemoDialogs onAction={setLastAction} />
+      </Section>
+
+      <Section title="Layout — panels" hint="Overlays.useModal / useLeftDrawer(render, deps) · panel.open() / switch() on the default dock · Escape, focus and inert background handled">
+         <DemoPanels onAction={setLastAction} />
+      </Section>
+
+      <Section title="Layout — menus" hint="await openContextualMenu(…) · Menu.Item / LargeItem / Section / Separator · submenus · Menu.Anchor">
+         <DemoMenus onAction={setLastAction} />
+      </Section>
+
+      <Section title="Layout — popovers" hint='Popup position=… · variant="menu" for bare chrome · opens on hover'>
+         <DemoPopovers />
+      </Section>
+
+      <Section title="Layout — stacks" hint="OverflowStack folds the items that don't fit into an overflow menu">
+         <DemoStacks onAction={setLastAction} />
       </Section>
    </LocalTheme>
 }
@@ -292,7 +327,7 @@ function DemoInputSizes({ onAction }: { onAction: (msg: string) => void }) {
                 label={`size="${size}"`}
                 value={text}
                 schema={TextInputSchema("type here…", "text")}
-                icon="bi:text-cursor"
+                icon="bi:cursor-text"
                 size={size}
                 onChange={v => { setText(v); onAction(`${size} = "${v}"`) }}
              />
@@ -373,7 +408,7 @@ function DemoConnectionCard({ onAction }: { onAction: (msg: string) => void }) {
 }
 
 function DemoItems({ onAction }: { onAction: (msg: string) => void }) {
-   const [picked, setPicked] = useState<string>(null)
+   const [picked, setPicked] = useState<string | null>(null)
    const rows = [
       {
          name: "Production org",
@@ -543,27 +578,39 @@ function DemoItemAtoms({ onAction }: { onAction: (msg: string) => void }) {
    </div>
 }
 
-function DemoLayout({ onAction }: { onAction: (msg: string) => void }) {
-   const askName = async () => {
-      const name = await openDialog<string>(resolve => <AskName initial="Ada" onDone={resolve} />)
-      onAction(name ? `dialog resolved: "${name}"` : "dialog cancelled")
+async function askName(onAction: (msg: string) => void) {
+   const name = await openDialog<string | undefined>(resolve => <AskName initial="Ada" onDone={resolve} />, { title: "Rename", size: "sm" })
+   onAction(name ? `dialog resolved: "${name}"` : "dialog cancelled")
+}
+
+function DemoDialogs({ onAction }: { onAction: (msg: string) => void }) {
+   const configureDeploy = async () => {
+      const config = await openDialog<DeployConfig | undefined>(resolve => <DeployForm onDone={resolve} />, { title: "Configure deploy" })
+      onAction(config ? `deploy configured: ${config.env}${config.dryRun ? " (dry run)" : ""}` : "deploy dialog cancelled")
    }
+   return <div className="demo-row">
+      <Button label="Ask a question…" icon="bi:chat-dots" variant="outline-primary" onClick={() => askName(onAction)} />
+      <Button label="Configure deploy…" icon="bi:rocket-takeoff" variant="primary" onClick={configureDeploy} />
+   </div>
+}
+
+function DemoMenus({ onAction }: { onAction: (msg: string) => void }) {
    const openMenu = (e: React.MouseEvent) => {
       e.stopPropagation()
       openContextualMenu(e, close => (
-         <div>
+         <Menu>
             <Menu.Section title="Org">
                <Menu.Item name="Inspect" icon="bi:search" onClick={() => { close(); onAction("inspect") }} />
-               <Menu.Item name="Rename…" icon="bi:pencil" onClick={() => { close(); askName() }} />
+               <Menu.Item name="Rename…" icon="bi:pencil" onClick={() => { close(); askName(onAction) }} />
                <Menu.Separator />
                <Menu.Item name="Delete" icon="bi:trash[error]" onClick={() => { close(); onAction("deleted") }} />
             </Menu.Section>
-         </div>
+         </Menu>
       ))
    }
    const pickTarget = async (e: React.MouseEvent) => {
       e.stopPropagation()
-      const target = await openContextualMenu<string>(e, close => (<>
+      const target = await openContextualMenu<string>(e, close => (<Menu>
          <Menu.Item name="This org" icon="standard:account" onClick={() => close("this org")} />
          <Menu.Item name="All orgs" icon="bi:globe" onClick={() => close("all orgs")} />
          <Menu.Separator />
@@ -571,40 +618,75 @@ function DemoLayout({ onAction }: { onAction: (msg: string) => void }) {
             <Menu.Item name="EU45 (prod)" icon="bi:1-circle" onClick={() => close("EU45")} />
             <Menu.Item name="scratch-eu7" icon="bi:2-circle" onClick={() => close("scratch-eu7")} />
          </Menu.LargeItem>
-      </>), { variant: "menu" })
+      </Menu>), { variant: "menu" })
       onAction(target ? `menu resolved: "${target}"` : "menu cancelled")
    }
-   const configureDeploy = async () => {
-      const config = await openDialog<{ env: string, dryRun: boolean }>(resolve => <DeployForm onDone={resolve} />)
-      onAction(config ? `deploy configured: ${config.env}${config.dryRun ? " (dry run)" : ""}` : "deploy dialog cancelled")
+   const switchOrg = async (e: React.MouseEvent) => {
+      e.stopPropagation()
+      const org = await openContextualMenu<string>(e, close => (<Menu aria-label="Switch org">
+         <Menu.Section title="Organizations">
+            <Menu.LargeItem name="EU45" icon="standard:account" summary="production · ada@acme.com" tags={["prod"]} current onClick={() => close("EU45")} />
+            <Menu.LargeItem name="scratch-eu7" icon="bi:cloud" summary="scratch org · expires in 3 days" tags={["scratch"]} decorations={[{ type: "shape", color: "#3fb950" }]} onClick={() => close("scratch-eu7")} />
+            <Menu.LargeItem name="uat-sandbox" icon="bi:box" summary="sandbox · last refresh 12 days ago" decorations={[{ type: "badge", name: "bi:exclamation-circle-fill[warning]" }]} onClick={() => close("uat-sandbox")} />
+         </Menu.Section>
+         <Menu.Separator />
+         <Menu.LargeItem name="Recent orgs" icon="bi:clock-history" summary="reopen a disconnected org">
+            <Menu.LargeItem name="dev-hub" icon="bi:diagram-3" summary="Dev Hub · disconnected" onClick={() => close("dev-hub")} />
+            <Menu.LargeItem name="partner-demo" icon="bi:people" summary="partner org · disconnected" onClick={() => close("partner-demo")} />
+         </Menu.LargeItem>
+         <Menu.Item name="Connect an org…" icon="bi:plus-lg" onClick={() => close("connect")} />
+      </Menu>), { variant: "menu" })
+      onAction(org ? `org picked: "${org}"` : "org menu cancelled")
    }
-   return <Stack gap={16} vertical>
-      <div className="demo-row">
-         <Button label="Ask a question…" icon="bi:chat-dots" variant="outline-primary" onClick={askName} />
-         <Button label="Open a menu" icon="bi:list" variant="neutral" onClick={openMenu} />
-         <Button label="Pick a target…" icon="bi:crosshair" variant="neutral" onClick={pickTarget} />
-         <Button label="Configure deploy…" icon="bi:rocket-takeoff" variant="primary" onClick={configureDeploy} />
-      </div>
-      <div className="demo-row">
-         <Popup position="up-right" content={<div className="popup-hint"><Icon name="bi:lightbulb" /> a popover bubble, anchored and arrowed</div>}>
-            <Button label="Hover me (up-right)" icon="bi:info-circle" variant="neutral" />
-         </Popup>
-         <Popup variant="menu" content={<div className="popup-hint"><Icon name="bi:palette" /> variant="menu" — bare chrome</div>}>
-            <Button label="Hover me (menu)" icon="bi:brush" variant="neutral" />
-         </Popup>
-         <Menu.Anchor onClick={() => onAction("menu anchor clicked")}>
-            <Icon name="bi:app-indicator" /> Menu.Anchor zone
-         </Menu.Anchor>
-      </div>
-      <OverflowStack>
-         {Array.from({ length: 10 }, (_, i) => (
-            <ButtonIcon key={i} icon={`bi:${i}-circle`} title={`action ${i}`} onClick={() => onAction(`action ${i}`)} />
-         ))}
-      </OverflowStack>
-   </Stack>
+   const assignTo = async (e: React.MouseEvent) => {
+      e.stopPropagation()
+      const user = await openContextualMenu<string>(e, close => (<Menu aria-label="Assign to">
+         <Menu.Section title="Team">
+            <Menu.LargeItem name="Ada Lovelace" icon="avatar:Ada Lovelace" summary="ada@acme.com · admin" tags={["you"]} current onClick={() => close("Ada Lovelace")} />
+            <Menu.LargeItem name="Alan Turing" icon="avatar:Alan Turing" summary="alan@acme.com · developer" onClick={() => close("Alan Turing")} />
+            <Menu.LargeItem name="Grace Hopper" icon="avatar:Grace Hopper" summary="grace@acme.com · away" decorations={[{ type: "badge", name: "bi:moon-fill[warning]" }]} onClick={() => close("Grace Hopper")} />
+            <Menu.LargeItem name="Marie Curie" summary="no icon prop — the name becomes the avatar" onClick={() => close("Marie Curie")} />
+         </Menu.Section>
+         <Menu.Separator />
+         <Menu.LargeItem name="Other teams" icon="bi:people" summary="pick someone outside the team">
+            <Menu.LargeItem name="Linus Torvalds" icon="avatar:Linus Torvalds" summary="kernel team" onClick={() => close("Linus Torvalds")} />
+            <Menu.LargeItem name="Katherine Johnson" icon="avatar:Katherine Johnson" summary="flight dynamics" onClick={() => close("Katherine Johnson")} />
+         </Menu.LargeItem>
+         <Menu.Item name="Unassign" icon="bi:person-x[error]" onClick={() => close("nobody")} />
+      </Menu>), { variant: "menu" })
+      onAction(user ? `assigned to: "${user}"` : "assign menu cancelled")
+   }
+   return <div className="demo-row">
+      <Button label="Open a menu" icon="bi:list" variant="neutral" onClick={openMenu} />
+      <Button label="Pick a target…" icon="bi:crosshair" variant="neutral" onClick={pickTarget} />
+      <Button label="Switch org…" icon="bi:building" variant="neutral" onClick={switchOrg} />
+      <Button label="Assign to…" icon="bi:person-plus" variant="neutral" onClick={assignTo} />
+      <Menu.Anchor onClick={() => onAction("menu anchor clicked")}>
+         <Icon name="bi:app-indicator" /> Menu.Anchor zone
+      </Menu.Anchor>
+   </div>
 }
 
-function AskName({ initial, onDone }: { initial: string, onDone: (name: string) => void }) {
+function DemoPopovers() {
+   return <div className="demo-row">
+      <Popup position="up-right" content={<div className="popup-hint"><Icon name="bi:lightbulb" /> a popover bubble, anchored and arrowed</div>}>
+         <Button label="Hover me (up-right)" icon="bi:info-circle" variant="neutral" />
+      </Popup>
+      <Popup variant="menu" content={<div className="popup-hint"><Icon name="bi:palette" /> variant="menu" — bare chrome</div>}>
+         <Button label="Hover me (menu)" icon="bi:brush" variant="neutral" />
+      </Popup>
+   </div>
+}
+
+function DemoStacks({ onAction }: { onAction: (msg: string) => void }) {
+   return <OverflowStack>
+      {Array.from({ length: 10 }, (_, i) => (
+         <ButtonIcon key={i} icon={`bi:${i}-circle`} title={`action ${i}`} onClick={() => onAction(`action ${i}`)} />
+      ))}
+   </OverflowStack>
+}
+
+function AskName({ initial, onDone }: { initial: string, onDone: (name?: string) => void }) {
    const [name, setName] = useState(initial)
    return <Stack gap={10} padding={16} vertical>
       <InputData label="What is the new name?" value={name} schema={TextInputSchema("Ada", "text")} onChange={setName} />
@@ -615,7 +697,9 @@ function AskName({ initial, onDone }: { initial: string, onDone: (name: string) 
    </Stack>
 }
 
-function DeployForm({ onDone }: { onDone: (config: { env: string, dryRun: boolean }) => void }) {
+type DeployConfig = { env: string, dryRun: boolean }
+
+function DeployForm({ onDone }: { onDone: (config?: DeployConfig) => void }) {
    const [env, setEnv] = useState("sandbox")
    const [dryRun, setDryRun] = useState(true)
    const [notes, setNotes] = useState("")
@@ -646,6 +730,76 @@ function DeployForm({ onDone }: { onDone: (config: { env: string, dryRun: boolea
    </Stack>
 }
 
+function DemoPanels({ onAction }: { onAction: (msg: string) => void }) {
+   const [project, setProject] = useState("")
+   const modal = Overlays.useModal((panel) => ({
+      title: "New project",
+      icon: "bi:folder-plus",
+      size: "sm",
+      content: <InputData label="Project name" hint="Shown to every member." value={project} schema={{ type: "string", minLength: 1 }} onChange={setProject} required />,
+      footer: <>
+         <Button label="Cancel" onClick={() => panel.close()} />
+         <Button label="Create" variant="primary" disabled={!project} onClick={() => { panel.close(); onAction(`project "${project}" created`) }} />
+      </>,
+      onClose: () => onAction("modal closed"),
+   }), [project])
+   const drawer = Overlays.useLeftDrawer((panel) => ({
+      title: "Navigation",
+      icon: "bi:layout-sidebar",
+      content: <Menu aria-label="Navigation">
+         {["Overview", "Members", "Billing"].map((page) => (
+            <Menu.Item key={page} name={page} icon="bi:chevron-right" current={page === "Overview"} onClick={() => { panel.close(); onAction(`navigate to ${page}`) }} />
+         ))}
+      </Menu>,
+      onClose: () => onAction("drawer closed"),
+   }), [])
+   return <div className="demo-row">
+      <Button label="Create a project…" icon="bi:plus-lg" variant="primary" aria-haspopup="dialog" onClick={() => modal.open()} />
+      <Button label="Navigation drawer" icon="bi:layout-sidebar" variant="neutral" aria-haspopup="dialog" onClick={() => drawer.switch()} />
+   </div>
+}
+
+function DemoFieldControls({ onAction }: { onAction: (msg: string) => void }) {
+   const [email, setEmail] = useState("")
+   const [emailError, setEmailError] = useState<string>()
+   const [region, setRegion] = useState("eu")
+   const [plan, setPlan] = useState("team")
+   const [view, setView] = useState("grid")
+   const [channels, setChannels] = useState<string[]>(["email"])
+   const [date, setDate] = useState("")
+   const [query, setQuery] = useState("")
+   const [script, setScript] = useState("select 1")
+   const regions = { type: "string" as const, oneOf: [{ const: "eu", title: "Europe (Paris)" }, { const: "us", title: "United States (Virginia)" }] }
+   return <div className="demo-grid">
+      <div className="demo-card">
+         <InputData
+            label="Work email"
+            hint="We send the invitation there."
+            error={email ? emailError : undefined}
+            value={email}
+            schema={{ type: "string", format: "email" }}
+            placeholder="ada@lovelace.dev"
+            autoComplete="email"
+            required
+            onValidate={(error) => setEmailError(error?.message)}
+            onChange={setEmail}
+         />
+         <InputData label="Region (oneOf labels)" value={region} schema={regions} onChange={v => { setRegion(v); onAction(`region = ${v}`) }} />
+         <InputData label="Search with suggestions" value={query} schema={{ type: "string", format: "search" }} suggestions={["accounts", "contacts", "opportunities"]} onChange={setQuery} />
+      </div>
+      <div className="demo-card">
+         <InputData label="Plan (radio)" variant="radio" value={plan} schema={{ type: "string", oneOf: [{ const: "free", title: "Free" }, { const: "team", title: "Team" }, { const: "enterprise", title: "Enterprise" }] }} onChange={v => { setPlan(v); onAction(`plan = ${v}`) }} />
+         <InputData label="View (segmented)" variant="segmented" value={view} schema={{ type: "string", enum: ["grid", "list", "board"] }} onChange={v => { setView(v); onAction(`view = ${v}`) }} />
+         <InputData label="Notify by (multi-select)" value={channels} schema={{ type: "array", items: { type: "string", enum: ["email", "sms", "push"] } }} onChange={v => { setChannels(v); onAction(`channels = ${v.join(", ")}`) }} />
+      </div>
+      <div className="demo-card">
+         <InputData label="Start date" value={date} schema={{ type: "string", format: "date" }} onChange={v => { setDate(v); onAction(`date = ${v}`) }} />
+         <InputData label="Attachment" value={undefined} schema={{ type: "string", format: "file", contentMediaType: "image/*" }} onChange={(file?: File) => onAction(`file = ${file?.name ?? "none"}`)} />
+         <InputData label="Query" value={script} schema={{ type: "string", format: "textarea" }} rows={2} monospace autoGrow onChange={setScript} />
+      </div>
+   </div>
+}
+
 function Section(props: { title: string, hint?: string, children: React.ReactNode }) {
    return <section>
       <h2>{props.title}</h2>
@@ -654,4 +808,4 @@ function Section(props: { title: string, hint?: string, children: React.ReactNod
     </section>
 }
 
-createRoot(document.getElementById("root")).render(<App />)
+createRoot(document.getElementById("root")!).render(<App />)

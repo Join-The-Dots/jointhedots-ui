@@ -14,8 +14,5 @@ const packages = [
 
 for (const pkg of [...packages, "playground"]) {
    await Fs.rm(Path.join(root, pkg, "dist"), { recursive: true, force: true })
-   if (pkg !== "playground") {
-      await Fs.rm(Path.join(root, pkg, "src/generated"), { recursive: true, force: true })
-   }
 }
 console.log("cleaned")

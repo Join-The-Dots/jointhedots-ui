@@ -1,149 +1,101 @@
-import ReactDOM from 'react-dom/client'
-import React, { useState, useEffect } from 'react'
-import { getStackZIndex, StackedDock } from './StackedDock'
-import { ItemRowRich } from '../../Items'
+import React, { useId } from "react"
+import { ItemRowRich } from "../../Items/index.tsx"
+import type { Panel, PanelContent } from "./index.ts"
+import { PanelHeader, useDockLayer } from "./DockLayer.tsx"
+import { PanelRoot } from "./PanelRoot.ts"
+import { StackedDock } from "./StackedDock.tsx"
 
-const ResizableDrawer = (props: {
-   open: boolean
-   width: number
-   defaultWidth: number
-   minWidth: number
-   maxWidth: number
-   anchor: 'right' | 'left'
-   children: React.ReactNode
-   setWidth: (width: number) => void
-}) => {
-   const { open, anchor, width, defaultWidth, minWidth, maxWidth, children, setWidth } = props
-   const [resizing, setResizing] = useState<boolean>(false)
-   const [hover, setHover] = useState<boolean>(false)
+export type DrawerSide = "left" | "right"
 
-   const handleMouseDown = () => setResizing(true)
-   const handleMouseUp = () => setResizing(false)
+const defaultWidth = 300
+const minWidth = 200
 
-   const handleMouseMove = (e: MouseEvent) => {
-      if (resizing) {
-         let newWidth = width
-
-         if (anchor === 'left') {
-            newWidth = Math.min(Math.max(e.clientX, minWidth), maxWidth)
-         } else if (anchor === 'right') {
-            newWidth = Math.min(Math.max(window.innerWidth - e.clientX, minWidth), maxWidth)
-         }
-
-         setWidth(newWidth)
-      }
-   }
-
-   useEffect(() => {
-      window.addEventListener('mousemove', handleMouseMove)
-      window.addEventListener('mouseup', handleMouseUp)
-      return () => {
-         window.removeEventListener('mousemove', handleMouseMove)
-         window.removeEventListener('mouseup', handleMouseUp)
-      }
-   }, [resizing, anchor, minWidth, maxWidth])
-
-   const handleDoubleClick = () => {
-      setWidth(defaultWidth)
-   }
-
-   return <div style={{
-      display: "flex",
-      flexDirection: "column",
-      height: '100%',
-      position: 'relative',
-      width: open ? width : 0,
-      transition: resizing ? "" : 'width 0.3s ease',
-      border: "solid thin grey",
-      overflow: "hidden"
-   }}>
-      {children}
-
-      {/* Resize handle */}
-      <div
-         style={{
-            width: '8px',
-            cursor: 'col-resize',
-            position: 'absolute',
-            zIndex: 1000,
-            top: 0,
-            ...(anchor === 'left' ? { right: 0 } : { left: 0 }),
-            bottom: 0,
-            backgroundColor: hover ? '#e0e0e0' : 'transparent',
-            transition: 'background-color 0.3s ease',
-         }}
-         onMouseDown={handleMouseDown}
-         onMouseEnter={() => setHover(true)}
-         onMouseLeave={() => setHover(false)}
-         onDoubleClick={handleDoubleClick}
-      />
-   </div>
-}
-
-type Side = 'right' | 'left'
-
+/** Shows its main panel in a resizable drawer, the panels below it listed as rows that bring them back. */
 export class DrawerDock extends StackedDock {
-   node: HTMLDivElement
-   root: ReactDOM.Root
-   width: number = 300
-   constructor(readonly side: Side) {
+   private root = new PanelRoot()
+   /** Kept by the dock: the drawer reopens at the width the user left it. */
+   private width = defaultWidth
+
+   constructor(readonly side: DrawerSide) {
       super()
-      this.node = window.document.createElement("div")
-      this.node.className = `jtd-panel-drawer-dock side-${side}`
-      this.node.setAttribute("style", `z-index: ${getStackZIndex(-1)};`)
-      this.root = ReactDOM.createRoot(this.node)
-      window.document.body.appendChild(this.node)
-      this.updateStack()
    }
-   setWidth = (width: number) => {
+   private setWidth = (width: number) => {
       this.width = width
       this.updateStack()
    }
    updateStack() {
-      const displayed = this.main?.displayed
-      this.root.render(<ResizableDrawer
-         open={!!this.main}
-         anchor={this.side}
-         width={this.width}
-         defaultWidth={300}
-         minWidth={200}
-         maxWidth={window.document.body.clientWidth * 0.7}
-         setWidth={this.setWidth}
-      >
-         {this.stack.map((panel, key) => {
-            const { displayed } = panel
-            if (displayed) {
-               return <ItemRowRich
-                  key={key}
-                  icon={displayed.icon}
-                  name={displayed.title}
-                  tooling={displayed.tooling}
-                  onSelect={() => this.appendPanel(panel)}
-               />
-            }
-            return null
-         })}
-         {displayed && <ItemRowRich
-            icon={displayed.icon}
-            name={displayed.title}
-            tooling={[
-               ...(displayed.tooling || []),
-               (displayed.closable !== false) && {
-                  name: "close",
-                  icon: "bi:x-lg",
-                  onActivate: (label, dock) => {
-                     this.main?.close?.()
-                  },
-               }
-            ]}
-         />}
-         <div style={{
-            overflow: "auto"
-         }}>
-            {displayed?.content}
-         </div>
-      </ResizableDrawer >)
+      const main = this.main
+      const displayed = main?.displayed
+      if (main && displayed) {
+         const stacked = this.stack.map((panel, key) => panel.displayed
+            ? <ItemRowRich
+               key={key}
+               icon={panel.displayed.icon}
+               name={panel.displayed.title ?? ""}
+               onSelect={() => this.appendPanel(panel)}
+            />
+            : null)
+         this.root.render(<DrawerFrame
+            side={this.side}
+            panel={main}
+            displayed={displayed}
+            stacked={stacked}
+            width={this.width}
+            setWidth={this.setWidth}
+            onClose={() => main.close()}
+         />)
+      }
+      else {
+         this.root.unmount()
+      }
    }
 }
 
-export default ResizableDrawer
+function DrawerFrame(props: {
+   side: DrawerSide
+   panel: Panel
+   displayed: PanelContent
+   stacked: React.ReactNode
+   width: number
+   setWidth: (width: number) => void
+   onClose: () => void
+}) {
+   const { side, panel, displayed, stacked, width, setWidth, onClose } = props
+   const { closable = true } = displayed
+   const titleId = useId()
+   const ref = useDockLayer<HTMLElement>(closable ? onClose : undefined, false, panel)
+
+   const startResize = (event: React.PointerEvent) => {
+      event.preventDefault()
+      const move = (moved: PointerEvent) => {
+         const wanted = side === "left" ? moved.clientX : window.innerWidth - moved.clientX
+         setWidth(Math.min(Math.max(wanted, minWidth), window.innerWidth * 0.7))
+      }
+      const stop = () => {
+         window.removeEventListener("pointermove", move)
+         window.removeEventListener("pointerup", stop)
+      }
+      window.addEventListener("pointermove", move)
+      window.addEventListener("pointerup", stop)
+   }
+
+   return <div className={`jtd-panel-drawer-dock side-${side}`}>
+      <aside
+         ref={ref}
+         className="jtd-panel-drawer-frame"
+         role="dialog"
+         aria-labelledby={displayed.title ? titleId : undefined}
+         tabIndex={-1}
+         style={{ width }}
+      >
+         {displayed.title || displayed.icon || displayed.tooling?.length || closable
+            ? <PanelHeader displayed={displayed} titleId={titleId} onClose={onClose} />
+            : null}
+         <div className="jtd-panel-body">
+            {stacked}
+            {displayed.content}
+         </div>
+         <div className="jtd-panel-drawer-resize" onPointerDown={startResize} onDoubleClick={() => setWidth(defaultWidth)} />
+      </aside>
+   </div>
+}

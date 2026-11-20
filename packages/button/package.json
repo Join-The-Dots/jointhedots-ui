@@ -6,9 +6,14 @@
    "description": "Join.The.Dots buttons — Button with variants and icon-only ButtonIcon",
    "sideEffects": true,
    "exports": {
-      ".": {
-         "types": "./dist/index.d.ts",
-         "import": "./dist/index.js"
+      ".": "./src/index.ts"
+   },
+   "publishConfig": {
+      "exports": {
+         ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
+         }
       }
    },
    "files": [

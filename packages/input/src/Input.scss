@@ -1,19 +1,40 @@
-// Field family of the schema-driven inputs.
+/* Field family of the schema-driven inputs. */
 
 .jtd-field {
    display: flex;
    flex-direction: column;
    gap: 4px;
    min-width: 0;
+   margin: 0;
+   padding: 0;
+   border: none;
+}
+
+.jtd-field-hint,
+.jtd-field-error {
+   font-size: 12px;
+}
+
+.jtd-field-hint {
+   color: var(--jtd-muted);
+}
+
+.jtd-field-error {
+   color: var(--jtd-error);
+}
+
+.jtd-field--invalid>.jtd-field-control {
+   border-color: var(--jtd-error);
 }
 
 .jtd-field-label {
+   padding: 0;
    color: var(--jtd-muted);
    font-size: 12px;
 }
 
-// The bordered box is the composite (icon + widget + actions); the widgets
-// inside carry no chrome. Sole source of truth for the field height.
+/* The bordered box is the composite (icon + widget + actions); the widgets
+   inside carry no chrome. Sole source of truth for the field height. */
 .jtd-field-control {
    display: flex;
    align-items: center;
@@ -22,7 +43,7 @@
    padding: 3px 10px;
    background-color: var(--jtd-surface);
    border: 1px solid var(--jtd-border);
-   border-radius: 5px;
+   border-radius: var(--jtd-radius);
    transition: border-color 120ms ease;
 
    &:focus-within {
@@ -54,11 +75,19 @@
    &:disabled {
       opacity: 0.45;
    }
+
+   &[readonly] {
+      color: var(--jtd-muted);
+   }
+}
+
+.jtd-input--monospace {
+   font-family: var(--jtd-font-mono);
 }
 
 textarea.jtd-input {
    align-self: auto;
-   min-height: 60px;
+
    padding: 5px 0;
    resize: vertical;
 }
@@ -76,14 +105,14 @@ textarea.jtd-input {
    }
 }
 
-// Field tooling renders the item model's widgets (LabelButton pills).
+/* Field tooling renders the item model's widgets (LabelButton pills). */
 .jtd-field-tooling {
    display: flex;
    flex: none;
    gap: 2px;
 }
 
-// Enum trigger: shows the value, opens a contextual menu of item rows.
+/* Enum trigger: shows the value, opens a contextual menu of item rows. */
 .jtd-select {
    display: flex;
    align-items: center;
@@ -93,13 +122,17 @@ textarea.jtd-input {
    text-align: left;
 }
 
+.jtd-select-placeholder {
+   color: var(--jtd-muted);
+}
+
 .jtd-select-caret {
    flex: none;
    color: var(--jtd-muted);
 }
 
-// Size declinations scale the composite — the metric source; everything it
-// contains (icon, tooling pills, caret, widget text) inherits via font-size.
+/* Size declinations scale the composite — the metric source; everything it
+   contains (icon, tooling pills, caret, widget text) inherits via font-size. */
 .jtd-field--xs {
    font-size: 12px;
    gap: 2px;
@@ -149,5 +182,62 @@ textarea.jtd-input {
       width: 18px;
       height: 18px;
       margin: 10px 0;
+   }
+}
+
+/* Choices: a checkbox or radio with its label; segmented choices read as one button group. */
+.jtd-choice {
+   display: inline-flex;
+   align-items: center;
+   gap: 8px;
+   cursor: pointer;
+
+   &>input {
+      margin: 0;
+      accent-color: var(--jtd-primary);
+   }
+}
+
+.jtd-choices {
+   display: flex;
+   flex-direction: column;
+   gap: 6px;
+}
+
+.jtd-segmented {
+   flex-direction: row;
+   gap: 0;
+   width: fit-content;
+   border: 1px solid var(--jtd-border);
+   border-radius: var(--jtd-radius);
+   overflow: hidden;
+
+   &>.jtd-choice {
+      padding: 5px 12px;
+      background-color: var(--jtd-surface);
+
+      &+.jtd-choice {
+         border-left: 1px solid var(--jtd-border);
+      }
+
+      &:hover {
+         background-color: var(--jtd-hover);
+      }
+
+      &:has(:checked) {
+         background-color: var(--jtd-primary);
+         color: var(--jtd-on-emphasis);
+      }
+
+      &:has(:focus-visible) {
+         outline: 2px solid var(--jtd-primary);
+         outline-offset: -2px;
+      }
+
+      &>input {
+         position: absolute;
+         opacity: 0;
+         pointer-events: none;
+      }
    }
 }

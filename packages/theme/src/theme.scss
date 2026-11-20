@@ -1,5 +1,6 @@
-// Base layer of every jtd component: minimal reset + the full set of design tokens.
-// Dark is the default palette; `body.theme-light` overrides it.
+/* Base layer of every jtd component: minimal reset + the full set of design tokens.
+   Dark is the default palette; `body.theme-light` overrides it. Every color, radius,
+   shadow and z-index of the packages reads one of these tokens. */
 
 *,
 *::before,
@@ -13,6 +14,7 @@ body {
    font-family: var(--jtd-font-family);
 
    --jtd-font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+   --jtd-font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
    --jtd-background: #1e1e1e;
    --jtd-foreground: #d4d4d4;
    --jtd-surface: #252526;
@@ -25,6 +27,19 @@ body {
    --jtd-warning: #d29922;
    --jtd-error: #f14c4c;
    --jtd-on-emphasis: #ffffff;
+   --jtd-avatar-foreground: #ffffff;
+   --jtd-item-color: var(--jtd-primary);
+
+   --jtd-radius: 5px;
+   --jtd-radius-panel: 8px;
+   --jtd-radius-floating: 8px;
+   --jtd-backdrop: rgb(0 0 0 / 50%);
+   --jtd-shadow-floating: 0 12px 28px rgb(0 0 0 / 20%), 0 2px 4px rgb(0 0 0 / 10%);
+   --jtd-shadow-panel: 0 24px 60px rgb(0 0 0 / 35%);
+
+   --jtd-drawer-zindex: 9999000;
+   --jtd-modal-zindex: 10000000;
+   --jtd-tooltip-zindex: 20000000;
 }
 
 body.theme-light {
@@ -42,4 +57,6 @@ body.theme-light {
    --jtd-warning: #9a6700;
    --jtd-error: #d13438;
    --jtd-on-emphasis: #ffffff;
+   --jtd-backdrop: rgb(0 0 0 / 35%);
+   --jtd-shadow-panel: 0 24px 60px rgb(0 0 0 / 18%);
 }
